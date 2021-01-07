@@ -66,9 +66,9 @@ int* Relay::getPowerStates(Relay pwrArr[]) {
 
 int* Relay::getEnableStates(Relay pwrArr[]) {
 	static int enableStates[8];
-	for (int start = 0; start <= 7; start++){
+	for (int start = 0; start <= 7; start++) {
 		enableStates[start] = pwrArr[start].schedules.overrideFlag;
-		}
+	}
 	delay(250);
 	return enableStates;
 }

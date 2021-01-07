@@ -337,9 +337,9 @@ void enableDisableRelay() {
 					overrideScreenUpdate(dummyObj.getEnableStates(powerArray));
 				}
 			}
-				if ((buttonByte & ROW_BITS) == ROW_2) {
-					//Number 4 on the numpad
-					if (powerArray[3].getPoweredStatus() == false) {
+			if ((buttonByte & ROW_BITS) == ROW_2) {
+				//Number 4 on the numpad
+				if (powerArray[3].getPoweredStatus() == false) {
 					powerArray[3].flipOverrideState();
 					clearRelayUpdate();
 					overrideScreenUpdate(dummyObj.getEnableStates(powerArray));
