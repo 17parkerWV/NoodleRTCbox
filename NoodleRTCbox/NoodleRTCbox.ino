@@ -1,5 +1,3 @@
-#include "submenus.h"
-#include "menudisplays.h"
 #include <Adafruit_SPIDevice.h>
 #include <Adafruit_I2CRegister.h>
 #include <Adafruit_I2CDevice.h>
