@@ -1,3 +1,5 @@
+#include "SubMenus.h"
+#include "DisplayUpdates.h"
 #include <Adafruit_SPIDevice.h>
 #include <Adafruit_I2CRegister.h>
 #include <Adafruit_I2CDevice.h>
@@ -295,6 +297,7 @@ void overrideSubMenuDisplay() {
 	OLEDdisplay.println(F("Press # to go back"));
 	OLEDdisplay.display();
 }
+
 void overrideSubMenu() {
 	overrideSubMenuDisplay();
 	while (1) {

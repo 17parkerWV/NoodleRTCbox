@@ -27,9 +27,21 @@
     <ClInclude Include="RelayObjects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DisplayUpdates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SubMenus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RelayObjects.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DisplayUpdates.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SubMenus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
