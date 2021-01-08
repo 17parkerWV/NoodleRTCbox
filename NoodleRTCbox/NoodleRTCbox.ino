@@ -31,7 +31,6 @@ PC5 (pin 32) - Pin 6 on number pad
 PC6 (pin 31) - Pin 7 on number pad
 PC7 (pin 30) - Pin 8 on number pad
 */
-#define TEST
 #define COL_LOW_ROW_PULLUP ROW_BITS
 #define ROW_LOW_COL_PULLUP COL_BITS
 #define ROW_IN_COL_OUT COL_BITS
