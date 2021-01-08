@@ -46,7 +46,6 @@ Relay powerArray[8];
 Relay dummyObj;
 
 
-void mainMenu(void);			//menu that displays all relays
 void moreOptionsMenu();			//More options menu because they didn't fit on one screen
 void enableDisableRelay();		//allows manual control of relay
 void manualOnOff();				//menu to enable/disable a plug
@@ -118,20 +117,7 @@ void loop() {
 }
 
 
-void mainMenu(void) {
-	OLEDdisplay.clearDisplay();
-	OLEDdisplay.display();
-	OLEDdisplay.setTextSize(2);
-	OLEDdisplay.setCursor(10, 0);
-	OLEDdisplay.println(F("Main Menu"));
-	OLEDdisplay.setTextSize(1);
-	OLEDdisplay.setCursor(0, 16);
-	OLEDdisplay.println("A: Adjust Schedule");
-	OLEDdisplay.println(F("B: Temporary Override"));
-	OLEDdisplay.println(F("C: Manual Override      Menu"));
-	OLEDdisplay.println(F("D: More options"));
-	OLEDdisplay.display();
-}
+
 
 void moreOptionsMenu() {
 

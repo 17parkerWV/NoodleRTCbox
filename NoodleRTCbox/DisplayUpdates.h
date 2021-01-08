@@ -13,6 +13,8 @@
 
 
 class DisplayClass {
+	void mainMenu(void);			//menu that displays all relays
+
 	Adafruit_SSD1306 OLED;
 	DisplayClass(int w, int h);
 };
