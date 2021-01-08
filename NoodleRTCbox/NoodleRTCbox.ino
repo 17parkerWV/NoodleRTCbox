@@ -31,7 +31,11 @@ PC5 (pin 32) - Pin 6 on number pad
 PC6 (pin 31) - Pin 7 on number pad
 PC7 (pin 30) - Pin 8 on number pad
 */
-
+#define COL_LOW_ROW_PULLUP ROW_BITS
+#define ROW_LOW_COL_PULLUP COL_BITS
+#define ROW_IN_COL_OUT COL_BITS
+#define COL_IN_ROW_OUT ROW_BITS
+byte buttonPress = 0b00000000;
 
 int relayArrayPins[8] = { 42,43,44,45,46,47,48,49 };	//pins of the relays
 
