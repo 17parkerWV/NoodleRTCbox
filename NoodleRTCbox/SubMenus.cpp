@@ -2,6 +2,7 @@
 
 void delayWithoutDelay(int time) {
 	int currentTime = millis();
+	Serial.println("made it to the loop");
 	while ((currentTime + time - millis()) >= 0) {
 	}
 }
@@ -11,11 +12,13 @@ byte buttonPoll() {
 	byte rowBits = (PINC & ROW_BITS);
 	DDRC = COL_IN_ROW_OUT;
 	PORTC = ROW_LOW_COL_PULLUP;
-	delayWithoutDelay(50);
+	Serial.println("delay1");
+	delayWithoutDelay(50);				//GETS STUCK IN LOOP HERE
 	byte colBits = (PINC & COL_BITS);
 	buttonPress = rowBits | colBits;
 	DDRC = ROW_IN_COL_OUT;
 	PORTC = COL_LOW_ROW_PULLUP;
+	Serial.println("delay2");
 	delayWithoutDelay(50);
 	return buttonPress;
 }
@@ -42,6 +45,14 @@ void SubMenu::initializePins() {
 
 void SubMenu::off() {
 	Relay::off();
+}
+
+void SubMenu::clearCurrentTime() {
+
+}
+
+void SubMenu::displayCurrentTime(int hour, int min) {
+	subMenuDisplayObject.currentTime(hour, min);
 }
 
 void SubMenu::displayMainMenu() {
@@ -80,7 +91,7 @@ void SubMenu::displayOnOffScreenStatus() {
 	subMenuDisplayObject.OLED.display();
 }
 
-void SubMenu::displayOverrideSubMenuDisplay() {
+void SubMenu::displayManualOverrideSubMenuDisplay() {
 	subMenuDisplayObject.overrideSubMenuDisplay();
 }
 

@@ -39,6 +39,12 @@ public:
 	void manualOnOff();					
 	//Prints the screen where pressing 1-8 enables/disables manual control of the coreesponding relay
 	void enableDisableRelayScreen();	
+
+	//takes hour and min as arguments and displays them at the top of the screen
+	void currentTime(int, int);
+	//draws a black rectangle over the time to avoid clearing the whole screen
+	void clearCurrentTime();
+
 private:
 	Adafruit_SSD1306 OLED;
 };

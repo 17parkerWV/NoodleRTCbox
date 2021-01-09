@@ -31,7 +31,7 @@ public:
 	//prints the status of the 8 relay's powered variable. works in tandem with displayEightRelayNumbers
 	void displayOnOffScreenStatus();		
 	//when you pick option C from the main menu - prints the options to go to on/off menu or enable/disable menu. This redirects to DisplayObject's function
-	void displayOverrideSubMenuDisplay();	
+	void displayManualOverrideSubMenuDisplay();	
 	//prints the screen header where pressing 1-8 enables/disables manual control or the relay's power status
 	void displayEnableDisableRelayScreen(); 
 	//the submenu that waits for button input and changes overrideFlag if conditions are met (this is a while(1) loop)
@@ -41,7 +41,11 @@ public:
 	//turns off the powerArray[] object that calls it
 	void off();								
 	//waits for button input and turns the relays on/off if conditions are met (this is a while(1) loop)
-	void manualOnOffSubMenu();				
+	void manualOnOffSubMenu();			
+
+	//For making a black rectangle so the entire screen does not have to be updated
+	void clearCurrentTime();
+	void displayCurrentTime(int, int);
 	
 private:
 	Relay powerArray[8];

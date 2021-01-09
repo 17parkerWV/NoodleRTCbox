@@ -72,6 +72,9 @@ private:
 		bool overrideFlag = true;	
 		//Whether or not it is on or off (for manual override) power state of the relay must be in sync with this flag!!
 		bool powered = false;		
+		//Override flag and powered are more or less local to the override menu, so this is the flag that will that menu to the schedule menus without mixing too much
+		//Specifically, if the relay is overriden, it is tripped and can only be reset by setting a schedule again
+		bool scheduleSetFlag = false;
 		int overrideHour = 0;				
 		int overrideMinute = 0;		
 		//number of the physical pin the corresponding relay is connected to

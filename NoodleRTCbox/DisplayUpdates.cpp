@@ -16,6 +16,20 @@ void DisplayClass::overrideSubMenuDisplay() {
 	OLED.display();
 }
 
+void DisplayClass::currentTime(int hour, int min) {
+	OLED.setTextSize(2);
+	OLED.setCursor(20, 0);
+	OLED.print(hour);
+	OLED.print(":");
+	OLED.print(min);
+	OLED.display();
+}
+
+void DisplayClass::clearCurrentTime() {
+	OLED.fillRect(15, 0, 100, 16, BLACK);
+	OLED.display();
+}
+
 void DisplayClass::mainMenu(void) {
 	OLED.clearDisplay();
 	OLED.display();

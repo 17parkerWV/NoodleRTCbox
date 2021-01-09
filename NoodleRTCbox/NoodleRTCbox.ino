@@ -41,7 +41,9 @@ void manualOnOff();				//menu to enable/disable a plug
 void updateClockObj();
 void errorQuit(int code);	//Print error code
 void printTime(void);		//print current date/time
-void overrideSubMenu();		//This brings you to the menu where you can override or not
+void manualOverrideSubMenu();		//This brings you to the menu where you can override or not
+void schedulesSubMenu();
+void updateCurrentTime();
 
 void setup() {
 	Serial.begin(115200);
@@ -57,28 +59,32 @@ void setup() {
 	DDRC = ROW_IN_COL_OUT;
 	PORTC = COL_LOW_ROW_PULLUP;
 
+	clockSecondObj = clockObj.now();
 	//Maybe function to set the clock?
 	//Function to notify that all schedules were wiped out
 	subMenuObj.displayMainMenu();
 }
 
+
 void loop() {
 	byte buttonData = buttonPoll();
 	if ((buttonData & COL_BITS) == (COL_4)) {
-		if ((buttonData & ROW_BITS) == (ROW_1)) {		//"A" on the num pad
+		if ((buttonData & ROW_BITS) == (ROW_1)) {					//"A" on the num pad
 			//This is the adjust schedule menu
+			schedulesSubMenu();
 			subMenuObj.displayMainMenu();
 		}
-		if ((buttonData & ROW_BITS) == (ROW_2)) {		//"B" on the num pad
+		if ((buttonData & ROW_BITS) == (ROW_2)) {					//"B" on the num pad
 		   //This is the temporary override menu
 			subMenuObj.displayMainMenu();
 		}
-		if ((buttonData & ROW_BITS) == (ROW_3)) {	//"C" on the num pad
-			subMenuObj.displayOverrideSubMenuDisplay();
-			overrideSubMenu();
+		if ((buttonData & ROW_BITS) == (ROW_3)) {					//"C" on the num pad
+			//This goes to the enable/disable manual control and turn on/off relays
+			subMenuObj.displayManualOverrideSubMenuDisplay();
+			manualOverrideSubMenu();
 			subMenuObj.displayMainMenu();
 		}
-		if ((buttonData & ROW_BITS) == (ROW_4)) {	//"D" on the num pad
+		if ((buttonData & ROW_BITS) == (ROW_4)) {					//"D" on the num pad
 		   //This is the more options menu
 			subMenuObj.displayMainMenu();
 		}
@@ -87,14 +93,11 @@ void loop() {
 	delayWithoutDelay(175);
 }
 
-void overrideSubMenu() {
+
+
+void manualOverrideSubMenu() {
 	while (1) {
 		byte buttonPress = buttonPoll();
-		if ((buttonPress & COL_BITS) == COL_3) {
-			if ((buttonPress & ROW_BITS) == ROW_4) {	//# sign to go back
-				break;
-			}
-		}
 		if ((buttonPress & COL_BITS) == COL_4) {
 			if ((buttonPress & ROW_BITS) == ROW_1) {		//Button A goes to enable disable
 				enableDisableRelay();
@@ -102,6 +105,45 @@ void overrideSubMenu() {
 			if ((buttonPress & ROW_BITS) == ROW_2) {		//Button B goes to manual ON/OFF menu
 				manualOnOff();
 			}
+		}
+		if ((buttonPress & COL_BITS) == COL_3) {
+			if ((buttonPress & ROW_BITS) == ROW_4) {	//# sign to go back
+				break;
+			}
+		}
+	}
+}
+
+void schedulesSubMenu() {
+	updateCurrentTime();
+	while (1) {
+		unsigned int currentMillis = millis();
+		int currentMin = clockSecondObj.minute();
+		while (currentMillis + 10000 >= millis()) {
+			byte buttonPress = buttonPoll();
+			if ((buttonPress & ROW_BITS) == ROW_1) {
+				if ((buttonPress & COL_BITS) == COL_1) {		//Row 1 Col 1 ->button 1
+
+				}
+				if ((buttonPress & COL_BITS) == COL_2) {		//Row 1 Col 2 ->button 2
+
+				}
+				if ((buttonPress & COL_BITS) == COL_3) {		//Row 1 Col 3 ->button 3
+
+				}
+			}
+			if ((buttonPress & ROW_BITS) == ROW_2) {
+				if ((buttonPress & COL_BITS) == COL_1) {		//Row 2 Col 1 ->button 4
+
+				}
+			}
+			if (((buttonPress & ROW_BITS) == ROW_4) && ((buttonPress & COL_BITS) == COL_3)) {	//Row 4 Col 3 -> # sign to exit
+				break;
+			}
+		}
+		if (currentMin != clockSecondObj.minute()) {
+			subMenuObj.clearCurrentTime();
+			updateCurrentTime();
 		}
 	}
 }
@@ -111,7 +153,7 @@ void enableDisableRelay() {
 	subMenuObj.displayEnableDisableRelayScreen();
 	subMenuObj.displayOverrideScreenStatus();
 	subMenuObj.enableDisableRelaySubMenu();
-	subMenuObj.displayOverrideSubMenuDisplay();
+	subMenuObj.displayManualOverrideSubMenuDisplay();
 }
 
 void manualOnOff() {						//DOES NOT CHECK TIME IN THIS LOOP///
@@ -119,16 +161,21 @@ void manualOnOff() {						//DOES NOT CHECK TIME IN THIS LOOP///
 	subMenuObj.displayManualOnOffScreen();
 	subMenuObj.displayOnOffScreenStatus();
 	subMenuObj.manualOnOffSubMenu();
-	subMenuObj.displayOverrideSubMenuDisplay();
+	subMenuObj.displayManualOverrideSubMenuDisplay();
 }
 
 void updateClockObj() {
 	clockSecondObj = clockObj.now();
 }
 
+void updateCurrentTime() {
+	updateClockObj();
+	subMenuObj.displayCurrentTime(clockSecondObj.hour(),clockSecondObj.minute());
+}
+
 void errorQuit(int code) {
 	switch (code) {
-	case 1:
+	case 1:	
 		Serial.println(F("Clock failed to begin, contact support"));
 		break;
 	case 2:
