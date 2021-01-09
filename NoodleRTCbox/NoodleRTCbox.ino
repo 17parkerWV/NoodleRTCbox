@@ -1,7 +1,7 @@
 #include "RelayObjects.h"
 #include "SubMenus.h"
 #include "DisplayUpdates.h"
-
+//I can't get this working if these aren't here, even though they aren't needed here. Oh well
 #include <Adafruit_SPIDevice.h>
 #include <Adafruit_I2CRegister.h>
 #include <Adafruit_I2CDevice.h>
