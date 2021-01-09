@@ -85,6 +85,7 @@ void loop() {
 		delay(100);
 	}
 	delay(175);
+	delay(1);
 }
 
 void manualOnOff() {						//DOES NOT CHECK TIME IN THIS LOOP///
