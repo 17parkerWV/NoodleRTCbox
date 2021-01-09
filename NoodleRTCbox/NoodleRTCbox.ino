@@ -45,17 +45,14 @@ void overrideSubMenu();		//This brings you to the menu where you can override or
 
 void setup() {
 	Serial.begin(115200);
-	for (int i = 0; i <= 7; i++) {
-
-	}
 	subMenuObj.initializePins();		//Initializes the relay pins and sets them as OUTPUT and turns them off()
-	subMenuObj.initializeDisplay();		//Initializes the display object and also checks to make sure it began (begin())
-	if (!clockObj.begin()) {
+	if (subMenuObj.initializeDisplay() == false)		//Initializes the display object and also checks to make sure it began (begin())
+		errorQuit(3);
+	if (!clockObj.begin())
 		errorQuit(1);
-	}
-	if (clockObj.lostPower()) {
+	if (clockObj.lostPower())
 		errorQuit(2);
-	}
+
 	//Set up the keypad inputs/outputs
 	DDRC = ROW_IN_COL_OUT;
 	PORTC = COL_LOW_ROW_PULLUP;
@@ -92,7 +89,7 @@ void loop() {
 
 void manualOnOff() {						//DOES NOT CHECK TIME IN THIS LOOP///
 	subMenuObj.displayEightRelayNumbers();
-	subMenuObj.displayManualOnOff();
+	subMenuObj.displayManualOnOffScreen();
 	subMenuObj.displayOnOffScreenStatus();
 	subMenuObj.manualOnOffSubMenu();
 	subMenuObj.displayOverrideSubMenuDisplay();
@@ -119,8 +116,8 @@ void overrideSubMenu() {
 
 void enableDisableRelay() {
 	subMenuObj.displayEightRelayNumbers();
-	subMenuObj.displayOverrideScreenStatus();
 	subMenuObj.displayEnableDisableRelayScreen();
+	subMenuObj.displayOverrideScreenStatus();
 	subMenuObj.enableDisableRelaySubMenu();
 	subMenuObj.displayOverrideSubMenuDisplay();
 }

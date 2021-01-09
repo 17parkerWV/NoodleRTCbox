@@ -15,11 +15,11 @@ byte buttonPoll(void);		//this will get byte data from the number pad to reduce 
 
 class SubMenu: public Relay {
 public:
-	void initializeDisplay();
+	bool initializeDisplay();
 	void initializePins();
 	void displayMainMenu();
 	void displayEightRelayNumbers();
-	void displayManualOnOff();
+	void displayManualOnOffScreen();
 	void displayOverrideScreenStatus();
 	void displayOnOffScreenStatus();
 	void displayOverrideSubMenuDisplay();

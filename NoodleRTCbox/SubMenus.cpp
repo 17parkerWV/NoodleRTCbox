@@ -14,15 +14,16 @@ byte buttonPoll() {
 	return buttonPress;
 }
 
-void SubMenu::initializeDisplay() {
+bool SubMenu::initializeDisplay() {
 	if (!subMenuDisplayObject.OLED.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
-		//add error code here
+		return false;
 	}
 	subMenuDisplayObject.OLED.display();
 	subMenuDisplayObject.OLED.clearDisplay();
 	subMenuDisplayObject.OLED.display();
 	subMenuDisplayObject.OLED.setCursor(0, 0);
 	subMenuDisplayObject.OLED.setTextColor(WHITE);
+	return true;
 }
 
 void SubMenu::initializePins() {
@@ -45,7 +46,7 @@ void SubMenu::displayEightRelayNumbers() {
 	subMenuDisplayObject.eightRelayNumbers();
 }
 
-void SubMenu::displayManualOnOff() {
+void SubMenu::displayManualOnOffScreen() {
 	subMenuDisplayObject.manualOnOff();
 }
 
