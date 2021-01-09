@@ -7,6 +7,7 @@
 #else
 #include "WProgram.h"
 #endif
+
 //BUTTONS ON THE NUMBERPAD IN BINARY
 #define NUM_PAD_1 0b11101110
 #define NUM_PAD_2 0b11011110
@@ -35,12 +36,16 @@
 #define ROW_2 0b00001101
 #define ROW_3 0b00001011
 #define ROW_4 0b00000111
+#define COL_LOW_ROW_PULLUP ROW_BITS
+#define ROW_LOW_COL_PULLUP COL_BITS
+#define ROW_IN_COL_OUT COL_BITS
+#define COL_IN_ROW_OUT ROW_BITS
 
 class Relay {
 public:
-	void allOff(Relay*);							//turns off ALL relays
+	friend class SubMenu;
+	const int relayArrayPins[8] = { 42,43,44,45,46,47,48,49 };	//pins of the relays
 	void off(void);									//Turns off specified relay
-	void initializePins(Relay pwrArr[], int pinArr[]);			//This is called once at the beginning, to set the relays to their controlling pin
 	void setTimeOn(int, int, int, int);			//Sets the time it will turn on
 	void setTimeOff(int, int, int, int);		//sets the time it wil turn off
 	void tempOverride(int, int);				//Temporarily override schedule (on or off), delay is in hours and minutes
@@ -49,10 +54,6 @@ public:
 	void flipPowerState(void);							//flip the state of power (on or off) and updating the powerState flag 
 	void flipOverrideState(void);
 	void setPowerState(bool level);				//manually change the state to given level
-	int* getPowerStates(Relay pwrArr[]);						//To return states (enable/disable) of the outlets
-	int* getEnableStates(Relay pwrArr[]);
-	bool getOverrideStatus();							//returns the current override status
-	bool getPoweredStatus();
 	void setOverrideFlag(bool);							//sets the flag to state that is passed as argument
 
 private:

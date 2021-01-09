@@ -20,19 +20,11 @@ void Relay::tempOverride(int hours, int minutes) {
 }
 
 void Relay::manualOverride(int state) {
-	digitalWrite(schedules.relayPin, (!state));
+	digitalWrite(this->schedules.relayPin, (!state));
 }
 
 void Relay::checkSchedule(void) {
 
-}
-
-bool Relay::getOverrideStatus() {
-	return schedules.overrideFlag;
-}
-
-bool Relay::getPoweredStatus(void) {
-	return schedules.powered;
 }
 
 void Relay::flipPowerState(void) {
@@ -55,39 +47,7 @@ void Relay::setOverrideFlag(bool state) {
 	schedules.overrideFlag = state;
 }
 
-int* Relay::getPowerStates(Relay pwrArr[]) {
-	static int powerStateArray[8];
-	for (int start = 0; start <= 7; start++) {
-		powerStateArray[start] = pwrArr[start].schedules.powered;
-	}
-	delay(250);
-	return powerStateArray;
-}
-
-int* Relay::getEnableStates(Relay pwrArr[]) {
-	static int enableStates[8];
-	for (int start = 0; start <= 7; start++) {
-		enableStates[start] = pwrArr[start].schedules.overrideFlag;
-	}
-	delay(250);
-	return enableStates;
-}
-
 void Relay::off(void) {
 	digitalWrite(schedules.relayPin, HIGH);		//I'm pretty sure the relays turn ON when dragged low, need to double check
 	schedules.powered = false;					//The one I want to use for changing settings but probably ditch the other one because it's annoying
-}
-
-
-void Relay::allOff(Relay* pwrArr) {
-	for (int index = 0; index <= 7; index++) {
-		pwrArr[index].off();
-	}
-}
-
-void Relay::initializePins(Relay pwrArr[], int pinArr[]) {						//only to be ran once, when it is powered on
-	for (int i = 0; i <= 7; i++) {
-		pwrArr[i].schedules.relayPin = pinArr[i];
-		pwrArr[i].off();
-	}
 }
