@@ -82,18 +82,9 @@ void loop() {
 		   //This is the more options menu
 			subMenuObj.displayMainMenu();
 		}
-		delay(100);
+		delayWithoutDelay(100);
 	}
-	delay(175);
-	delay(1);
-}
-
-void manualOnOff() {						//DOES NOT CHECK TIME IN THIS LOOP///
-	subMenuObj.displayEightRelayNumbers();
-	subMenuObj.displayManualOnOffScreen();
-	subMenuObj.displayOnOffScreenStatus();
-	subMenuObj.manualOnOffSubMenu();
-	subMenuObj.displayOverrideSubMenuDisplay();
+	delayWithoutDelay(175);
 }
 
 void overrideSubMenu() {
@@ -120,6 +111,14 @@ void enableDisableRelay() {
 	subMenuObj.displayEnableDisableRelayScreen();
 	subMenuObj.displayOverrideScreenStatus();
 	subMenuObj.enableDisableRelaySubMenu();
+	subMenuObj.displayOverrideSubMenuDisplay();
+}
+
+void manualOnOff() {						//DOES NOT CHECK TIME IN THIS LOOP///
+	subMenuObj.displayEightRelayNumbers();
+	subMenuObj.displayManualOnOffScreen();
+	subMenuObj.displayOnOffScreenStatus();
+	subMenuObj.manualOnOffSubMenu();
 	subMenuObj.displayOverrideSubMenuDisplay();
 }
 

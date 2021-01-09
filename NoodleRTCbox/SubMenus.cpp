@@ -1,16 +1,22 @@
 #include "SubMenus.h"
 
+void delayWithoutDelay(int time) {
+	int currentTime = millis();
+	while ((currentTime + time - millis()) >= 0) {
+	}
+}
+
 byte buttonPoll() {
 	byte buttonPress = 0b00000000;
 	byte rowBits = (PINC & ROW_BITS);
 	DDRC = COL_IN_ROW_OUT;
 	PORTC = ROW_LOW_COL_PULLUP;
-	delay(50);
+	delayWithoutDelay(50);
 	byte colBits = (PINC & COL_BITS);
 	buttonPress = rowBits | colBits;
 	DDRC = ROW_IN_COL_OUT;
 	PORTC = COL_LOW_ROW_PULLUP;
-	delay(50);
+	delayWithoutDelay(50);
 	return buttonPress;
 }
 

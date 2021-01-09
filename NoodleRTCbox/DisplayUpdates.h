@@ -4,7 +4,7 @@
 #define _DISPLAYUPDATES_h
 
 #if defined(ARDUINO) && ARDUINO >= 100
-	#include "arduino.h"
+#include "arduino.h"
 #include <Adafruit_SPIDevice.h>
 #include <Adafruit_I2CRegister.h>
 #include <Adafruit_I2CDevice.h>
@@ -18,21 +18,27 @@
 #include <SPI.h>
 #include <Wire.h>
 #else
-	#include "WProgram.h"
+#include "WProgram.h"
 #endif
 
 class DisplayClass {
 public:
 	friend class SubMenu;
-	void mainMenu(void);			//menu that displays all relays
-	void eightRelayNumbers();	//This will print the numbers of the relays on the screen
-	DisplayClass() : OLED(128,64) {}
+	DisplayClass() : OLED(128, 64) {}
+	//menu that displays all relays
+	void mainMenu(void);
+	//This will print the numbers of the relays on the screen
+	void eightRelayNumbers();
+	//From the main menu - Press C (control relays) ->enable/disable or turn on/off
 	void overrideSubMenuDisplay();
+	//When printing status of relays, this prints black rectangles over them to prevent having to refresh the whole screen
 	void clearRelayUpdate();
-	void manualOnOff();
+	//goes in tandem with clearRelayUpdate - prints out status of each relay - Used for enable/disable and turned on/off manually
 	void overrideScreenUpdate(int*);
-	void enableDisableRelayScreen();
-
+	//Prints the screen where pressing 1-8 turns on/off the corresponding relay
+	void manualOnOff();					
+	//Prints the screen where pressing 1-8 enables/disables manual control of the coreesponding relay
+	void enableDisableRelayScreen();	
 private:
 	Adafruit_SSD1306 OLED;
 };

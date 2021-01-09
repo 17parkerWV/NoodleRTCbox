@@ -44,17 +44,18 @@
 class Relay {
 public:
 	friend class SubMenu;
-	const int relayArrayPins[8] = { 42,43,44,45,46,47,48,49 };	//pins of the relays
-	void off(void);									//Turns off specified relay
-	void setTimeOn(int, int, int, int);			//Sets the time it will turn on
-	void setTimeOff(int, int, int, int);		//sets the time it wil turn off
-	void tempOverride(int, int);				//Temporarily override schedule (on or off), delay is in hours and minutes
-	void manualOverride(int state);					//enables/disables the relay indefinitely, overriding the schedule
-	void checkSchedule(void);						//After a relay comes out of being overridden, it needs to check if it is scheduled to be on
-	void flipPowerState(void);							//flip the state of power (on or off) and updating the powerState flag 
-	void flipOverrideState(void);
-	void setPowerState(bool level);				//manually change the state to given level
-	void setOverrideFlag(bool);							//sets the flag to state that is passed as argument
+	//pins of the relays
+	const int relayArrayPins[8] = { 42,43,44,45,46,47,48,49 };	
+	//Turns off specified relay
+	void off(void);								
+	//Sets the time it will turn on
+	void setTimeOn(int, int, int, int);			
+	//sets the time it wil turn off
+	void setTimeOff(int, int, int, int);		
+	//flip the state of power (on or off) and update powered flag
+	void flipPowerState(void);		
+	//flip the state of the overrideFlag
+	void flipOverrideState(void);		
 
 private:
 	//This struct is going to hold the scheduled times, mostly initialized because none of this needs to be initailized differently
@@ -67,11 +68,14 @@ private:
 		int dayOff = 0;
 		int hourOff = 0;
 		int minuteOff = 0;
-		bool overrideFlag = true;		//Whether or not it is being overridden, flag for other parts of the program
-		bool powered = false;			//Whether or not it is on or off (for manual override)
-		int overrideHour = 0;				//the hour the override ends
-		int overrideMinute = 0;				//the minute the override is over
-		int relayPin;						//needs to get set by the setPins() function
+		//Whether or not it is being overridden, flag for other parts of the program
+		bool overrideFlag = true;	
+		//Whether or not it is on or off (for manual override) power state of the relay must be in sync with this flag!!
+		bool powered = false;		
+		int overrideHour = 0;				
+		int overrideMinute = 0;		
+		//number of the physical pin the corresponding relay is connected to
+		int relayPin;						
 	} schedules;
 };
 #endif 
