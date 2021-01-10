@@ -51,8 +51,6 @@ void DisplayClass::enableDisableScheduleScreen() {
 	OLED.display();
 }
 
-
-
 void DisplayClass::clearCurrentTime() {
 	OLED.fillRect(0, 0, 79, 16, BLACK);
 	OLED.display();
