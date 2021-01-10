@@ -16,10 +16,13 @@ void delayWithoutDelay(int);	//This is just to get rid of delay() which uses int
 
 class SubMenu: public Relay {
 public:
+	//INITIALIZING
 	//begin() the display and initialize font and text color
 	bool initializeDisplay();	
 	//assign the relays their corresponding pin INPUT
 	void initializePins();		
+
+	//DISPLAYING
 	//displays the selections on the main menu
 	void displayMainMenu();		
 	//displays the relay numbers - 1 through 4 on the left, 5 through 8 on the right
@@ -34,19 +37,25 @@ public:
 	void displayManualOverrideSubMenuDisplay();	
 	//prints the screen header where pressing 1-8 enables/disables manual control or the relay's power status
 	void displayEnableDisableRelayScreen(); 
-	//the submenu that waits for button input and changes overrideFlag if conditions are met (this is a while(1) loop)
-	void enableDisableRelaySubMenu();		
+	//prints a black bar over the time to avoid having to clear the display
+	void clearCurrentTime();
+	//displays the current time
+	void displayCurrentTime(int, int);
+	//displays the schedules sub menu and the options
+	void displaySchedulesSubMenu();
+
+	//RELAY OBJECTS
 	//goes through the 8 Relay powerArray[8] objects and makes each one call the member function off()
 	void allOff();							
 	//turns off the powerArray[] object that calls it
 	void off();								
+	
+	//SUBMENUS
+	//the submenu that waits for button input and changes overrideFlag if conditions are met (this is a while(1) loop)
+	void enableDisableRelaySubMenu();
 	//waits for button input and turns the relays on/off if conditions are met (this is a while(1) loop)
 	void manualOnOffSubMenu();			
-
-	//For making a black rectangle so the entire screen does not have to be updated
-	void clearCurrentTime();
-	void displayCurrentTime(int, int);
-	
+		
 private:
 	Relay powerArray[8];
 	DisplayClass subMenuDisplayObject;

@@ -18,15 +18,34 @@ void DisplayClass::overrideSubMenuDisplay() {
 
 void DisplayClass::currentTime(int hour, int min) {
 	OLED.setTextSize(2);
-	OLED.setCursor(20, 0);
+	OLED.setCursor(0, 0);
 	OLED.print(hour);
 	OLED.print(":");
+	if (min < 10)
+		OLED.print(0);
 	OLED.print(min);
 	OLED.display();
 }
 
+void DisplayClass::schedulesSubMenu() {
+	OLED.clearDisplay();
+	OLED.display();
+	OLED.setTextSize(1);
+	OLED.setCursor(80, 0);
+	OLED.print(F("# - back"));
+	OLED.setCursor(10, 16);
+	OLED.println(F("A: TEST 1"));
+	OLED.setCursor(10, 28);
+	OLED.println(F("B: TEST 2"));
+	OLED.setCursor(10, 40);
+	OLED.println(F("C: TEST 3"));
+	OLED.setCursor(10, 52);
+	OLED.println(F("D: TEST 4"));
+	OLED.display();
+}
+
 void DisplayClass::clearCurrentTime() {
-	OLED.fillRect(15, 0, 100, 16, BLACK);
+	OLED.fillRect(0, 0, 79, 16, BLACK);
 	OLED.display();
 }
 

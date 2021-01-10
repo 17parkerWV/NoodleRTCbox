@@ -44,21 +44,21 @@
 class Relay {
 public:
 	friend class SubMenu;
-	//pins of the relays
+		//pins of the relays
 	const int relayArrayPins[8] = { 42,43,44,45,46,47,48,49 };	
-	//Turns off specified relay
+		//Turns off specified relay
 	void off(void);								
-	//Sets the time it will turn on
+		//Sets the time it will turn on
 	void setTimeOn(int, int, int, int);			
-	//sets the time it wil turn off
+		//sets the time it wil turn off
 	void setTimeOff(int, int, int, int);		
-	//flip the state of power (on or off) and update powered flag
+		//flip the state of power (on or off) and update powered flag
 	void flipPowerState(void);		
-	//flip the state of the overrideFlag
+		//flip the state of the overrideFlag
 	void flipOverrideState(void);		
 
 private:
-	//This struct is going to hold the scheduled times, mostly initialized because none of this needs to be initailized differently
+		//This struct is going to hold the scheduled times, mostly initialized because none of this needs to be initailized differently
 	struct schedules {
 		int monthOn = 0;
 		int dayOn = 0;
@@ -68,16 +68,16 @@ private:
 		int dayOff = 0;
 		int hourOff = 0;
 		int minuteOff = 0;
-		//Whether or not it is being overridden, flag for other parts of the program
+			//Whether or not it is being overridden, flag for other parts of the program
 		bool overrideFlag = true;	
-		//Whether or not it is on or off (for manual override) power state of the relay must be in sync with this flag!!
+			//Whether or not it is on or off (for manual override) power state of the relay must be in sync with this flag!!
 		bool powered = false;		
-		//Override flag and powered are more or less local to the override menu, so this is the flag that will that menu to the schedule menus without mixing too much
-		//Specifically, if the relay is overriden, it is tripped and can only be reset by setting a schedule again
+			//Override flag and powered are more or less local to the override menu, so this is the flag that will that menu to the schedule menus without mixing too much
+			//Specifically, if the relay is overriden, it is tripped and can only be reset by setting a schedule again
 		bool scheduleSetFlag = false;
 		int overrideHour = 0;				
 		int overrideMinute = 0;		
-		//number of the physical pin the corresponding relay is connected to
+			//number of the physical pin the corresponding relay is connected to
 		int relayPin;						
 	} schedules;
 };

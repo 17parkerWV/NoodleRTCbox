@@ -1,9 +1,9 @@
 #include "SubMenus.h"
 
 void delayWithoutDelay(int time) {
-	int currentTime = millis();
+	unsigned long delayTime = millis();
 	Serial.println("made it to the loop");
-	while ((currentTime + time - millis()) >= 0) {
+	while ((millis()-time)<delayTime) {
 	}
 }
 
@@ -12,15 +12,17 @@ byte buttonPoll() {
 	byte rowBits = (PINC & ROW_BITS);
 	DDRC = COL_IN_ROW_OUT;
 	PORTC = ROW_LOW_COL_PULLUP;
-	Serial.println("delay1");
 	delayWithoutDelay(50);				//GETS STUCK IN LOOP HERE
 	byte colBits = (PINC & COL_BITS);
 	buttonPress = rowBits | colBits;
 	DDRC = ROW_IN_COL_OUT;
 	PORTC = COL_LOW_ROW_PULLUP;
-	Serial.println("delay2");
 	delayWithoutDelay(50);
 	return buttonPress;
+}
+
+void SubMenu::displaySchedulesSubMenu() {
+	subMenuDisplayObject.schedulesSubMenu();
 }
 
 bool SubMenu::initializeDisplay() {
@@ -48,7 +50,7 @@ void SubMenu::off() {
 }
 
 void SubMenu::clearCurrentTime() {
-
+	subMenuDisplayObject.clearCurrentTime();
 }
 
 void SubMenu::displayCurrentTime(int hour, int min) {

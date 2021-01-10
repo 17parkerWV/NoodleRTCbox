@@ -1,3 +1,9 @@
+/*
+delayWithoutDelay - has been caught in loop because the argument is always true?
+millis() - This thing is giving me headaches but I don't know if something is wrong with it
+*/
+
+
 #include "RelayObjects.h"
 #include "SubMenus.h"
 #include "DisplayUpdates.h"
@@ -71,6 +77,7 @@ void loop() {
 	if ((buttonData & COL_BITS) == (COL_4)) {
 		if ((buttonData & ROW_BITS) == (ROW_1)) {					//"A" on the num pad
 			//This is the adjust schedule menu
+			subMenuObj.displaySchedulesSubMenu();
 			schedulesSubMenu();
 			subMenuObj.displayMainMenu();
 		}
@@ -90,7 +97,7 @@ void loop() {
 		}
 		delayWithoutDelay(100);
 	}
-	delayWithoutDelay(175);
+	delayWithoutDelay(80);
 }
 
 
@@ -116,10 +123,11 @@ void manualOverrideSubMenu() {
 
 void schedulesSubMenu() {
 	updateCurrentTime();
+	int currentMin = clockSecondObj.minute();
+	unsigned long currentMillis = millis();
 	while (1) {
-		unsigned int currentMillis = millis();
-		int currentMin = clockSecondObj.minute();
-		while (currentMillis + 10000 >= millis()) {
+		currentMillis = millis();
+		while ((millis()-currentMillis)<=5000L) {
 			byte buttonPress = buttonPoll();
 			if ((buttonPress & ROW_BITS) == ROW_1) {
 				if ((buttonPress & COL_BITS) == COL_1) {		//Row 1 Col 1 ->button 1
@@ -138,12 +146,14 @@ void schedulesSubMenu() {
 				}
 			}
 			if (((buttonPress & ROW_BITS) == ROW_4) && ((buttonPress & COL_BITS) == COL_3)) {	//Row 4 Col 3 -> # sign to exit
-				break;
+				return;
 			}
 		}
+		updateClockObj();
 		if (currentMin != clockSecondObj.minute()) {
 			subMenuObj.clearCurrentTime();
 			updateCurrentTime();
+			currentMin = clockSecondObj.minute();
 		}
 	}
 }
@@ -170,12 +180,12 @@ void updateClockObj() {
 
 void updateCurrentTime() {
 	updateClockObj();
-	subMenuObj.displayCurrentTime(clockSecondObj.hour(),clockSecondObj.minute());
+	subMenuObj.displayCurrentTime(clockSecondObj.hour(), clockSecondObj.minute());
 }
 
 void errorQuit(int code) {
 	switch (code) {
-	case 1:	
+	case 1:
 		Serial.println(F("Clock failed to begin, contact support"));
 		break;
 	case 2:
