@@ -54,8 +54,10 @@ public:
 	void setTimeOff(int, int, int, int);		
 		//flip the state of power (on or off) and update powered flag
 	void flipPowerState(void);		
-		//flip the state of the overrideFlag
+		//flip the state of the overrideFlag. schedule set flag must be FALSE
 	void flipOverrideState(void);		
+		//flip the state of the scheduleSetFlag. sets override flag FALSE. powered must be FALSE
+	void flipScheduleSetFlag();
 
 private:
 		//This struct is going to hold the scheduled times, mostly initialized because none of this needs to be initailized differently
@@ -72,8 +74,11 @@ private:
 		bool overrideFlag = true;	
 			//Whether or not it is on or off (for manual override) power state of the relay must be in sync with this flag!!
 		bool powered = false;		
-			//Override flag and powered are more or less local to the override menu, so this is the flag that will that menu to the schedule menus without mixing too much
+			//Override flag and powered are more or less local to the override menu, this flag will communicate if a schedule is set
 			//Specifically, if the relay is overriden, it is tripped and can only be reset by setting a schedule again
+			//Rule 1: If the schedule flag is set, it cannot be manually controlled
+			//Rule 2: To set the flag, a schedule must be set
+			//Rule 3: The schedule flag can only be cleared in the schedules menu
 		bool scheduleSetFlag = false;
 		int overrideHour = 0;				
 		int overrideMinute = 0;		

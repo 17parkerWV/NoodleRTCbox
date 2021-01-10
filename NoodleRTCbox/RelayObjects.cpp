@@ -33,3 +33,8 @@ void Relay::off(void) {
 	schedules.powered = false;					//The one I want to use for changing settings but probably ditch the other one because it's annoying
 	schedules.scheduleSetFlag = false;
 }
+
+void Relay::flipScheduleSetFlag() {
+	schedules.overrideFlag = false;
+	schedules.scheduleSetFlag = (!schedules.scheduleSetFlag);
+}

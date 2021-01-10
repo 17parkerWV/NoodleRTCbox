@@ -1,8 +1,9 @@
 /*
 delayWithoutDelay - has been caught in loop because the argument is always true?
 millis() - This thing is giving me headaches but I don't know if something is wrong with it
-*/
 
+Use my spare arduino mega to test hardware interrupts before getting close to this one
+*/
 
 #include "RelayObjects.h"
 #include "SubMenus.h"
@@ -42,14 +43,24 @@ RTC_DS3231 clockObj;
 DateTime clockSecondObj;
 SubMenu subMenuObj;
 
-void enableDisableRelay();		//allows manual control of relay
-void manualOnOff();				//menu to enable/disable a plug
-void updateClockObj();
+
 void errorQuit(int code);	//Print error code
 void printTime(void);		//print current date/time
-void manualOverrideSubMenu();		//This brings you to the menu where you can override or not
+
+	//allows manual control of relay (not to be confused with manualOnOff, which actually turns them on/off)
+void enableDisableRelay();	
+	//menu to manually turn on/off a relay
+void manualOnOff();				
+	//sets the clock object equal to the other one
+void updateClockObj();
+	//This brings you to the menu where you can override or not
+void manualOverrideSubMenu();		
+	//From the main menu - press A to get to the schedules menu
 void schedulesSubMenu();
+	//Prints the updated time at the top of the display
 void updateCurrentTime();
+	//Displays the title info for the enable/disable schedule submenu
+void enableDisableScheduleSubMenu();
 
 void setup() {
 	Serial.begin(115200);
@@ -77,7 +88,7 @@ void loop() {
 	if ((buttonData & COL_BITS) == (COL_4)) {
 		if ((buttonData & ROW_BITS) == (ROW_1)) {					//"A" on the num pad
 			//This is the adjust schedule menu
-			subMenuObj.displaySchedulesSubMenu();
+			subMenuObj.displaySchedulesSubMenuDisplay();
 			schedulesSubMenu();
 			subMenuObj.displayMainMenu();
 		}
@@ -121,6 +132,22 @@ void manualOverrideSubMenu() {
 	}
 }
 
+void enableDisableRelay() {
+	subMenuObj.displayEightRelayNumbers();
+	subMenuObj.displayEnableDisableRelayScreen();
+	subMenuObj.displayOverrideScreenStatus();
+	subMenuObj.enableDisableRelaySubMenu();
+	subMenuObj.displayManualOverrideSubMenuDisplay();
+}
+
+void manualOnOff() {						
+	subMenuObj.displayEightRelayNumbers();
+	subMenuObj.displayManualOnOffScreen();
+	subMenuObj.displayOnOffScreenStatus();
+	subMenuObj.manualOnOffSubMenu();
+	subMenuObj.displayManualOverrideSubMenuDisplay();
+}
+
 void schedulesSubMenu() {
 	updateCurrentTime();
 	int currentMin = clockSecondObj.minute();
@@ -136,8 +163,8 @@ void schedulesSubMenu() {
 				if ((buttonPress & COL_BITS) == COL_2) {		//Row 1 Col 2 ->button 2
 
 				}
-				if ((buttonPress & COL_BITS) == COL_3) {		//Row 1 Col 3 ->button 3
-
+				if ((buttonPress & COL_BITS) == COL_3) {		//Row 1 Col 3 ->button 3 //C: Enable/disable schedules
+					enableDisableScheduleSubMenu();
 				}
 			}
 			if ((buttonPress & ROW_BITS) == ROW_2) {
@@ -158,20 +185,13 @@ void schedulesSubMenu() {
 	}
 }
 
-void enableDisableRelay() {
+void enableDisableScheduleSubMenu() {
 	subMenuObj.displayEightRelayNumbers();
-	subMenuObj.displayEnableDisableRelayScreen();
-	subMenuObj.displayOverrideScreenStatus();
-	subMenuObj.enableDisableRelaySubMenu();
-	subMenuObj.displayManualOverrideSubMenuDisplay();
-}
-
-void manualOnOff() {						//DOES NOT CHECK TIME IN THIS LOOP///
-	subMenuObj.displayEightRelayNumbers();
-	subMenuObj.displayManualOnOffScreen();
-	subMenuObj.displayOnOffScreenStatus();
-	subMenuObj.manualOnOffSubMenu();
-	subMenuObj.displayManualOverrideSubMenuDisplay();
+	subMenuObj.displayEnableDisableScheduleScreen(); //function to display the correct header info for that screen
+	subMenuObj.displayScheduleSetFlagStatus(); //function to print the status of the schedules
+	subMenuObj.enableDisableSchedulesSubMenu();//function to go into the sub menu - the while(1) loop
+	subMenuObj.displaySchedulesSubMenuDisplay(); //The function that returns us back to the menu
+	updateCurrentTime();		//Updates the clock object and prints it, otherwise the time will be missin upon return
 }
 
 void updateClockObj() {
