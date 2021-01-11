@@ -15,17 +15,19 @@ void Relay::setTimeOff(int mon, int day, int hr, int min) {
 	schedules.minuteOff = min;
 }
 
+//scheduleSetFlag should ALWAYS BE FALSE when the overrideFlag is TRUE, so this does not check scheduleSetFlag
+//As a precaution, this is only meant to be called
+//powered CAN ONLY BE CHANGED IF THE OVERRIDE FLAG IS TRUE (which should only be true if scheduleSetFlag is FALSE)
 void Relay::flipPowerState(void) {
 	bool power;
-	schedules.scheduleSetFlag = false;
 	schedules.powered = (!schedules.powered);		//Flip the state of the flag
 	power = !schedules.powered;						//flip it back because the relays are active LOW
 	digitalWrite(schedules.relayPin, power);	//Write power state to the pin, should mae sure this is bullet proof
 }
 
+//schedules.scheduleSetFlag MUST BE FALSE GOING INTO THIS TO PREVENT SOME OBSCURE BUG FROM GIBING ME YEARS OF PAIN
 void Relay::flipOverrideState(void) {
 	schedules.overrideFlag = (!schedules.overrideFlag);
-	schedules.scheduleSetFlag = false;
 }
 
 void Relay::off(void) {
@@ -34,6 +36,9 @@ void Relay::off(void) {
 	schedules.scheduleSetFlag = false;
 }
 
+//schedules.powered MUST BE FALSE GOING INTO THIS, TO PREVENT COLLISION BETWEEN SCHEDULED POWER and this one
+//This sets overrideFlag to FALSE and can only set it to FALSE
+//Can only be called if powered is FALSE, at that point this can override the overrideFlag (irony?) to prevent the schedule from being overwritten
 void Relay::flipScheduleSetFlag() {
 	schedules.overrideFlag = false;
 	schedules.scheduleSetFlag = (!schedules.scheduleSetFlag);
