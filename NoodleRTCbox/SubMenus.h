@@ -79,10 +79,11 @@ public:
 	int inputTime();
 	int durationInput();
 
+	//INPUT VERIFICATION
 	//For making sure the inputs are legal
 	int verifyHour(int);
 	int verifyMinute(int);
-
+	int verifyDuration(int);
 
 private:
 	Relay powerArray[8];

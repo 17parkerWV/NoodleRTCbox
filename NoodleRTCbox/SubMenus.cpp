@@ -479,6 +479,10 @@ int SubMenu::verifyMinute(int min) {
 }
 
 int SubMenu::durationInput() {
+	//menu to enter duration
+}
+
+int SubMenu::verifyDuration(int) {
 
 }
 
