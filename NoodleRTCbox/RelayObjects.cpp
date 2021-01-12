@@ -49,3 +49,7 @@ void Relay::flipScheduleSetFlag() {
 void Relay::clearTempOverrideFlag() {
 	schedules.tempOverrideFlag = false;
 }
+
+void Relay::setTempOverrideFlag() {
+	schedules.tempOverrideFlag = true;
+}

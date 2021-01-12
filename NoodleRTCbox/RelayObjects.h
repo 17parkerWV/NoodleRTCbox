@@ -61,6 +61,7 @@ public:
 
 	//TEMPORARY OVERRIDE FUNCTIONS
 	void clearTempOverrideFlag();
+	void setTempOverrideFlag();
 
 private:
 		//This struct is going to hold the scheduled times, mostly initialized because none of this needs to be initailized differently
@@ -88,6 +89,8 @@ private:
 		int tempOverrideMinute = 0;		
 			//Whether there is a temporary override in place
 		bool tempOverrideFlag = false;
+			//how long the temp override should last
+		int tempOverrideDuration = 0;
 			//Whether the temporary override is ON (1) or OFF (0)
 		byte tempOverrideState = 0b00000000;
 			//number of the physical pin the corresponding relay is connected to

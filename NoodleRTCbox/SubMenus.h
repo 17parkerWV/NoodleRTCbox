@@ -13,6 +13,7 @@
 
 byte buttonPoll(void);		//this will get byte data from the number pad to reduce duplicated code
 void delayWithoutDelay(int);	//This is just to get rid of delay() which uses interrupts
+void waitForAnyLetterPress();
 
 class SubMenu : public Relay {
 public:
@@ -70,20 +71,27 @@ public:
 
 	//TEMPORARY OVERRIDE FUNCTIONS
 	void displayTemporaryOverrideDisplay();
-	void displayTemporaryOverrideStatus();
+	void displayTempOverrideSubMenu();
+	void displayTempOverrideStatus();
+	void displayTempOverrideStatusDisplay();
+	void tempOverrideStatusWhileLoop();
 	//This is the first while(1) menu, waiting for a relay to be selected (or a cancel)
 	void chooseRelay();
 	//this is in case you want to clear the tempoverrideflag
 	void confirmClear(Relay*);
 	//Prompt user for starting hour, might be able to overload for use with the schedules setting menu
 	int inputTime();
-	int durationInput();
+	int inputDuration();
+	byte inputPowerState();
+	void promptTempOverrideTime(int);
+
 
 	//INPUT VERIFICATION
 	//For making sure the inputs are legal
 	int verifyHour(int);
 	int verifyMinute(int);
 	int verifyDuration(int);
+
 
 private:
 	Relay powerArray[8];

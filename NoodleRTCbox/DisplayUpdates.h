@@ -35,17 +35,14 @@ public:
 	void clearRelayUpdate();
 	//In case they input a bogus time
 	void invalidTime(String);
-	//display for the input starting hour screen
-	void startingHour();
-	//display for the input starting minute screen
-	void startingMinute();
-
 
 	//SUBMENU DISPLAY WITH OPTIONS
 	//From the main menu - Press C (control relays) ->enable/disable or turn on/off
 	void overrideSubMenuDisplay();
 	//From the main menu - Press A (schedules sub menu)
 	void schedulesSubMenu();
+	//Temporary override sub menu
+	void tempOverrideSubMenu();
 
 	//SUBMENUS THAT DISPLAY THE 8 RELAYS
 	//Prints the screen where pressing 1-8 turns on/off the corresponding relay
@@ -58,9 +55,15 @@ public:
 	//TEMPORARY OVERRIDE SUB MENUS (they get their own because it's going to be nested probably
 	void temporaryOverrideDisplay();
 	void enterStartingHour();
-	void enterStartigMinute();
+	void enterStartingMinute();
 	void enterDuration();
 	void enterPowerState();
+	void tempOverrideStatus();
+	void displaySingleObjectTempOverrideStatus(int, int, byte);
+
+	//This is to print the time as you type it, just kinda nice looking
+	void printTime(int, int);
+	void printTime(int);
 
 	//CLOCK DISPLAYS
 	//takes hour and min as arguments and displays them at the top of the screen
@@ -68,7 +71,7 @@ public:
 	//draws a black rectangle over the time to avoid clearing the whole screen
 	void clearCurrentTime();
 	//When you select a relay that already has tempOverrideFlag = true
-	void confirmClearDisplay();
+	void confirmClearTempOverride();
 
 
 private:

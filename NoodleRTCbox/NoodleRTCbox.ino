@@ -49,33 +49,35 @@ volatile byte counter = 0b00000000;
 volatile byte state = 0b00000001;
 
 ISR(INT4_vect) {
-	counter++;
-	if (counter >= 4) {
+//	counter++;
 		digitalWrite(13, state);
 		state ^= (0b00000001);
-		counter = 0;
-	}
+//		counter = 0;
 }
 
 void errorQuit(int code);	//Print error code
 void printTime(void);		//print current date/time
 
 	//allows manual control of relay (not to be confused with manualOnOff, which actually turns them on/off)
-void enableDisableRelay();	
-	//menu to manually turn on/off a relay
-void manualOnOff();				
-	//sets the clock object equal to the other one
+void enableDisableRelay();
+//menu to manually turn on/off a relay
+void manualOnOff();
+//sets the clock object equal to the other one
 void updateClockObj();
-	//This brings you to the menu where you can override or not
-void manualOverrideSubMenu();		
-	//From the main menu - press A to get to the schedules menu
+//This brings you to the menu where you can override or not
+void manualOverrideSubMenu();
+//From the main menu - press A to get to the schedules menu
 void schedulesSubMenu();
-	//Prints the updated time at the top of the display
+//Prints the updated time at the top of the display
 void updateCurrentTime();
-	//Displays the title info for the enable/disable schedule submenu
+//Displays the title info for the enable/disable schedule submenu
 void enableDisableScheduleSubMenu();
-	//Displays and starts temporary override menu option
+//Shows options in the temporaryOverrideSubMenu
+void temporaryOverrideSubMenu();
+//Displays and starts temporary override menu option
 void temporaryOverride();
+//Show the time and duration of the current overrides
+void temporaryOverrideStatus();
 
 void setup() {
 	Serial.begin(115200);
@@ -122,7 +124,8 @@ void loop() {
 		}
 		if ((buttonData & ROW_BITS) == (ROW_2)) {					//"B" on the num pad
 		   //This is the temporary override menu
-			temporaryOverride();
+			subMenuObj.displayTempOverrideSubMenu();
+			temporaryOverrideSubMenu();
 			subMenuObj.displayMainMenu();
 		}
 		if ((buttonData & ROW_BITS) == (ROW_3)) {					//"C" on the num pad
@@ -140,23 +143,34 @@ void loop() {
 	delayWithoutDelay(80);
 }
 
-
-
 void manualOverrideSubMenu() {
 	while (1) {
 		byte buttonPress = buttonPoll();
-		if ((buttonPress & COL_BITS) == COL_4) {
-			if ((buttonPress & ROW_BITS) == ROW_1) {		//Button A goes to enable disable
-				enableDisableRelay();
-			}
-			if ((buttonPress & ROW_BITS) == ROW_2) {		//Button B goes to manual ON/OFF menu
-				manualOnOff();
-			}
+		if (buttonPress == NUM_PAD_1) {
+			enableDisableRelay();
 		}
-		if ((buttonPress & COL_BITS) == COL_3) {
-			if ((buttonPress & ROW_BITS) == ROW_4) {	//# sign to go back
-				break;
-			}
+		if (buttonPress == NUM_PAD_2) {
+			manualOnOff();
+		}
+		if (buttonPress == NUM_PAD_SHARP) {
+			return;
+
+		}
+	}
+	return;
+}
+
+void temporaryOverrideSubMenu() {
+	while (1) {
+		byte buttonPress = buttonPoll();
+		if (buttonPress == NUM_PAD_1) { 	//Button 1 goes to set/clear
+			temporaryOverride();
+		}
+		if (buttonPress == NUM_PAD_2) {		//Button 2 goes to show current status
+			temporaryOverrideStatus();
+		}
+		if (buttonPress == NUM_PAD_SHARP) {	//# sign to go back
+			break;
 		}
 	}
 }
@@ -169,7 +183,7 @@ void enableDisableRelay() {
 	subMenuObj.displayManualOverrideSubMenuDisplay();
 }
 
-void manualOnOff() {						
+void manualOnOff() {
 	subMenuObj.displayEightRelayNumbers();
 	subMenuObj.displayManualOnOffScreen();
 	subMenuObj.displayOnOffScreenStatus();
@@ -179,11 +193,18 @@ void manualOnOff() {
 
 void temporaryOverride() {
 	subMenuObj.displayEightRelayNumbers();
-	subMenuObj.displayTemporaryOverrideDisplay();		//Function to display the header info
-	subMenuObj.displayTemporaryOverrideStatus();		//function to display status of temporary override flags
+	subMenuObj.displayTemporaryOverrideDisplay();
+	subMenuObj.displayTempOverrideStatus();
 	subMenuObj.chooseRelay();
-	//function to go into submenu while(1) loop
-	//Don't think I need a display function here as long as things return correctly
+	subMenuObj.displayTempOverrideSubMenu();
+}
+
+void temporaryOverrideStatus() {
+	subMenuObj.displayEightRelayNumbers();
+	subMenuObj.displayTempOverrideStatusDisplay();
+	subMenuObj.displayTempOverrideStatus();
+	subMenuObj.tempOverrideStatusWhileLoop();
+	subMenuObj.displayTempOverrideSubMenu();
 }
 
 void schedulesSubMenu() {
@@ -192,7 +213,7 @@ void schedulesSubMenu() {
 	unsigned long currentMillis = millis();
 	while (1) {
 		currentMillis = millis();
-		while ((millis()-currentMillis)<=5000L) {
+		while ((millis() - currentMillis) <= 5000L) {
 			byte buttonPress = buttonPoll();
 			if ((buttonPress & ROW_BITS) == ROW_1) {
 				if ((buttonPress & COL_BITS) == COL_1) {		//Row 1 Col 1 ->button 1
