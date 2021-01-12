@@ -123,3 +123,68 @@ void DisplayClass::enableDisableRelayScreen() {
 	OLED.println(F("press * to go back"));
 	OLED.display();
 }
+
+///THESE ARE FOR COLLECTING USER INPUTS///
+void DisplayClass::startingHour() {
+
+}
+
+void DisplayClass::startingMinute() {
+
+}
+
+///END COLLECTING USER INPUTS///
+
+
+//TEMPORARY OVERRIDE FUNCTIONS
+void DisplayClass::temporaryOverrideDisplay() {
+	OLED.setTextSize(1);
+	OLED.setCursor(0, 0);
+	OLED.println(F("Select an outlet"));
+	OLED.println(F("# - go back"));
+	OLED.display();
+}
+
+void DisplayClass::confirmClearDisplay() {
+	OLED.clearDisplay();
+	OLED.display();
+	OLED.setCursor(0, 0);
+	OLED.setTextSize(1);
+	OLED.print(F("There is already an override set"));
+	OLED.setCursor(0, 24);
+	OLED.println(F("Would you like to clear it?"));
+	OLED.println(F("Press A to clear"));
+	OLED.print(F("Press B to cancel"));
+	OLED.display();
+}
+
+void DisplayClass::invalidTime(String word) {
+	OLED.clearDisplay();
+	OLED.display();
+	OLED.setCursor(0, 0);
+	OLED.print(F("Invalid "));
+	OLED.print(word);
+	OLED.setCursor(0, 20);
+	OLED.print(F("returning..."));
+	OLED.display();
+	delayWithoutDelay(1500);
+}
+
+void DisplayClass::enterStartingHour() {
+
+}
+
+void DisplayClass::enterStartigMinute() {
+
+}
+
+void DisplayClass::enterDuration() {
+
+}
+
+void DisplayClass::enterPowerState() {
+
+
+}
+
+//END TEMPORARY OVERRIDE MENU

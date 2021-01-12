@@ -43,13 +43,12 @@ public:
 	void displayEnableDisableScheduleScreen();
 
 	//STATUS UPDATES
-	//prints the status of the 8 relay's overrideFlag variable. works in tandem with displayEightRelayNumbers
+	//prints the status of the 8 relay's manualOverrideFlag variable. works in tandem with displayEightRelayNumbers
 	void displayOverrideScreenStatus();
 	//prints the status of the 8 relay's powered variable. works in tandem with displayEightRelayNumbers
 	void displayOnOffScreenStatus();
 	//prints the status of the scheduleFlag
 	void displayScheduleSetFlagStatus();
-
 
 	//RELAY OBJECTS
 	//goes through the 8 Relay powerArray[8] objects and makes each one call the member function off()
@@ -58,12 +57,32 @@ public:
 	void off();
 
 	//SUBMENUS
-	//the submenu that waits for button input and changes overrideFlag if conditions are met (this is a while(1) loop)
+	//the submenu that waits for button input and changes manualOverrideFlag if conditions are met (this is a while(1) loop)
 	void enableDisableRelaySubMenu();
 	//waits for button input and turns the relays on/off if conditions are met (this is a while(1) loop)
 	void manualOnOffSubMenu();
 	//The submenu that allows/disallows schedules to be set
 	void enableDisableSchedulesSubMenu();
+
+	//SCHEDULE RELATED FUNCTIONS
+	//Triggered by the interrupts, this will run through the objects' schedules and flags to see if something should be on or off
+	void checkSchedule();
+
+	//TEMPORARY OVERRIDE FUNCTIONS
+	void displayTemporaryOverrideDisplay();
+	void displayTemporaryOverrideStatus();
+	//This is the first while(1) menu, waiting for a relay to be selected (or a cancel)
+	void chooseRelay();
+	//this is in case you want to clear the tempoverrideflag
+	void confirmClear(Relay*);
+	//Prompt user for starting hour, might be able to overload for use with the schedules setting menu
+	int inputTime();
+	int durationInput();
+
+	//For making sure the inputs are legal
+	int verifyHour(int);
+	int verifyMinute(int);
+
 
 private:
 	Relay powerArray[8];

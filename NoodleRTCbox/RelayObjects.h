@@ -54,10 +54,13 @@ public:
 	void setTimeOff(int, int, int, int);		
 		//flip the state of power (on or off) and update powered flag
 	void flipPowerState(void);		
-		//flip the state of the overrideFlag. schedule set flag must be FALSE
-	void flipOverrideState(void);		
+		//flip the state of the manualOverrideFlag. schedule set flag must be FALSE
+	void flipManualOverrideState(void);		
 		//flip the state of the scheduleSetFlag. sets override flag FALSE. powered must be FALSE
 	void flipScheduleSetFlag();
+
+	//TEMPORARY OVERRIDE FUNCTIONS
+	void clearTempOverrideFlag();
 
 private:
 		//This struct is going to hold the scheduled times, mostly initialized because none of this needs to be initailized differently
@@ -71,7 +74,7 @@ private:
 		int hourOff = 0;
 		int minuteOff = 0;
 			//Whether or not it is being overridden, flag for other parts of the program
-		bool overrideFlag = true;	
+		bool manualOverrideFlag = true;	
 			//Whether or not it is on or off (for manual override) power state of the relay must be in sync with this flag!!
 		bool powered = false;		
 			//Override flag and powered are more or less local to the override menu, this flag will communicate if a schedule is set
@@ -80,8 +83,13 @@ private:
 			//Rule 2: To set the flag, a schedule must be set
 			//Rule 3: The schedule flag can only be cleared in the schedules menu
 		bool scheduleSetFlag = false;
-		int overrideHour = 0;				
-		int overrideMinute = 0;		
+			//These three store the hour and minute of the start of the temporary override
+		int tempOverrideHour = 0;				
+		int tempOverrideMinute = 0;		
+			//Whether there is a temporary override in place
+		bool tempOverrideFlag = false;
+			//Whether the temporary override is ON (1) or OFF (0)
+		byte tempOverrideState = 0b00000000;
 			//number of the physical pin the corresponding relay is connected to
 		int relayPin;						
 	} schedules;

@@ -15,7 +15,7 @@ void Relay::setTimeOff(int mon, int day, int hr, int min) {
 	schedules.minuteOff = min;
 }
 
-//scheduleSetFlag should ALWAYS BE FALSE when the overrideFlag is TRUE, so this does not check scheduleSetFlag
+//scheduleSetFlag should ALWAYS BE FALSE when the manualOverrideFlag is TRUE, so this does not check scheduleSetFlag
 //As a precaution, this is only meant to be called
 //powered CAN ONLY BE CHANGED IF THE OVERRIDE FLAG IS TRUE (which should only be true if scheduleSetFlag is FALSE)
 void Relay::flipPowerState(void) {
@@ -26,8 +26,8 @@ void Relay::flipPowerState(void) {
 }
 
 //schedules.scheduleSetFlag MUST BE FALSE GOING INTO THIS TO PREVENT SOME OBSCURE BUG FROM GIBING ME YEARS OF PAIN
-void Relay::flipOverrideState(void) {
-	schedules.overrideFlag = (!schedules.overrideFlag);
+void Relay::flipManualOverrideState(void) {
+	schedules.manualOverrideFlag = (!schedules.manualOverrideFlag);
 }
 
 void Relay::off(void) {
@@ -37,9 +37,15 @@ void Relay::off(void) {
 }
 
 //schedules.powered MUST BE FALSE GOING INTO THIS, TO PREVENT COLLISION BETWEEN SCHEDULED POWER and this one
-//This sets overrideFlag to FALSE and can only set it to FALSE
-//Can only be called if powered is FALSE, at that point this can override the overrideFlag (irony?) to prevent the schedule from being overwritten
+//This sets manualOverrideFlag to FALSE and can only set it to FALSE
+//Can only be called if powered is FALSE, at that point this can override the manualOverrideFlag (irony?) to prevent the schedule from being overwritten
 void Relay::flipScheduleSetFlag() {
-	schedules.overrideFlag = false;
+	schedules.manualOverrideFlag = false;
 	schedules.scheduleSetFlag = (!schedules.scheduleSetFlag);
+}
+
+
+//TEMPORARY OVERRIDE FUNCTIONS
+void Relay::clearTempOverrideFlag() {
+	schedules.tempOverrideFlag = false;
 }

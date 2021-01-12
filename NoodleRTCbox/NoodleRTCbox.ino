@@ -43,6 +43,19 @@ RTC_DS3231 clockObj;
 DateTime clockSecondObj;
 SubMenu subMenuObj;
 
+//These are for the interrupt
+#define DIGITAL_PIN_2 (1<<4)	//(OC3B/INT4) Port E bit 4
+volatile byte counter = 0b00000000;
+volatile byte state = 0b00000001;
+
+ISR(INT4_vect) {
+	counter++;
+	if (counter >= 4) {
+		digitalWrite(13, state);
+		state ^= (0b00000001);
+		counter = 0;
+	}
+}
 
 void errorQuit(int code);	//Print error code
 void printTime(void);		//print current date/time
@@ -61,6 +74,8 @@ void schedulesSubMenu();
 void updateCurrentTime();
 	//Displays the title info for the enable/disable schedule submenu
 void enableDisableScheduleSubMenu();
+	//Displays and starts temporary override menu option
+void temporaryOverride();
 
 void setup() {
 	Serial.begin(115200);
@@ -72,6 +87,19 @@ void setup() {
 	if (clockObj.lostPower())
 		errorQuit(2);
 
+	//FOR THE INTERRUPTS
+	pinMode(13, OUTPUT);
+	digitalWrite(13, LOW);
+	clockObj.writeSqwPinMode(DS3231_SquareWave1Hz);	//Enable the 1Hz squarewave clock
+	DDRE = 0b00000000;	//All bit in port E are inputs
+	EIMSK = 0b00000000;	//All interrupts are masked out (recommended in the datasheet)
+	PORTE |= DIGITAL_PIN_2;		//Bit 4 has pullup resistor enabled
+	EICRB = 0b00000010;			//Falling edge interrupt enabled on INT4 (pin 2)
+	EIMSK |= DIGITAL_PIN_2;		//Bit 4 (INT4) interrupt mask bit to 1
+	sei();
+
+
+	digitalWrite(22, INPUT_PULLUP);
 	//Set up the keypad inputs/outputs
 	DDRC = ROW_IN_COL_OUT;
 	PORTC = COL_LOW_ROW_PULLUP;
@@ -94,6 +122,7 @@ void loop() {
 		}
 		if ((buttonData & ROW_BITS) == (ROW_2)) {					//"B" on the num pad
 		   //This is the temporary override menu
+			temporaryOverride();
 			subMenuObj.displayMainMenu();
 		}
 		if ((buttonData & ROW_BITS) == (ROW_3)) {					//"C" on the num pad
@@ -146,6 +175,15 @@ void manualOnOff() {
 	subMenuObj.displayOnOffScreenStatus();
 	subMenuObj.manualOnOffSubMenu();
 	subMenuObj.displayManualOverrideSubMenuDisplay();
+}
+
+void temporaryOverride() {
+	subMenuObj.displayEightRelayNumbers();
+	subMenuObj.displayTemporaryOverrideDisplay();		//Function to display the header info
+	subMenuObj.displayTemporaryOverrideStatus();		//function to display status of temporary override flags
+	subMenuObj.chooseRelay();
+	//function to go into submenu while(1) loop
+	//Don't think I need a display function here as long as things return correctly
 }
 
 void schedulesSubMenu() {

@@ -29,31 +29,47 @@ public:
 	void mainMenu(void);
 
 	//GENERAL/COMMON DISPLAY UPDATES
-		//This will print the numbers of the relays on the screen
+	//This will print the numbers of the relays on the screen
 	void eightRelayNumbers();
-		//When printing status of relays, this prints black rectangles over them to prevent having to refresh the whole screen
+	//When printing status of relays, this prints black rectangles over them to prevent having to refresh the whole screen
 	void clearRelayUpdate();
+	//In case they input a bogus time
+	void invalidTime(String);
+	//display for the input starting hour screen
+	void startingHour();
+	//display for the input starting minute screen
+	void startingMinute();
 
 
 	//SUBMENU DISPLAY WITH OPTIONS
-		//From the main menu - Press C (control relays) ->enable/disable or turn on/off
+	//From the main menu - Press C (control relays) ->enable/disable or turn on/off
 	void overrideSubMenuDisplay();
 	//From the main menu - Press A (schedules sub menu)
 	void schedulesSubMenu();
 
 	//SUBMENUS THAT DISPLAY THE 8 RELAYS
-		//Prints the screen where pressing 1-8 turns on/off the corresponding relay
+	//Prints the screen where pressing 1-8 turns on/off the corresponding relay
 	void manualOnOff();
 	//Prints the screen where pressing 1-8 enables/disables manual control of the coreesponding relay
 	void enableDisableRelayScreen();
 	//Prints the screen where 1-8 enables/disables schedules for that relay
 	void enableDisableScheduleScreen();
 
+	//TEMPORARY OVERRIDE SUB MENUS (they get their own because it's going to be nested probably
+	void temporaryOverrideDisplay();
+	void enterStartingHour();
+	void enterStartigMinute();
+	void enterDuration();
+	void enterPowerState();
+
 	//CLOCK DISPLAYS
-		//takes hour and min as arguments and displays them at the top of the screen
+	//takes hour and min as arguments and displays them at the top of the screen
 	void currentTime(int, int);
 	//draws a black rectangle over the time to avoid clearing the whole screen
 	void clearCurrentTime();
+	//When you select a relay that already has tempOverrideFlag = true
+	void confirmClearDisplay();
+
 
 private:
 	Adafruit_SSD1306 OLED;
