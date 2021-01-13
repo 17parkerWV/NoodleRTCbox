@@ -48,9 +48,13 @@ void Relay::flipScheduleSetFlag() {
 
 //TEMPORARY OVERRIDE FUNCTIONS
 void Relay::clearTempOverrideFlag() {
+	digitalWrite(schedules.relayPin, HIGH);
 	schedules.tempOverrideFlag = false;
 }
 
 void Relay::setTempOverrideFlag() {
+	this->schedules.powered = false;
+	this->schedules.manualOverrideFlag = false;
+	digitalWrite(schedules.relayPin,HIGH);
 	schedules.tempOverrideFlag = true;
 }

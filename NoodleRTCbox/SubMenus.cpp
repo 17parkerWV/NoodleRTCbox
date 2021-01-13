@@ -9,9 +9,8 @@
 ////------GENERAL UTILITY FUNCTIONS------////
 //Starts the display object and checks for successful begin()
 bool SubMenu::initializeDisplay() {
-	if (!subMenuDisplayObject.OLED.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+	if (!subMenuDisplayObject.OLED.begin(SSD1306_SWITCHCAPVCC, 0x3C))
 		return false;
-	}
 	subMenuDisplayObject.OLED.display();
 	subMenuDisplayObject.OLED.clearDisplay();
 	subMenuDisplayObject.OLED.display();
@@ -195,53 +194,46 @@ void SubMenu::enableDisableRelaySubMenu() {
 	while (1) {
 		byte buttonByte = buttonPoll();
 		if ((buttonByte & COL_BITS) == COL_1) {
-			if ((buttonByte & ROW_BITS) == ROW_1) {
-				//Number 1 on the numpad
+			if (buttonByte == NUM_PAD_1) {
 				if (powerArray[0].schedules.powered == false && powerArray[0].schedules.scheduleSetFlag == false && powerArray[0].schedules.tempOverrideFlag == false) {
 					powerArray[0].flipManualOverrideState();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayOverrideScreenStatus();
 				}
 			}
-			if ((buttonByte & ROW_BITS) == ROW_2) {
-				//Number 4 on the numpad
+			if (buttonByte == NUM_PAD_4) {
 				if (powerArray[3].schedules.powered == false && powerArray[3].schedules.scheduleSetFlag == false && powerArray[3].schedules.tempOverrideFlag == false) {
 					powerArray[3].flipManualOverrideState();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayOverrideScreenStatus();
 				}
 			}
-			if ((buttonByte & ROW_BITS) == ROW_3) {
-				//Number 7 on the numpad
+			if (buttonByte == NUM_PAD_7) {
 				if (powerArray[6].schedules.powered == false && powerArray[6].schedules.scheduleSetFlag == false && powerArray[6].schedules.tempOverrideFlag == false) {
 					powerArray[6].flipManualOverrideState();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayOverrideScreenStatus();
 				}
 			}
-			if ((buttonByte & ROW_BITS) == ROW_4) {		//Exit with the * sign
+			if (buttonByte == NUM_PAD_STAR)
 				break;
-			}
 		}
 		if ((buttonByte & COL_BITS) == COL_2) {
-			if ((buttonByte & ROW_BITS) == ROW_1) {
-				//Number 2 on the numpad
+			if (buttonByte == NUM_PAD_2) {
 				if (powerArray[1].schedules.powered == false && powerArray[1].schedules.scheduleSetFlag == false && powerArray[1].schedules.tempOverrideFlag == false) {
 					powerArray[1].flipManualOverrideState();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayOverrideScreenStatus();
 				}
 			}
-			if ((buttonByte & ROW_BITS) == ROW_2) {
-				//Number 5 on the numpad
+			if (buttonByte == NUM_PAD_5) {
 				if (powerArray[4].schedules.powered == false && powerArray[4].schedules.scheduleSetFlag == false && powerArray[4].schedules.tempOverrideFlag == false) {
 					powerArray[4].flipManualOverrideState();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayOverrideScreenStatus();
 				}
 			}
-			if ((buttonByte & ROW_BITS) == ROW_3) {
-				//Number 8 on the numpad
+			if (buttonByte == NUM_PAD_8) {
 				if (powerArray[7].schedules.powered == false && powerArray[7].schedules.scheduleSetFlag == false && powerArray[7].schedules.tempOverrideFlag == false) {
 					powerArray[7].flipManualOverrideState();
 					subMenuDisplayObject.clearRelayUpdate();
@@ -250,16 +242,14 @@ void SubMenu::enableDisableRelaySubMenu() {
 			}
 		}
 		if ((buttonByte & COL_BITS) == COL_3) {
-			if ((buttonByte & ROW_BITS) == ROW_1) {
-				//Number 3 on the numpad
+			if (buttonByte == NUM_PAD_3) {
 				if (powerArray[2].schedules.powered == false && powerArray[2].schedules.scheduleSetFlag == false && powerArray[2].schedules.tempOverrideFlag == false) {
 					powerArray[2].flipManualOverrideState();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayOverrideScreenStatus();
 				}
 			}
-			if ((buttonByte & ROW_BITS) == ROW_2) {
-				//Number 6 on the numpad
+			if (buttonByte == NUM_PAD_6) {
 				if (powerArray[5].schedules.powered == false && powerArray[5].schedules.scheduleSetFlag == false && powerArray[5].schedules.tempOverrideFlag == false) {
 					powerArray[5].flipManualOverrideState();
 					subMenuDisplayObject.clearRelayUpdate();
@@ -274,54 +264,48 @@ void SubMenu::manualOnOffSubMenu() {
 	while (1) {
 		byte buttonByte = buttonPoll();
 		if ((buttonByte & COL_BITS) == COL_1) {
-			if ((buttonByte & ROW_BITS) == ROW_1) {
-				//Number 1 on the numpad
-				if (powerArray[0].schedules.manualOverrideFlag == true && powerArray[0].schedules.tempOverrideFlag == false) {
+			if (buttonByte == NUM_PAD_1) {
+				if (powerArray[0].schedules.manualOverrideFlag == true && powerArray[0].schedules.tempOverrideFlag == false && powerArray[0].schedules.scheduleSetFlag == false) {
 					powerArray[0].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayOnOffScreenStatus();
 				}
 			}
-			if ((buttonByte & ROW_BITS) == ROW_2) {
-				//Number 4 on the numpad
-				if (powerArray[3].schedules.manualOverrideFlag == true && powerArray[3].schedules.tempOverrideFlag == false) {
+			if (buttonByte == NUM_PAD_4) {
+				if (powerArray[3].schedules.manualOverrideFlag == true && powerArray[3].schedules.tempOverrideFlag == false && powerArray[3].schedules.scheduleSetFlag == false) {
 					powerArray[3].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayOnOffScreenStatus();
 				}
 			}
-			if ((buttonByte & ROW_BITS) == ROW_3) {
-				//Number 7 on the numpad
-				if (powerArray[6].schedules.manualOverrideFlag == true && powerArray[6].schedules.tempOverrideFlag == false) {
+			if (buttonByte == NUM_PAD_7) {
+				if (powerArray[6].schedules.manualOverrideFlag == true && powerArray[6].schedules.tempOverrideFlag == false && powerArray[6].schedules.scheduleSetFlag == false) {
 					powerArray[6].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayOnOffScreenStatus();
 				}
 			}
-			if ((buttonByte & ROW_BITS) == ROW_4) {
+			if (buttonByte == NUM_PAD_STAR)
 				break;
-			}
 		}
 		if ((buttonByte & COL_BITS) == COL_2) {
-			if ((buttonByte & ROW_BITS) == ROW_1) {
-				//Number 2 on the numpad
-				if (powerArray[1].schedules.manualOverrideFlag == true && powerArray[1].schedules.tempOverrideFlag == false) {
+			if (buttonByte == NUM_PAD_2) {
+				if (powerArray[1].schedules.manualOverrideFlag == true && powerArray[1].schedules.tempOverrideFlag == false && powerArray[1].schedules.scheduleSetFlag == false) {
 					powerArray[1].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayOnOffScreenStatus();
 				}
 			}
-			if ((buttonByte & ROW_BITS) == ROW_2) {
+			if (buttonByte == NUM_PAD_5) {
 				//Number 5 on the numpad
-				if (powerArray[4].schedules.manualOverrideFlag == true && powerArray[4].schedules.tempOverrideFlag == false) {
+				if (powerArray[4].schedules.manualOverrideFlag == true && powerArray[4].schedules.tempOverrideFlag == false && powerArray[4].schedules.scheduleSetFlag == false) {
 					powerArray[4].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayOnOffScreenStatus();
 				}
 			}
-			if ((buttonByte & ROW_BITS) == ROW_3) {
-				//Number 8 on the numpad
-				if (powerArray[7].schedules.manualOverrideFlag == true && powerArray[7].schedules.tempOverrideFlag == false) {
+			if (buttonByte == NUM_PAD_8) {
+				if (powerArray[7].schedules.manualOverrideFlag == true && powerArray[7].schedules.tempOverrideFlag == false && powerArray[7].schedules.scheduleSetFlag == false) {
 					powerArray[7].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayOnOffScreenStatus();
@@ -329,17 +313,15 @@ void SubMenu::manualOnOffSubMenu() {
 			}
 		}
 		if ((buttonByte & COL_BITS) == COL_3) {
-			if ((buttonByte & ROW_BITS) == ROW_1) {
-				//Number 3 on the numpad
-				if (powerArray[2].schedules.manualOverrideFlag == true && powerArray[2].schedules.tempOverrideFlag == false) {
+			if (buttonByte == NUM_PAD_3) {
+				if (powerArray[2].schedules.manualOverrideFlag == true && powerArray[2].schedules.tempOverrideFlag == false && powerArray[2].schedules.scheduleSetFlag == false) {
 					powerArray[2].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayOnOffScreenStatus();
 				}
 			}
-			if ((buttonByte & ROW_BITS) == ROW_2) {
-				//Number 6 on the numpad
-				if (powerArray[5].schedules.manualOverrideFlag == true && powerArray[5].schedules.tempOverrideFlag == false) {
+			if (buttonByte == NUM_PAD_6) {
+				if (powerArray[5].schedules.manualOverrideFlag == true && powerArray[5].schedules.tempOverrideFlag == false && powerArray[5].schedules.scheduleSetFlag == false) {
 					powerArray[5].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayOnOffScreenStatus();
@@ -353,53 +335,46 @@ void SubMenu::enableDisableSchedulesSubMenu() {
 	while (1) {
 		byte buttonByte = buttonPoll();
 		if ((buttonByte & COL_BITS) == COL_1) {
-			if ((buttonByte & ROW_BITS) == ROW_1) {
-				//Number 1 on the numpad
+			if (buttonByte == NUM_PAD_1) {
 				if (powerArray[0].schedules.powered == false) {
 					powerArray[0].flipScheduleSetFlag();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayScheduleSetFlagStatus();
 				}
 			}
-			if ((buttonByte & ROW_BITS) == ROW_2) {
-				//Number 4 on the numpad
+			if (buttonByte == NUM_PAD_4) {
 				if (powerArray[3].schedules.powered == false) {
 					powerArray[3].flipScheduleSetFlag();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayScheduleSetFlagStatus();
 				}
 			}
-			if ((buttonByte & ROW_BITS) == ROW_3) {
-				//Number 7 on the numpad
+			if (buttonByte == NUM_PAD_7) {
 				if (powerArray[6].schedules.powered == false) {
 					powerArray[6].flipScheduleSetFlag();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayScheduleSetFlagStatus();
 				}
 			}
-			if ((buttonByte & ROW_BITS) == ROW_4) {		//press * to exit
+			if (buttonByte == NUM_PAD_STAR)
 				break;
-			}
 		}
 		if ((buttonByte & COL_BITS) == COL_2) {
-			if ((buttonByte & ROW_BITS) == ROW_1) {
-				//Number 2 on the numpad
+			if (buttonByte == NUM_PAD_2) {
 				if (powerArray[1].schedules.powered == false) {
 					powerArray[1].flipScheduleSetFlag();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayScheduleSetFlagStatus();
 				}
 			}
-			if ((buttonByte & ROW_BITS) == ROW_2) {
-				//Number 5 on the numpad
+			if (buttonByte == NUM_PAD_5) {
 				if (powerArray[4].schedules.powered == false) {
 					powerArray[4].flipScheduleSetFlag();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayScheduleSetFlagStatus();
 				}
 			}
-			if ((buttonByte & ROW_BITS) == ROW_3) {
-				//Number 8 on the numpad
+			if (buttonByte == NUM_PAD_8) {
 				if (powerArray[7].schedules.powered == false) {
 					powerArray[7].flipScheduleSetFlag();
 					subMenuDisplayObject.clearRelayUpdate();
@@ -408,16 +383,14 @@ void SubMenu::enableDisableSchedulesSubMenu() {
 			}
 		}
 		if ((buttonByte & COL_BITS) == COL_3) {
-			if ((buttonByte & ROW_BITS) == ROW_1) {
-				//Number 3 on the numpad
+			if (buttonByte == NUM_PAD_3) {
 				if (powerArray[2].schedules.powered == false) {
 					powerArray[2].flipScheduleSetFlag();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayScheduleSetFlagStatus();
 				}
 			}
-			if ((buttonByte & ROW_BITS) == ROW_2) {
-				//Number 6 on the numpad
+			if (buttonByte == NUM_PAD_6) {
 				if (powerArray[5].schedules.powered == false) {
 					powerArray[5].flipScheduleSetFlag();
 					subMenuDisplayObject.clearRelayUpdate();
@@ -431,28 +404,28 @@ void SubMenu::enableDisableSchedulesSubMenu() {
 void SubMenu::tempOverrideStatusWhileLoop() {
 	while (1) {
 		byte buttonByte = buttonPoll();
-		if ((buttonByte == NUM_PAD_1)) {
+		if (buttonByte == NUM_PAD_1) {
 			if (powerArray[0].schedules.tempOverrideFlag == true) {
 				subMenuDisplayObject.displaySingleObjectTempOverrideStatus((powerArray[0].schedules.tempOverrideHour), (powerArray[0].schedules.tempOverrideMinute), (powerArray[0].schedules.tempOverrideDuration), (powerArray[0].schedules.tempOverrideState));
 				waitForAnyLetterPress();
 				return;
 			}
 		}
-		if ((buttonByte == NUM_PAD_2)) {
+		if (buttonByte == NUM_PAD_2) {
 			if (powerArray[1].schedules.tempOverrideFlag == true) {
 				subMenuDisplayObject.displaySingleObjectTempOverrideStatus((powerArray[1].schedules.tempOverrideHour), (powerArray[1].schedules.tempOverrideMinute), (powerArray[1].schedules.tempOverrideDuration), (powerArray[1].schedules.tempOverrideState));
 				waitForAnyLetterPress();
 				return;
 			}
 		}
-		if ((buttonByte == NUM_PAD_3)) {
+		if (buttonByte == NUM_PAD_3) {
 			if (powerArray[2].schedules.tempOverrideFlag == true) {
 				subMenuDisplayObject.displaySingleObjectTempOverrideStatus((powerArray[2].schedules.tempOverrideHour), (powerArray[2].schedules.tempOverrideMinute), (powerArray[2].schedules.tempOverrideDuration), (powerArray[2].schedules.tempOverrideState));
 				waitForAnyLetterPress();
 				return;
 			}
 		}
-		if ((buttonByte == NUM_PAD_4)) {
+		if (buttonByte == NUM_PAD_4) {
 			if (powerArray[3].schedules.tempOverrideFlag == true) {
 				if (powerArray[3].schedules.tempOverrideFlag == true) {
 					subMenuDisplayObject.displaySingleObjectTempOverrideStatus((powerArray[3].schedules.tempOverrideHour), (powerArray[3].schedules.tempOverrideMinute), (powerArray[3].schedules.tempOverrideDuration), (powerArray[3].schedules.tempOverrideState));
@@ -461,37 +434,36 @@ void SubMenu::tempOverrideStatusWhileLoop() {
 				}
 			}
 		}
-		if ((buttonByte == NUM_PAD_5)) {
+		if (buttonByte == NUM_PAD_5) {
 			if (powerArray[4].schedules.tempOverrideFlag == true) {
 				subMenuDisplayObject.displaySingleObjectTempOverrideStatus((powerArray[4].schedules.tempOverrideHour), (powerArray[4].schedules.tempOverrideMinute), (powerArray[4].schedules.tempOverrideDuration), (powerArray[4].schedules.tempOverrideState));
 				waitForAnyLetterPress();
 				return;
 			}
 		}
-		if ((buttonByte == NUM_PAD_6)) {
+		if (buttonByte == NUM_PAD_6) {
 			if (powerArray[5].schedules.tempOverrideFlag == true) {
 				subMenuDisplayObject.displaySingleObjectTempOverrideStatus((powerArray[5].schedules.tempOverrideHour), (powerArray[5].schedules.tempOverrideMinute), (powerArray[5].schedules.tempOverrideDuration), (powerArray[5].schedules.tempOverrideState));
 				waitForAnyLetterPress();
 				return;
 			}
 		}
-		if ((buttonByte == NUM_PAD_7)) {
+		if (buttonByte == NUM_PAD_7) {
 			if (powerArray[6].schedules.tempOverrideFlag == true) {
 				subMenuDisplayObject.displaySingleObjectTempOverrideStatus((powerArray[6].schedules.tempOverrideHour), (powerArray[6].schedules.tempOverrideMinute), (powerArray[6].schedules.tempOverrideDuration), (powerArray[6].schedules.tempOverrideState));
 				waitForAnyLetterPress();
 				return;
 			}
 		}
-		if ((buttonByte == NUM_PAD_8)) {
+		if (buttonByte == NUM_PAD_8) {
 			if (powerArray[7].schedules.tempOverrideFlag == true) {
 				subMenuDisplayObject.displaySingleObjectTempOverrideStatus((powerArray[7].schedules.tempOverrideHour), (powerArray[7].schedules.tempOverrideMinute), (powerArray[7].schedules.tempOverrideDuration), (powerArray[7].schedules.tempOverrideState));
 				waitForAnyLetterPress();
 				return;
 			}
 		}
-		if (buttonByte == NUM_PAD_STAR) {
+		if (buttonByte == NUM_PAD_STAR)
 			return;
-		}
 	}
 }
 //Main Menu --> B --> 1. Waits for input. Displays status of temporary override flag (SET/OFF). Waits for parameters to new temp override, or clears if an override is active already
@@ -563,9 +535,8 @@ void SubMenu::chooseRelay() {
 			promptTempOverrideTime(7);
 			return;
 		}
-		if (buttonByte == NUM_PAD_STAR) {
+		if (buttonByte == NUM_PAD_STAR)
 			return;
-		}
 	}
 }
 ////------END SUB MENU WHILE LOOPS------////
@@ -577,52 +548,52 @@ int SubMenu::inputTime() {
 	while (NumberOfInputs > 0) {
 		while (1) {
 			byte buttonByte = buttonPoll();
-			if ((buttonByte == NUM_PAD_1)) {
+			if (buttonByte == NUM_PAD_1) {
 				NumberOfInputs--;
 				timeInput += (1 * (pow(10, NumberOfInputs)));
 				break;
 			}
-			if ((buttonByte == NUM_PAD_2)) {
+			if (buttonByte == NUM_PAD_2) {
 				NumberOfInputs--;
 				timeInput += (2 * (pow(10, NumberOfInputs)));
 				break;
 			}
-			if ((buttonByte == NUM_PAD_3)) {
+			if (buttonByte == NUM_PAD_3) {
 				NumberOfInputs--;
 				timeInput += (3 * (pow(10, NumberOfInputs)));
 				break;
 			}
-			if ((buttonByte == NUM_PAD_4)) {
+			if (buttonByte == NUM_PAD_4) {
 				NumberOfInputs--;
 				timeInput += (4 * (pow(10, NumberOfInputs)));
 				break;
 			}
-			if ((buttonByte == NUM_PAD_5)) {
+			if (buttonByte == NUM_PAD_5) {
 				NumberOfInputs--;
 				timeInput += (5 * (pow(10, NumberOfInputs)));
 				break;
 			}
-			if ((buttonByte == NUM_PAD_6)) {
+			if (buttonByte == NUM_PAD_6) {
 				NumberOfInputs--;
 				timeInput += (6 * (pow(10, NumberOfInputs)));
 				break;
 			}
-			if ((buttonByte == NUM_PAD_7)) {
+			if (buttonByte == NUM_PAD_7) {
 				NumberOfInputs--;
 				timeInput += (7 * (pow(10, NumberOfInputs)));
 				break;
 			}
-			if ((buttonByte == NUM_PAD_8)) {
+			if (buttonByte == NUM_PAD_8) {
 				NumberOfInputs--;
 				timeInput += (8 * (pow(10, NumberOfInputs)));
 				break;
 			}
-			if ((buttonByte == NUM_PAD_9)) {
+			if (buttonByte == NUM_PAD_9) {
 				NumberOfInputs--;
 				timeInput += (9 * (pow(10, NumberOfInputs)));
 				break;
 			}
-			if ((buttonByte == NUM_PAD_0)) {
+			if (buttonByte == NUM_PAD_0) {
 				NumberOfInputs--;
 				timeInput += 0;
 				break;
@@ -647,7 +618,7 @@ int SubMenu::inputDuration() {
 	while (1) {
 		while (1) {
 			byte buttonByte = buttonPoll();
-			if ((buttonByte == NUM_PAD_1)) {
+			if (buttonByte == NUM_PAD_1) {
 				if (loopCount == 0) {
 					durationInput = 1;
 					loopCount = 1;
@@ -657,7 +628,7 @@ int SubMenu::inputDuration() {
 				durationInput += 1;
 				break;
 			}
-			if ((buttonByte == NUM_PAD_2)) {
+			if (buttonByte == NUM_PAD_2) {
 				if (loopCount == 0) {
 					durationInput = 2;
 					loopCount = 1;
@@ -667,7 +638,7 @@ int SubMenu::inputDuration() {
 				durationInput += 2;
 				break;
 			}
-			if ((buttonByte == NUM_PAD_3)) {
+			if (buttonByte == NUM_PAD_3) {
 				if (loopCount == 0) {
 					durationInput = 3;
 					loopCount = 1;
@@ -677,7 +648,7 @@ int SubMenu::inputDuration() {
 				durationInput += 3;
 				break;
 			}
-			if ((buttonByte == NUM_PAD_4)) {
+			if (buttonByte == NUM_PAD_4) {
 				if (loopCount == 0) {
 					durationInput = 4;
 					loopCount = 1;
@@ -687,7 +658,7 @@ int SubMenu::inputDuration() {
 				durationInput += 4;
 				break;
 			}
-			if ((buttonByte == NUM_PAD_5)) {
+			if (buttonByte == NUM_PAD_5) {
 				if (loopCount == 0) {
 					durationInput = 5;
 					loopCount = 1;
@@ -697,7 +668,7 @@ int SubMenu::inputDuration() {
 				durationInput += 5;
 				break;
 			}
-			if ((buttonByte == NUM_PAD_6)) {
+			if (buttonByte == NUM_PAD_6) {
 				if (loopCount == 0) {
 					durationInput = 6;
 					loopCount = 1;
@@ -707,7 +678,7 @@ int SubMenu::inputDuration() {
 				durationInput += 6;
 				break;
 			}
-			if ((buttonByte == NUM_PAD_7)) {
+			if (buttonByte == NUM_PAD_7) {
 				if (loopCount == 0) {
 					durationInput = 7;
 					loopCount = 1;
@@ -717,7 +688,7 @@ int SubMenu::inputDuration() {
 				durationInput += 7;
 				break;
 			}
-			if ((buttonByte == NUM_PAD_8)) {
+			if (buttonByte == NUM_PAD_8) {
 				if (loopCount == 0) {
 					durationInput = 8;
 					loopCount = 1;
@@ -727,7 +698,7 @@ int SubMenu::inputDuration() {
 				durationInput += 8;
 				break;
 			}
-			if ((buttonByte == NUM_PAD_9)) {
+			if (buttonByte == NUM_PAD_9) {
 				if (loopCount == 0) {
 					durationInput = 9;
 					loopCount = 1;
@@ -737,7 +708,7 @@ int SubMenu::inputDuration() {
 				durationInput += 9;
 				break;
 			}
-			if ((buttonByte == NUM_PAD_0)) {
+			if (buttonByte == NUM_PAD_0) {
 				if (loopCount == 0) {
 					continue;
 				}
@@ -745,7 +716,7 @@ int SubMenu::inputDuration() {
 				durationInput += 0;
 				break;
 			}
-			if ((buttonByte == NUM_PAD_D))
+			if (buttonByte == NUM_PAD_D)
 				return durationInput;
 			if (buttonByte == NUM_PAD_STAR)
 				return -1;
@@ -849,14 +820,13 @@ void SubMenu::confirmClear(Relay* arrObj) {
 	while (1) {
 		byte buttonByte = buttonPoll();
 		if ((buttonByte & COL_BITS) == COL_4) {
-			if ((buttonByte & ROW_BITS) == ROW_1) {		//clear the flag and go back //Button A
+			if (buttonByte == NUM_PAD_A) {
 				arrObj->clearTempOverrideFlag();
 				displayCleared();
 				break;
 			}
-			if ((buttonByte & ROW_BITS) == ROW_2) {		//Cancel //Button B
+			if (buttonByte == NUM_PAD_B)
 				break;
-			}
 		}
 	}
 }
@@ -865,10 +835,12 @@ bool SubMenu::confirmationSubMenu() {
 	subMenuDisplayObject.confirmationScreen();
 	while (1) {
 		byte buttonPress = buttonPoll();
-		if (buttonPress == NUM_PAD_A)
-			return true;
+		if ((buttonPress & COL_BITS) == COL_4){
+			if (buttonPress == NUM_PAD_A)
+				return true;
 		if (buttonPress == NUM_PAD_B)
 			return false;
+		}
 	}
 }
 //Input menu for power state when creating new TempOverride
