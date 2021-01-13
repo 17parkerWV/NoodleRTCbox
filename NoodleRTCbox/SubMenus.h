@@ -44,14 +44,14 @@ public:
 	void displayEnableDisableScheduleScreen();
 	//Displays the header info for the screen where the selected relay will be completely wiped
 	void displayCompleteOffScreen();
-	//Asks the user "are you sure?"
+	//Asks the user "are you sure?" //Currently unused
 	void displayConfirmationScreen();
 
 	//STATUS UPDATES
 	//prints the status of the 8 relay's manualOverrideFlag variable. works in tandem with displayEightRelayNumbers
-	void displayOverrideScreenStatus();
+	void displayOverrideFlagStatus();
 	//prints the status of the 8 relay's powered variable. works in tandem with displayEightRelayNumbers
-	void displayOnOffScreenStatus();
+	void displayOnOffStatus();
 	//prints the status of the scheduleFlag
 	void displayScheduleSetFlagStatus();
 	//Prints 'clear'
@@ -80,10 +80,10 @@ public:
 	bool confirmationSubMenu();
 
 	//TEMPORARY OVERRIDE FUNCTIONS
-	void displayTemporaryOverrideDisplay();
+	void displayTempOverrideScreen();
 	void displayTempOverrideSubMenu();
 	void displayTempOverrideStatus();
-	void displayTempOverrideStatusDisplay();
+	void displayTempOverrideInfoScreen();
 	void tempOverrideStatusWhileLoop();
 	//This is the first while(1) menu, waiting for a relay to be selected (or a cancel)
 	void chooseRelay();

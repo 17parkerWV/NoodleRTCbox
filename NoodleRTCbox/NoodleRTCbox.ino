@@ -237,7 +237,7 @@ void [SubMenuOption]{
 void enableDisableRelay() {
 	subMenuObj.displayEightRelayNumbers();
 	subMenuObj.displayEnableDisableRelayScreen();
-	subMenuObj.displayOverrideScreenStatus();
+	subMenuObj.displayOverrideFlagStatus();
 	subMenuObj.enableDisableRelaySubMenu();
 	subMenuObj.displayManualOverrideSubMenuDisplay();
 }
@@ -245,14 +245,14 @@ void enableDisableRelay() {
 void manualOnOff() {
 	subMenuObj.displayEightRelayNumbers();
 	subMenuObj.displayManualOnOffScreen();
-	subMenuObj.displayOnOffScreenStatus();
+	subMenuObj.displayOnOffStatus();
 	subMenuObj.manualOnOffSubMenu();
 	subMenuObj.displayManualOverrideSubMenuDisplay();
 }
 //Main Menu -> B -> 1. Menu where tempOverrideFlag is flipped
 void temporaryOverride() {
 	subMenuObj.displayEightRelayNumbers();
-	subMenuObj.displayTemporaryOverrideDisplay();
+	subMenuObj.displayTempOverrideScreen();
 	subMenuObj.displayTempOverrideStatus();
 	subMenuObj.chooseRelay();
 	subMenuObj.displayTempOverrideSubMenu();
@@ -260,7 +260,7 @@ void temporaryOverride() {
 //Main Menu -> B -> 2. Menu where a relay is selected and its tempOverride status is shown
 void temporaryOverrideStatus() {
 	subMenuObj.displayEightRelayNumbers();
-	subMenuObj.displayTempOverrideStatusDisplay();
+	subMenuObj.displayTempOverrideInfoScreen();
 	subMenuObj.displayTempOverrideStatus();
 	subMenuObj.tempOverrideStatusWhileLoop();
 	subMenuObj.displayTempOverrideSubMenu();

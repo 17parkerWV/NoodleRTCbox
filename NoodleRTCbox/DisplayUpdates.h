@@ -82,5 +82,4 @@ public:
 private:
 	Adafruit_SSD1306 OLED;
 };
-
 #endif

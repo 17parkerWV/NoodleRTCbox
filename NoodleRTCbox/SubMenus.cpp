@@ -110,7 +110,7 @@ void SubMenu::displayEnableDisableRelayScreen() {
 	subMenuDisplayObject.enableDisableRelayScreen();
 }
 //Main Menu --> B --> 1. Displays the header for the screen where you choose an object to set a temporary override
-void SubMenu::displayTemporaryOverrideDisplay() {
+void SubMenu::displayTempOverrideScreen() {
 	subMenuDisplayObject.temporaryOverrideDisplay();
 }
 //Clears the screen and displays "Cleared". So far, used to confirm that a variable/flag has been cleared
@@ -123,7 +123,7 @@ void SubMenu::displayTempOverrideSubMenu() {
 	subMenuDisplayObject.tempOverrideSubMenu();
 }
 //Main Menu --> B --> 2. Displays the header info for the screen where you select an object to have its Temp Override status/info shown on screen
-void SubMenu::displayTempOverrideStatusDisplay() {
+void SubMenu::displayTempOverrideInfoScreen() {
 	subMenuDisplayObject.tempOverrideStatus();
 }
 //Main Menu --> A --> 4. Displays the header info for the screen where the selected relay is completely reset
@@ -150,7 +150,7 @@ void SubMenu::displayScheduleSetFlagStatus() {
 	subMenuDisplayObject.OLED.display();
 }
 //Print the status of the 8 objects' manualOverrideFlag. ON means manual control (ON/OFF) is allowed, OFF means it is not. Used with displayEightRelayNumbers
-void SubMenu::displayOverrideScreenStatus() {
+void SubMenu::displayOverrideFlagStatus() {
 	for (int spot = 0; spot <= 3; spot++) {
 		subMenuDisplayObject.OLED.setCursor(22, 16 + (spot * 12));
 		subMenuDisplayObject.OLED.println(powerArray[spot].schedules.manualOverrideFlag ? "ON" : "OFF");
@@ -162,7 +162,7 @@ void SubMenu::displayOverrideScreenStatus() {
 	subMenuDisplayObject.OLED.display();
 }
 //Print the status of the 8 objects' powered status. ON means the relay is ON, OFF means it is OFF. Used with displayEightRelayNumbers
-void SubMenu::displayOnOffScreenStatus() {
+void SubMenu::displayOnOffStatus() {
 	for (int spot = 0; spot <= 3; spot++) {
 		subMenuDisplayObject.OLED.setCursor(22, 16 + (spot * 12));
 		subMenuDisplayObject.OLED.println(powerArray[spot].schedules.powered ? "ON" : "OFF");
@@ -198,21 +198,21 @@ void SubMenu::enableDisableRelaySubMenu() {
 				if (powerArray[0].schedules.powered == false && powerArray[0].schedules.scheduleSetFlag == false && powerArray[0].schedules.tempOverrideFlag == false) {
 					powerArray[0].flipManualOverrideState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOverrideScreenStatus();
+					displayOverrideFlagStatus();
 				}
 			}
 			if (buttonByte == NUM_PAD_4) {
 				if (powerArray[3].schedules.powered == false && powerArray[3].schedules.scheduleSetFlag == false && powerArray[3].schedules.tempOverrideFlag == false) {
 					powerArray[3].flipManualOverrideState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOverrideScreenStatus();
+					displayOverrideFlagStatus();
 				}
 			}
 			if (buttonByte == NUM_PAD_7) {
 				if (powerArray[6].schedules.powered == false && powerArray[6].schedules.scheduleSetFlag == false && powerArray[6].schedules.tempOverrideFlag == false) {
 					powerArray[6].flipManualOverrideState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOverrideScreenStatus();
+					displayOverrideFlagStatus();
 				}
 			}
 			if (buttonByte == NUM_PAD_STAR)
@@ -223,21 +223,21 @@ void SubMenu::enableDisableRelaySubMenu() {
 				if (powerArray[1].schedules.powered == false && powerArray[1].schedules.scheduleSetFlag == false && powerArray[1].schedules.tempOverrideFlag == false) {
 					powerArray[1].flipManualOverrideState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOverrideScreenStatus();
+					displayOverrideFlagStatus();
 				}
 			}
 			if (buttonByte == NUM_PAD_5) {
 				if (powerArray[4].schedules.powered == false && powerArray[4].schedules.scheduleSetFlag == false && powerArray[4].schedules.tempOverrideFlag == false) {
 					powerArray[4].flipManualOverrideState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOverrideScreenStatus();
+					displayOverrideFlagStatus();
 				}
 			}
 			if (buttonByte == NUM_PAD_8) {
 				if (powerArray[7].schedules.powered == false && powerArray[7].schedules.scheduleSetFlag == false && powerArray[7].schedules.tempOverrideFlag == false) {
 					powerArray[7].flipManualOverrideState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOverrideScreenStatus();
+					displayOverrideFlagStatus();
 				}
 			}
 		}
@@ -246,14 +246,14 @@ void SubMenu::enableDisableRelaySubMenu() {
 				if (powerArray[2].schedules.powered == false && powerArray[2].schedules.scheduleSetFlag == false && powerArray[2].schedules.tempOverrideFlag == false) {
 					powerArray[2].flipManualOverrideState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOverrideScreenStatus();
+					displayOverrideFlagStatus();
 				}
 			}
 			if (buttonByte == NUM_PAD_6) {
 				if (powerArray[5].schedules.powered == false && powerArray[5].schedules.scheduleSetFlag == false && powerArray[5].schedules.tempOverrideFlag == false) {
 					powerArray[5].flipManualOverrideState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOverrideScreenStatus();
+					displayOverrideFlagStatus();
 				}
 			}
 		}
@@ -268,21 +268,21 @@ void SubMenu::manualOnOffSubMenu() {
 				if (powerArray[0].schedules.manualOverrideFlag == true && powerArray[0].schedules.tempOverrideFlag == false && powerArray[0].schedules.scheduleSetFlag == false) {
 					powerArray[0].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOnOffScreenStatus();
+					displayOnOffStatus();
 				}
 			}
 			if (buttonByte == NUM_PAD_4) {
 				if (powerArray[3].schedules.manualOverrideFlag == true && powerArray[3].schedules.tempOverrideFlag == false && powerArray[3].schedules.scheduleSetFlag == false) {
 					powerArray[3].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOnOffScreenStatus();
+					displayOnOffStatus();
 				}
 			}
 			if (buttonByte == NUM_PAD_7) {
 				if (powerArray[6].schedules.manualOverrideFlag == true && powerArray[6].schedules.tempOverrideFlag == false && powerArray[6].schedules.scheduleSetFlag == false) {
 					powerArray[6].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOnOffScreenStatus();
+					displayOnOffStatus();
 				}
 			}
 			if (buttonByte == NUM_PAD_STAR)
@@ -293,7 +293,7 @@ void SubMenu::manualOnOffSubMenu() {
 				if (powerArray[1].schedules.manualOverrideFlag == true && powerArray[1].schedules.tempOverrideFlag == false && powerArray[1].schedules.scheduleSetFlag == false) {
 					powerArray[1].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOnOffScreenStatus();
+					displayOnOffStatus();
 				}
 			}
 			if (buttonByte == NUM_PAD_5) {
@@ -301,14 +301,14 @@ void SubMenu::manualOnOffSubMenu() {
 				if (powerArray[4].schedules.manualOverrideFlag == true && powerArray[4].schedules.tempOverrideFlag == false && powerArray[4].schedules.scheduleSetFlag == false) {
 					powerArray[4].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOnOffScreenStatus();
+					displayOnOffStatus();
 				}
 			}
 			if (buttonByte == NUM_PAD_8) {
 				if (powerArray[7].schedules.manualOverrideFlag == true && powerArray[7].schedules.tempOverrideFlag == false && powerArray[7].schedules.scheduleSetFlag == false) {
 					powerArray[7].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOnOffScreenStatus();
+					displayOnOffStatus();
 				}
 			}
 		}
@@ -317,14 +317,14 @@ void SubMenu::manualOnOffSubMenu() {
 				if (powerArray[2].schedules.manualOverrideFlag == true && powerArray[2].schedules.tempOverrideFlag == false && powerArray[2].schedules.scheduleSetFlag == false) {
 					powerArray[2].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOnOffScreenStatus();
+					displayOnOffStatus();
 				}
 			}
 			if (buttonByte == NUM_PAD_6) {
 				if (powerArray[5].schedules.manualOverrideFlag == true && powerArray[5].schedules.tempOverrideFlag == false && powerArray[5].schedules.scheduleSetFlag == false) {
 					powerArray[5].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOnOffScreenStatus();
+					displayOnOffStatus();
 				}
 			}
 		}
