@@ -31,9 +31,11 @@ void Relay::flipManualOverrideState(void) {
 }
 
 void Relay::off(void) {
-	digitalWrite(schedules.relayPin, HIGH);		//I'm pretty sure the relays turn ON when dragged low, need to double check
-	schedules.powered = false;					//The one I want to use for changing settings but probably ditch the other one because it's annoying
+	digitalWrite(schedules.relayPin, HIGH);		
+	schedules.powered = false;					
 	schedules.scheduleSetFlag = false;
+	schedules.tempOverrideFlag = false;
+	schedules.manualOverrideFlag = true;
 }
 
 //schedules.powered MUST BE FALSE GOING INTO THIS, TO PREVENT COLLISION BETWEEN SCHEDULED POWER and this one
@@ -43,7 +45,6 @@ void Relay::flipScheduleSetFlag() {
 	schedules.manualOverrideFlag = false;
 	schedules.scheduleSetFlag = (!schedules.scheduleSetFlag);
 }
-
 
 //TEMPORARY OVERRIDE FUNCTIONS
 void Relay::clearTempOverrideFlag() {

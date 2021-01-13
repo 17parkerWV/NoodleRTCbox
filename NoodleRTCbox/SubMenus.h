@@ -42,6 +42,10 @@ public:
 	void displaySchedulesSubMenuDisplay();
 	//displays the header information for the schedules enable/disable sub menu
 	void displayEnableDisableScheduleScreen();
+	//Displays the header info for the screen where the selected relay will be completely wiped
+	void displayCompleteOffScreen();
+	//Asks the user "are you sure?"
+	void displayConfirmationScreen();
 
 	//STATUS UPDATES
 	//prints the status of the 8 relay's manualOverrideFlag variable. works in tandem with displayEightRelayNumbers
@@ -50,6 +54,8 @@ public:
 	void displayOnOffScreenStatus();
 	//prints the status of the scheduleFlag
 	void displayScheduleSetFlagStatus();
+	//Prints 'clear'
+	void displayCleared();
 
 	//RELAY OBJECTS
 	//goes through the 8 Relay powerArray[8] objects and makes each one call the member function off()
@@ -64,10 +70,14 @@ public:
 	void manualOnOffSubMenu();
 	//The submenu that allows/disallows schedules to be set
 	void enableDisableSchedulesSubMenu();
+	//sub menu where selected relay is turned OFF and flags set FALSE
+	void completeOffSubMenu();
 
 	//SCHEDULE RELATED FUNCTIONS
 	//Triggered by the interrupts, this will run through the objects' schedules and flags to see if something should be on or off
 	void checkSchedule();
+	//Submenu for getting answer to "Are you sure?"
+	bool confirmationSubMenu();
 
 	//TEMPORARY OVERRIDE FUNCTIONS
 	void displayTemporaryOverrideDisplay();
@@ -85,13 +95,11 @@ public:
 	byte inputPowerState();
 	void promptTempOverrideTime(int);
 
-
 	//INPUT VERIFICATION
 	//For making sure the inputs are legal
 	int verifyHour(int);
 	int verifyMinute(int);
 	int verifyDuration(int);
-
 
 private:
 	Relay powerArray[8];

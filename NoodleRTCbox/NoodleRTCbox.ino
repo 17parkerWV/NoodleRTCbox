@@ -79,6 +79,9 @@ void temporaryOverride();
 //Show the time and duration of the current overrides
 void temporaryOverrideStatus();
 
+//completely turns off everything about a relay
+void completeOffSubMenu();
+
 void setup() {
 	Serial.begin(115200);
 	subMenuObj.initializePins();		//Initializes the relay pins and sets them as OUTPUT and turns them off()
@@ -111,7 +114,6 @@ void setup() {
 	//Function to notify that all schedules were wiped out
 	subMenuObj.displayMainMenu();
 }
-
 
 void loop() {
 	byte buttonData = buttonPoll();
@@ -228,7 +230,7 @@ void schedulesSubMenu() {
 			}
 			if ((buttonPress & ROW_BITS) == ROW_2) {
 				if ((buttonPress & COL_BITS) == COL_1) {		//Row 2 Col 1 ->button 4
-
+					completeOffSubMenu();
 				}
 			}
 			if (((buttonPress & ROW_BITS) == ROW_4) && ((buttonPress & COL_BITS) == COL_3)) {	//Row 4 Col 3 -> # sign to exit
@@ -251,6 +253,14 @@ void enableDisableScheduleSubMenu() {
 	subMenuObj.enableDisableSchedulesSubMenu();//function to go into the sub menu - the while(1) loop
 	subMenuObj.displaySchedulesSubMenuDisplay(); //The function that returns us back to the menu
 	updateCurrentTime();		//Updates the clock object and prints it, otherwise the time will be missin upon return
+}
+
+void completeOffSubMenu() {
+	subMenuObj.displayEightRelayNumbers();
+	subMenuObj.displayCompleteOffScreen();
+	subMenuObj.completeOffSubMenu();
+	subMenuObj.displaySchedulesSubMenuDisplay();
+	updateCurrentTime();
 }
 
 void updateClockObj() {

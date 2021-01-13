@@ -1,5 +1,4 @@
 // DisplayUpdates.h
-
 #ifndef _DISPLAYUPDATES_h
 #define _DISPLAYUPDATES_h
 
@@ -34,7 +33,11 @@ public:
 	//When printing status of relays, this prints black rectangles over them to prevent having to refresh the whole screen
 	void clearRelayUpdate();
 	//In case they input a bogus time
-	void invalidTime(String);
+	void displayError(String);
+	//displays 'cleared'
+	void displayCleared();
+	//Asks "are you sure?"
+	void confirmationScreen();
 
 	//SUBMENU DISPLAY WITH OPTIONS
 	//From the main menu - Press C (control relays) ->enable/disable or turn on/off
@@ -59,7 +62,7 @@ public:
 	void enterDuration();
 	void enterPowerState();
 	void tempOverrideStatus();
-	void displaySingleObjectTempOverrideStatus(int, int, byte);
+	void displaySingleObjectTempOverrideStatus(int, int, int, byte);
 
 	//This is to print the time as you type it, just kinda nice looking
 	void printTime(int, int);
@@ -73,6 +76,8 @@ public:
 	//When you select a relay that already has tempOverrideFlag = true
 	void confirmClearTempOverride();
 
+	//COMPLETELY OFF SCREENS
+	void completeOffScreen();
 
 private:
 	Adafruit_SSD1306 OLED;
