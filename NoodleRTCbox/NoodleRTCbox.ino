@@ -2,7 +2,6 @@
 delayWithoutDelay - has been caught in loop because the argument is always true?
 millis() - This thing is giving me headaches but I don't know if something is wrong with it
 
-Use my spare arduino mega to test hardware interrupts before getting close to this one
 */
 
 #include "RelayObjects.h"
