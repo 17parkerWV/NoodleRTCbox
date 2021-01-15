@@ -20,14 +20,41 @@ void Relay::setTimeOff(int mon, int day, int hr, int min) {
 //powered CAN ONLY BE CHANGED IF THE OVERRIDE FLAG IS TRUE (which should only be true if scheduleSetFlag is FALSE)
 void Relay::flipPowerState(void) {
 	bool power;
+	schedules.manualOverrideFlag = true;
 	schedules.powered = (!schedules.powered);		//Flip the state of the flag
 	power = !schedules.powered;						//flip it back because the relays are active LOW
 	digitalWrite(schedules.relayPin, power);	//Write power state to the pin, should mae sure this is bullet proof
 }
 
+bool Relay::getPowerStatus() {
+	return schedules.powered;
+}
+
+void Relay::setPoweredState() {
+	schedules.powered = true;
+	schedules.manualOverrideFlag = true;
+}
+
+void Relay::clearPoweredState() {
+	schedules.powered = false;
+	schedules.manualOverrideFlag = false;
+}
+
 //schedules.scheduleSetFlag MUST BE FALSE GOING INTO THIS TO PREVENT SOME OBSCURE BUG FROM GIBING ME YEARS OF PAIN
-void Relay::flipManualOverrideState(void) {
+void Relay::flipManualOverrideFlag(void) {
 	schedules.manualOverrideFlag = (!schedules.manualOverrideFlag);
+}
+
+void Relay::setManualOverrideFlag() {
+	schedules.manualOverrideFlag = true;
+}
+
+void Relay::clearManualOverrideFlag() {
+	schedules.manualOverrideFlag = false;
+}
+
+bool Relay::getManualOverrideFlagStatus() {
+	return schedules.manualOverrideFlag;
 }
 
 void Relay::off(void) {
@@ -41,20 +68,43 @@ void Relay::off(void) {
 //schedules.powered MUST BE FALSE GOING INTO THIS, TO PREVENT COLLISION BETWEEN SCHEDULED POWER and this one
 //This sets manualOverrideFlag to FALSE and can only set it to FALSE
 //Can only be called if powered is FALSE, at that point this can override the manualOverrideFlag (irony?) to prevent the schedule from being overwritten
+//Only to be used in the set flag screen where you can enable/disable all 8 over and over again
 void Relay::flipScheduleSetFlag() {
 	schedules.manualOverrideFlag = false;
 	schedules.scheduleSetFlag = (!schedules.scheduleSetFlag);
 }
 
-//TEMPORARY OVERRIDE FUNCTIONS
+bool Relay::getScheduleSetFlagStatus() {
+	return schedules.scheduleSetFlag;
+}
+
+void Relay::setScheduleSetFlag() {
+	schedules.scheduleSetFlag = true;
+	schedules.manualOverrideFlag = false;
+}
+
+void Relay::clearScheduleSetFlag() {
+	schedules.scheduleSetFlag = false;
+	schedules.manualOverrideFlag = false; //Redundant, it should be false already to be able to clear scheduleSetFlag
+}
+
+////------TEMPORARY OVERRIDE FUNCTIONS------//
+
+//Clears the temp override flag, AND the manual override flag
 void Relay::clearTempOverrideFlag() {
 	digitalWrite(schedules.relayPin, HIGH);
+	clearManualOverrideFlag();
 	schedules.tempOverrideFlag = false;
 }
 
 void Relay::setTempOverrideFlag() {
-	this->schedules.powered = false;
-	this->schedules.manualOverrideFlag = false;
+	clearPoweredState();					//Redundant, must be false to get to this menu
+	clearManualOverrideFlag();
 	digitalWrite(schedules.relayPin,HIGH);
 	schedules.tempOverrideFlag = true;
 }
+
+bool Relay::getTempOverrideStatus() {
+	return schedules.tempOverrideFlag;
+}
+////------TEMPORARY OVERRIDE FUNCTIONS------//

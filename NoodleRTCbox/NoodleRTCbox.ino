@@ -8,7 +8,7 @@ Use my spare arduino mega to test hardware interrupts before getting close to th
 #include "RelayObjects.h"
 #include "SubMenus.h"
 #include "DisplayUpdates.h"
-//I can't get this working if these aren't here, even though they aren't needed here. Oh well
+//I can't get this working if these aren't here, even though they aren't needed here (I think). Oh well
 #include <Adafruit_SPIDevice.h>
 #include <Adafruit_I2CRegister.h>
 #include <Adafruit_I2CDevice.h>
@@ -49,10 +49,11 @@ volatile byte counter = 0b00000000;
 volatile byte state = 0b00000001;
 
 ISR(INT4_vect) {
-	//	counter++;
+	subMenuObj.checkSchedule();
+
+
 	digitalWrite(13, state);
 	state ^= (0b00000001);
-	//		counter = 0;
 }
 
 ////------MISC------////
@@ -64,8 +65,13 @@ void printTime(void);		//print current date/time
 void enableDisableRelay();
 //menu to manually turn on/off a relay
 void manualOnOff();
+
+////------CLOCK FUNCTIONS AND OBJECTS------////
 //sets the clock object equal to the other one
 void updateClockObj();
+//Prints the updated time at the top of the display in the schedule set sub menu
+void updateCurrentTime();
+////------END CLOCK FUNCTIONS AND OBJECTS------////
 
 ////------SUBMENU OPTIONS FUNCTIONS------////
 //By options, I am talking about the options available AFTER selecting an option from the Main Menu
@@ -82,8 +88,6 @@ void temporaryOverrideSubMenu();
 void completeOffSubMenu();
 ////------END SUBMENU OPTIONS FUNCTIONS------////
 
-//Prints the updated time at the top of the display
-void updateCurrentTime();
 
 //Displays and starts temporary override menu option
 void temporaryOverride();

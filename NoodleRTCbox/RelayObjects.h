@@ -52,16 +52,45 @@ public:
 	void setTimeOn(int, int, int, int);			
 		//sets the time it wil turn off
 	void setTimeOff(int, int, int, int);		
+
+	//***POWERED FUNCTIONS***//
 		//flip the state of power (on or off) and update powered flag
 	void flipPowerState(void);		
-		//flip the state of the manualOverrideFlag. schedule set flag must be FALSE
-	void flipManualOverrideState(void);		
+		//Get the powered status of the object
+	bool getPowerStatus();
+		//clear the powered status
+	void clearPoweredState();
+		//set powered state
+	void setPoweredState();
+
+	//***SCHEDULE FUNCTIONS***//
 		//flip the state of the scheduleSetFlag. sets override flag FALSE. powered must be FALSE
 	void flipScheduleSetFlag();
+		//Set the schedule set flag
+	void setScheduleSetFlag();
+		//Clear the schedule set flag
+	void clearScheduleSetFlag();
+		//return the status of the schedule ste flag
+	bool getScheduleSetFlagStatus();
 
-	//TEMPORARY OVERRIDE FUNCTIONS
+	//***MANUAL OVERRIDE FUNCTIONS***//
+		//set the manualoverride Flag
+	void setManualOverrideFlag();
+		//clear the manual override flag
+	void clearManualOverrideFlag();
+		//return the status of the manual override flag
+	bool getManualOverrideFlagStatus();
+		//flip the state of the manualOverrideFlag. schedule set flag must be FALSE
+	void flipManualOverrideFlag(void);
+
+	//***TEMPORARY OVERRIDE FUNCTIONS***//
+	//The only place where anything temp override is accessed without functions is in displaySingleObjectTempOverrideStatus is in SubMenus.cpp, just for displaying purposes
+	//Clears the temp override flag
 	void clearTempOverrideFlag();
+		//Set the tempoverride flag
 	void setTempOverrideFlag();
+		//Get the status of the tempoverride flag
+	bool getTempOverrideStatus();
 
 private:
 		//This struct is going to hold the scheduled times, mostly initialized because none of this needs to be initailized differently
@@ -84,9 +113,11 @@ private:
 			//Rule 2: To set the flag, a schedule must be set
 			//Rule 3: The schedule flag can only be cleared in the schedules menu
 		bool scheduleSetFlag = false;
-			//These three store the hour and minute of the start of the temporary override
+			//These three store the hour and minute of the start of the temporary override, and the end time
 		int tempOverrideHour = 0;				
 		int tempOverrideMinute = 0;		
+		int tempOverrideOffHour = 0;
+		int tempOverrideOffMinute = 0;
 			//Whether there is a temporary override in place
 		bool tempOverrideFlag = false;
 			//how long the temp override should last
