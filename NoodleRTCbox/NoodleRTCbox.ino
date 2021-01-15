@@ -88,12 +88,10 @@ void temporaryOverrideSubMenu();
 void completeOffSubMenu();
 ////------END SUBMENU OPTIONS FUNCTIONS------////
 
-
 //Displays and starts temporary override menu option
 void temporaryOverride();
 //Show the time and duration of the current overrides
 void temporaryOverrideStatus();
-
 
 
 void setup() {

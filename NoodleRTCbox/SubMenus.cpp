@@ -603,7 +603,7 @@ int SubMenu::inputTime() {
 				timeInput += 0;
 				break;
 			}
-			if (buttonByte == NUM_PAD_SHARP) {
+			if (buttonByte == NUM_PAD_D) {
 				timeInput /= 10;
 				subMenuDisplayObject.printTime(timeInput, NumberOfInputs);
 				return timeInput;
@@ -827,7 +827,7 @@ void SubMenu::confirmClear(Relay* arrObj) {
 		byte buttonByte = buttonPoll();
 		if ((buttonByte & COL_BITS) == COL_4) {
 			if (buttonByte == NUM_PAD_A) {
-				clearTempOverrideFlag();
+				arrObj->clearTempOverrideFlag();
 				displayCleared();
 				break;
 			}

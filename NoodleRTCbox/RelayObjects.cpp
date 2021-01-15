@@ -37,7 +37,6 @@ void Relay::setPoweredState() {
 
 void Relay::clearPoweredState() {
 	schedules.powered = false;
-	schedules.manualOverrideFlag = false;
 }
 
 //schedules.scheduleSetFlag MUST BE FALSE GOING INTO THIS TO PREVENT SOME OBSCURE BUG FROM GIBING ME YEARS OF PAIN
@@ -49,8 +48,11 @@ void Relay::setManualOverrideFlag() {
 	schedules.manualOverrideFlag = true;
 }
 
+//clears manualoverride flag, powered flag, and writes the relay HIGH (turns it off)
 void Relay::clearManualOverrideFlag() {
 	schedules.manualOverrideFlag = false;
+	schedules.powered = false;
+	digitalWrite(schedules.relayPin, HIGH);
 }
 
 bool Relay::getManualOverrideFlagStatus() {
@@ -92,15 +94,12 @@ void Relay::clearScheduleSetFlag() {
 
 //Clears the temp override flag, AND the manual override flag
 void Relay::clearTempOverrideFlag() {
-	digitalWrite(schedules.relayPin, HIGH);
 	clearManualOverrideFlag();
 	schedules.tempOverrideFlag = false;
 }
 
 void Relay::setTempOverrideFlag() {
-	clearPoweredState();					//Redundant, must be false to get to this menu
 	clearManualOverrideFlag();
-	digitalWrite(schedules.relayPin,HIGH);
 	schedules.tempOverrideFlag = true;
 }
 

@@ -177,7 +177,7 @@ void DisplayClass::enterStartingHour() {
 	OLED.display();
 	OLED.setTextSize(1);
 	OLED.setCursor(0, 0);
-	OLED.print(F("Enter starting hour  using 24 hour format Press STAR to cancel Press # when done"));
+	OLED.print(F("Enter starting hour  using 24 hour format Press STAR to cancel Press D when done"));
 	OLED.fillRect(0, 32, 128, 48, BLACK);
 	OLED.display();
 }
@@ -187,7 +187,7 @@ void DisplayClass::enterStartingMinute() {
 	OLED.display();
 	OLED.setTextSize(1);
 	OLED.setCursor(0, 0);
-	OLED.print(F("Enter starting\nminutes   * - back\nPress # when done"));
+	OLED.print(F("Enter starting\nminutes   * - back\nPress D when done"));
 	OLED.fillRect(0, 32, 128, 48, BLACK);
 	OLED.display();
 }
