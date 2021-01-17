@@ -48,13 +48,6 @@ SubMenu subMenuObj;
 volatile byte counter = 0b00000000;
 volatile byte state = 0b00000001;
 
-ISR(INT4_vect) {
-	subMenuObj.checkSchedule();
-
-
-	digitalWrite(13, state);
-	state ^= (0b00000001);
-}
 
 ////------MISC------////
 void errorQuit(int code);	//Print error code
@@ -93,6 +86,11 @@ void temporaryOverride();
 //Show the time and duration of the current overrides
 void temporaryOverrideStatus();
 
+ISR(INT4_vect) {
+	
+	digitalWrite(13, state);
+	state ^= (0b00000001);
+}
 
 void setup() {
 	Serial.begin(115200);

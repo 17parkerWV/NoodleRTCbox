@@ -101,6 +101,10 @@ public:
 	int verifyMinute(int);
 	int verifyDuration(int);
 
+	//FUNCTIONS FOR THE ISR
+	bool isInTempOverrideRange();
+	bool isInScheduleSetRange();
+
 private:
 	Relay powerArray[8];
 	DisplayClass subMenuDisplayObject;

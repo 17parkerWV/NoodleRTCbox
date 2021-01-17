@@ -67,16 +67,17 @@ void waitForAnyLetterPress() {
 	}
 	delayWithoutDelay(175);
 }
-//Compares schedule/temp override times and controls relay objects accordingly. Called during interrupt function
-void SubMenu::checkSchedule() {
-	for (int relay = 0; relay <= 7; relay++) {
-		if (powerArray[relay].getTempOverrideStatus() == true) {
-
-		}
-		powerArray[relay].getTempOverrideStatus() == true;
-	}
-}
 ////------END GENERAL UTILITY FUNCTIONS------////
+
+////------FUNCTIONS FOR THE ISR------////
+bool SubMenu::isInTempOverrideRange() {
+
+}
+
+bool SubMenu::isInScheduleSetRange() {
+
+}
+////------END FUNCTIONS FOR THE ISR------////
 
 ////------subMenuDisplayObject DISPLAYING FUNCTIONS------////
 //Main Menu --> A. Goes into options regarding set schedules
