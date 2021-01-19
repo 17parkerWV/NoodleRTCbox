@@ -40,8 +40,6 @@ public:
 	void displayCurrentTime(int, int);
 	//displays the schedules sub menu and the options
 	void displaySchedulesSubMenuDisplay();
-	//displays the header information for the schedules enable/disable sub menu
-	void displayEnableDisableScheduleScreen();
 	//Displays the header info for the screen where the selected relay will be completely wiped
 	void displayCompleteOffScreen();
 	//Asks the user "are you sure?" //Currently unused

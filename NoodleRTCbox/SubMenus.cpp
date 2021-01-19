@@ -118,10 +118,7 @@ void SubMenu::timeControl(int currentDay, int currentHour, int currentMinute) {
 void SubMenu::displaySchedulesSubMenuDisplay() {
 	subMenuDisplayObject.schedulesSubMenu();
 }
-//Main Menu --> A, press C. Header information for display that shows status of all relay objects schedule set flags
-void SubMenu::displayEnableDisableScheduleScreen() {
-	subMenuDisplayObject.enableDisableScheduleScreen();
-}
+
 //Main Menu --> A. Time is displayed in the upper left. When it comes time to update it, this erases just the time, so the whole screen does not flash
 void SubMenu::clearCurrentTime() {
 	subMenuDisplayObject.clearCurrentTime();

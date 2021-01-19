@@ -52,8 +52,6 @@ public:
 	void manualOnOff();
 	//Prints the screen where pressing 1-8 enables/disables manual control of the coreesponding relay
 	void enableDisableRelayScreen();
-	//Prints the screen where 1-8 enables/disables schedules for that relay
-	void enableDisableScheduleScreen();
 
 	//TEMPORARY OVERRIDE SUB MENUS (they get their own because it's going to be nested probably
 	void temporaryOverrideDisplay();

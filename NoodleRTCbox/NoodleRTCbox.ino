@@ -49,12 +49,7 @@ SubMenu subMenuObj;
 volatile int counter = 0;
 
 
-////------MISC------////
-void errorQuit(int code);	//Print error code
-void printTime(void);		//print current date/time
-////------END MISC------////
-
-	//allows manual control of relay (not to be confused with manualOnOff, which actually turns them on/off)
+//allows manual control of relay (not to be confused with manualOnOff, which actually turns them on/off)
 void enableDisableRelay();
 //menu to manually turn on/off a relay
 void manualOnOff();
@@ -101,18 +96,20 @@ ISR(INT4_vect) {
 }
 
 void setup() {
-	Serial.begin(115200);
 	subMenuObj.initializePins();		//Initializes the relay pins and sets them as OUTPUT and turns them off()
-	if (subMenuObj.initializeDisplay() == false)		//Initializes the display object and also checks to make sure it began (begin())
-		errorQuit(3);
-	if (!clockObj.begin())
-		errorQuit(1);
-	if (clockObj.lostPower())
-		errorQuit(2);
+	if (subMenuObj.initializeDisplay() == false) {		//Initializes the display object and also checks to make sure it began (begin())
+		//Error message, maybe a colored LED?
+	}
+	if (!clockObj.begin()) {
+		//Error message, maybe a colored LED?
+	}
+	if (clockObj.lostPower()) {
+		//Error message, maybe a colored LED?
+	}
 
 	//FOR THE INTERRUPTS
 	DDRB |= BUILT_IN_LED;		//set PB7 (digital pin 13) as output
-	PORTB =0b00000000;			//write digital pin 13 LOW and the other pins are INPUTS without the PULLUP
+	PORTB = 0b00000000;			//write digital pin 13 LOW and the other pins are INPUTS without the PULLUP
 	clockObj.writeSqwPinMode(DS3231_SquareWave1Hz);	//Enable the 1Hz squarewave clock
 	DDRE = 0b00000000;	//All bit in port E are inputs
 	EIMSK = 0b00000000;	//All interrupts are masked out (recommended in the datasheet)
@@ -200,11 +197,12 @@ void schedulesSubMenu() {
 				if (buttonPress == NUM_PAD_1) {
 
 				}
-				if (buttonPress == NUM_PAD_2) {
+				if (buttonPress == NUM_PAD_2) {	//View schedules
 
 				}
-				if (buttonPress == NUM_PAD_3)
+				if (buttonPress == NUM_PAD_3) {		//clear schedules
 					enableDisableScheduleSubMenu();
+				}
 			}
 			if (buttonPress == NUM_PAD_4) {
 				completeOffSubMenu();
@@ -276,7 +274,6 @@ void temporaryOverrideStatus() {
 //Main Menu -> A -> 3. Menu where scheduleSetFlag is viewed/cleared ONLY
 void enableDisableScheduleSubMenu() {
 	subMenuObj.displayEightRelayNumbers();
-	subMenuObj.displayEnableDisableScheduleScreen();
 	subMenuObj.displayScheduleSetFlagStatus();
 	subMenuObj.enableDisableSchedulesSubMenu();
 	subMenuObj.displaySchedulesSubMenuDisplay();
@@ -303,33 +300,3 @@ void updateCurrentTime() {
 	subMenuObj.displayCurrentTime(clockSecondObj.hour(), clockSecondObj.minute());
 }
 ////------END UPDATE OBJECT FUNCITONS------////
-//Error codes if the program fails at certain points
-void errorQuit(int code) {
-	switch (code) {
-	case 1:
-		Serial.println(F("Clock failed to begin, contact support"));
-		break;
-	case 2:
-		Serial.println(F("RTC lost power, reset time and schedules"));
-		break;
-	case 3:
-		Serial.println(F("Display failed to start"));
-		break;
-	default:
-		Serial.println(F("Unspecified error"));
-		break;
-	}
-	subMenuObj.allOff();
-	for (;;) {};
-}
-
-//In case I need to print the time over serial, I guess
-void printTime() {
-	updateClockObj;
-	Serial.println(clockSecondObj.year());
-	Serial.println(clockSecondObj.month());
-	Serial.println(clockSecondObj.day());
-	Serial.println(clockSecondObj.hour());
-	Serial.println(clockSecondObj.minute());
-	Serial.println(clockSecondObj.second());
-}

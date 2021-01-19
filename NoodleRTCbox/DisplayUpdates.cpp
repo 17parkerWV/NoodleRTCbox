@@ -30,22 +30,15 @@ void DisplayClass::schedulesSubMenu() {
 	OLED.display();
 	OLED.setTextSize(1);
 	OLED.setCursor(80, 8);
-	OLED.print(F("# - back"));
+	OLED.print(F("# - Back"));
 	OLED.setCursor(0, 16);
-	OLED.print(F("1: Set Schedules"));
+	OLED.print(F("1: Set/Clear Schedule"));
 	OLED.setCursor(0, 25);
-	OLED.print(F("2: Show Set Schedule"));
+	OLED.print(F("2: View schedule"));
 	OLED.setCursor(0, 34);
-	OLED.print(F("3: Enable/Disable\n   schedules"));
+	OLED.print(F("3: Nothing here..."));
 	OLED.setCursor(0, 52);
 	OLED.print(F("4: Complete disable"));
-	OLED.display();
-}
-
-void DisplayClass::enableDisableScheduleScreen() {
-	OLED.setTextSize(1);
-	OLED.setCursor(0, 0);
-	OLED.print(F("Allow schedule to be set?  * - back"));
 	OLED.display();
 }
 
