@@ -73,8 +73,6 @@ public:
 	void setPoweredState();
 
 	//***SCHEDULE FUNCTIONS***//
-		//flip the state of the scheduleSetFlag. sets override flag FALSE. powered must be FALSE
-	void flipScheduleSetFlag();
 		//Set the schedule set flag
 	void setScheduleSetFlag();
 		//Clear the schedule set flag

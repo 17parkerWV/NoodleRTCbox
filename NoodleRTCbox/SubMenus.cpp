@@ -85,6 +85,31 @@ void SubMenu::timeControl(int currentDay, int currentHour, int currentMinute) {
 		//if (powerArray[0].scheudles.tempOverrideStarted == false) {check if there is a schedule that should be going}
 	}
 
+	//POWER OBJECT 1//
+	if (powerArray[1].getTempOverrideStatus() == true) {
+		if ((powerArray[1].schedules.tempOverrideHour == currentHour) && (powerArray[1].schedules.tempOverrideMinute == currentMinute)) {
+			powerArray[1].setTempOverrideStarted();
+			digitalWrite(powerArray[1].schedules.relayPin, powerArray[1].getTempOverrideState());
+		}
+		if (powerArray[1].getTempOverrideStartedStatus() == true) {
+			if ((powerArray[1].schedules.tempOverrideOffHour <= currentHour) && (powerArray[1].schedules.tempOverrideOffMinute <= currentMinute))
+				powerArray[1].clearTempOverrideFlag();
+		}
+		//if (powerArray[1].scheudles.tempOverrideStarted == false) {check if there is a schedule that should be going}
+	}
+
+	//POWER OBJECT 2//
+	if (powerArray[2].getTempOverrideStatus() == true) {
+		if ((powerArray[2].schedules.tempOverrideHour == currentHour) && (powerArray[2].schedules.tempOverrideMinute == currentMinute)) {
+			powerArray[2].setTempOverrideStarted();
+			digitalWrite(powerArray[2].schedules.relayPin, powerArray[2].getTempOverrideState());
+		}
+		if (powerArray[2].getTempOverrideStartedStatus() == true) {
+			if ((powerArray[2].schedules.tempOverrideOffHour <= currentHour) && (powerArray[2].schedules.tempOverrideOffMinute <= currentMinute))
+				powerArray[2].clearTempOverrideFlag();
+		}
+		//if (powerArray[2].scheudles.tempOverrideStarted == false) {check if there is a schedule that should be going}
+	}
 }
 ////------END FUNCTIONS FOR THE ISR------////
 
@@ -157,11 +182,11 @@ void SubMenu::displayConfirmationScreen() {
 void SubMenu::displayScheduleSetFlagStatus() {
 	for (int spot = 0; spot <= 3; spot++) {
 		subMenuDisplayObject.OLED.setCursor(22, 16 + (spot * 12));
-		subMenuDisplayObject.OLED.println(powerArray[spot].getScheduleSetFlagStatus() ? "YES" : "NO");
+		subMenuDisplayObject.OLED.println(powerArray[spot].getScheduleSetFlagStatus() ? "SET" : "OFF");
 	}
 	for (int spot = 0; spot <= 3; spot++) {
 		subMenuDisplayObject.OLED.setCursor(86, 16 + (spot * 12));
-		subMenuDisplayObject.OLED.println(powerArray[spot + 4].getScheduleSetFlagStatus() ? "YES" : "NO");
+		subMenuDisplayObject.OLED.println(powerArray[spot + 4].getScheduleSetFlagStatus() ? "SET" : "OFF");
 	}
 	subMenuDisplayObject.OLED.display();
 }
@@ -346,28 +371,28 @@ void SubMenu::manualOnOffSubMenu() {
 		}
 	}
 }
-//Main Menu --> A --> 3. Waits for input. Flips the scheduleSetFlag if (powered == false)
+//Main Menu --> A --> 3. Waits for input. Clears the scheduleSetFlag if (powered == false)
 void SubMenu::enableDisableSchedulesSubMenu() {
 	while (1) {
 		byte buttonByte = buttonPoll();
 		if ((buttonByte & COL_BITS) == COL_1) {
 			if (buttonByte == NUM_PAD_1) {
-				if (powerArray[0].getPowerStatus() == false) {
-					powerArray[0].flipScheduleSetFlag();
+				if (powerArray[0].getScheduleSetFlagStatus() == true) {
+					powerArray[0].clearScheduleSetFlag();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayScheduleSetFlagStatus();
 				}
 			}
 			if (buttonByte == NUM_PAD_4) {
-				if (powerArray[3].getPowerStatus() == false) {
-					powerArray[3].flipScheduleSetFlag();
+				if (powerArray[3].getScheduleSetFlagStatus() == true) {
+					powerArray[3].clearScheduleSetFlag();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayScheduleSetFlagStatus();
 				}
 			}
 			if (buttonByte == NUM_PAD_7) {
-				if (powerArray[6].getPowerStatus() == false) {
-					powerArray[6].flipScheduleSetFlag();
+				if (powerArray[6].getScheduleSetFlagStatus() == true) {
+					powerArray[6].clearScheduleSetFlag();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayScheduleSetFlagStatus();
 				}
@@ -377,22 +402,22 @@ void SubMenu::enableDisableSchedulesSubMenu() {
 		}
 		if ((buttonByte & COL_BITS) == COL_2) {
 			if (buttonByte == NUM_PAD_2) {
-				if (powerArray[1].getPowerStatus() == false) {
-					powerArray[1].flipScheduleSetFlag();
+				if (powerArray[1].getScheduleSetFlagStatus() == true) {
+					powerArray[1].clearScheduleSetFlag();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayScheduleSetFlagStatus();
 				}
 			}
 			if (buttonByte == NUM_PAD_5) {
-				if (powerArray[4].getPowerStatus() == false) {
-					powerArray[4].flipScheduleSetFlag();
+				if (powerArray[4].getScheduleSetFlagStatus() == true) {
+					powerArray[4].clearScheduleSetFlag();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayScheduleSetFlagStatus();
 				}
 			}
 			if (buttonByte == NUM_PAD_8) {
-				if (powerArray[7].getPowerStatus() == false) {
-					powerArray[7].flipScheduleSetFlag();
+				if (powerArray[7].getScheduleSetFlagStatus() == true) {
+					powerArray[7].clearScheduleSetFlag();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayScheduleSetFlagStatus();
 				}
@@ -400,15 +425,15 @@ void SubMenu::enableDisableSchedulesSubMenu() {
 		}
 		if ((buttonByte & COL_BITS) == COL_3) {
 			if (buttonByte == NUM_PAD_3) {
-				if (powerArray[2].getPowerStatus() == false) {
-					powerArray[2].flipScheduleSetFlag();
+				if (powerArray[2].getScheduleSetFlagStatus() == true) {
+					powerArray[2].clearScheduleSetFlag();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayScheduleSetFlagStatus();
 				}
 			}
 			if (buttonByte == NUM_PAD_6) {
-				if (powerArray[5].getPowerStatus() == false) {
-					powerArray[5].flipScheduleSetFlag();
+				if (powerArray[5].getScheduleSetFlagStatus() == true) {
+					powerArray[5].clearScheduleSetFlag();
 					subMenuDisplayObject.clearRelayUpdate();
 					displayScheduleSetFlagStatus();
 				}

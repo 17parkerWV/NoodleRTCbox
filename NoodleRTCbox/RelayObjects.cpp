@@ -67,15 +67,6 @@ void Relay::off(void) {
 	schedules.manualOverrideFlag = true;
 }
 
-//schedules.powered MUST BE FALSE GOING INTO THIS, TO PREVENT COLLISION BETWEEN SCHEDULED POWER and this one
-//This sets manualOverrideFlag to FALSE and can only set it to FALSE
-//Can only be called if powered is FALSE, at that point this can override the manualOverrideFlag (irony?) to prevent the schedule from being overwritten
-//Only to be used in the set flag screen where you can enable/disable all 8 over and over again
-void Relay::flipScheduleSetFlag() {
-	schedules.manualOverrideFlag = false;
-	schedules.scheduleSetFlag = (!schedules.scheduleSetFlag);
-}
-
 bool Relay::getScheduleSetFlagStatus() {
 	return schedules.scheduleSetFlag;
 }

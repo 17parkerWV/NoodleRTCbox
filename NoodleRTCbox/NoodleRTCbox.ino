@@ -86,6 +86,7 @@ void temporaryOverride();
 //Show the time and duration of the current overrides
 void temporaryOverrideStatus();
 
+
 ISR(INT4_vect) {
 	//flips the BUILT IN LED HIGH when it starts and turns it off when it leaves
 	if (counter >= 2) {
@@ -272,7 +273,7 @@ void temporaryOverrideStatus() {
 	subMenuObj.tempOverrideStatusWhileLoop();
 	subMenuObj.displayTempOverrideSubMenu();
 }
-//Main Menu -> A -> 3. Menu where scheduleSetFlag is flipped, if relay's powered == false
+//Main Menu -> A -> 3. Menu where scheduleSetFlag is viewed/cleared ONLY
 void enableDisableScheduleSubMenu() {
 	subMenuObj.displayEightRelayNumbers();
 	subMenuObj.displayEnableDisableScheduleScreen();
