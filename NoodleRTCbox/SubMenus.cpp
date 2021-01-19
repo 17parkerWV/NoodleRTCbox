@@ -79,7 +79,7 @@ void SubMenu::timeControl(int currentDay, int currentHour, int currentMinute) {
 			digitalWrite(powerArray[0].schedules.relayPin, powerArray[0].getTempOverrideState());
 		}
 		if (powerArray[0].getTempOverrideStartedStatus() == true) {
-			if ((powerArray[0].schedules.tempOverrideOffHour <= currentHour) && (powerArray[0].schedules.tempOverrideOffMinute <= currentMinute))
+			if ((powerArray[0].schedules.tempOverrideOffHour <= currentHour) && (powerArray[0].schedules.tempOverrideOffMinute < currentMinute))
 				powerArray[0].clearTempOverrideFlag();
 		}
 		//if (powerArray[0].scheudles.tempOverrideStarted == false) {check if there is a schedule that should be going}
@@ -905,13 +905,13 @@ void SubMenu::promptTempOverrideTime(int object) {
 	subMenuDisplayObject.enterStartingHour();
 	int hours = inputTime();
 	if (hours == -1) {
-		subMenuDisplayObject.displayError("Cancelled");
+		subMenuDisplayObject.displayError(F("Canceled"));
 		delayWithoutDelay(1500);
 		return;
 	}
 	hours = verifyHour(hours);
 	if (hours == -1) {
-		subMenuDisplayObject.displayError("Invalid\nhour");
+		subMenuDisplayObject.displayError(F("Invalid\nhour"));
 		delayWithoutDelay(1500);
 		return;
 	}
@@ -920,9 +920,12 @@ void SubMenu::promptTempOverrideTime(int object) {
 	subMenuDisplayObject.enterStartingMinute();
 	powerArray[object].schedules.tempOverrideHour = hours;
 	int minutes = inputTime();
+	if (minutes == -1) {
+		subMenuDisplayObject.displayError(F("Canceled"));
+	}
 	minutes = verifyMinute(minutes);
 	if (minutes == -1) {
-		subMenuDisplayObject.displayError("Invalid\nminutes");
+		subMenuDisplayObject.displayError(F("Invalid\nminutes"));
 		delayWithoutDelay(1500);
 		return;
 	}
@@ -931,18 +934,20 @@ void SubMenu::promptTempOverrideTime(int object) {
 	subMenuDisplayObject.enterDuration();
 	int duration = inputDuration();
 	if (duration == -1) {
-		subMenuDisplayObject.displayError("Cancelled");
+		subMenuDisplayObject.displayError(F("Canceled"));
 		delayWithoutDelay(1500);
 		return;
 	}
 	duration = verifyDuration(duration);
 	if (duration == -1) {
-		subMenuDisplayObject.displayError("Invalid\nDuration");
+		subMenuDisplayObject.displayError(F("Invalid\nDuration"));
 		delayWithoutDelay(1500);
 		return;
 	}
-	powerArray[object].schedules.tempOverrideOffMinute = (duration + powerArray[object].schedules.tempOverrideMinute) % 60;	//stores the minute it is OFF
-	int tempHourVar = (duration / 60);										//stores the hour override is OFF
+	powerArray[object].schedules.tempOverrideOffMinute = (duration + powerArray[object].schedules.tempOverrideMinute) % 60;	//stores the minute it will turn OFF
+	int tempHourVar = (duration / 60);
+	if (((duration % 60) + powerArray[object].schedules.tempOverrideMinute) > 59)
+		tempHourVar++;		//Add one hour if the minutes overflow
 	powerArray[object].schedules.tempOverrideOffHour = (powerArray[object].schedules.tempOverrideHour + tempHourVar) % 24;
 	powerArray[object].schedules.tempOverrideOffDayOffset = (powerArray[object].schedules.tempOverrideHour + tempHourVar) / 24;	//whether or not there is a day overflow
 	powerArray[object].schedules.tempOverrideDuration = duration;
