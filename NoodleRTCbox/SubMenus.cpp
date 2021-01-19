@@ -79,7 +79,7 @@ void SubMenu::timeControl(int currentDay, int currentHour, int currentMinute) {
 			digitalWrite(powerArray[0].schedules.relayPin, powerArray[0].getTempOverrideState());
 		}
 		if (powerArray[0].getTempOverrideStartedStatus() == true) {
-			if ((powerArray[0].schedules.tempOverrideOffHour <= currentHour) && (powerArray[0].schedules.tempOverrideOffMinute < currentMinute))
+			if ((powerArray[0].schedules.tempOverrideOffHour <= currentHour) && (powerArray[0].schedules.tempOverrideOffMinute <= currentMinute))
 				powerArray[0].clearTempOverrideFlag();
 		}
 		//if (powerArray[0].scheudles.tempOverrideStarted == false) {check if there is a schedule that should be going}
