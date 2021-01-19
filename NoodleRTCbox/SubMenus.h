@@ -74,8 +74,6 @@ public:
 	void completeOffSubMenu();
 
 	//SCHEDULE RELATED FUNCTIONS
-	//Triggered by the interrupts, this will run through the objects' schedules and flags to see if something should be on or off
-	void checkSchedule();
 	//Submenu for getting answer to "Are you sure?"
 	bool confirmationSubMenu();
 
@@ -102,8 +100,7 @@ public:
 	int verifyDuration(int);
 
 	//FUNCTIONS FOR THE ISR
-	bool isInTempOverrideRange();
-	bool isInScheduleSetRange();
+	void timeControl(int, int, int);
 
 private:
 	Relay powerArray[8];

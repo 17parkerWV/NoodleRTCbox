@@ -90,12 +90,15 @@ void Relay::clearScheduleSetFlag() {
 	schedules.manualOverrideFlag = false; //Redundant, it should be false already to be able to clear scheduleSetFlag
 }
 
-////------TEMPORARY OVERRIDE FUNCTIONS------//
+////------TEMPORARY OVERRIDE FUNCTIONS------
 
-//Clears the temp override flag, AND the manual override flag
+//Clears the temp override flag, AND the manual override flag, and the tempOverrideStartedFlag AND turns relay off if there is no schedule set at the moment
 void Relay::clearTempOverrideFlag() {
 	clearManualOverrideFlag();
 	schedules.tempOverrideFlag = false;
+	clearTempOverrideStarted();
+	if (schedules.scheduleSetFlag == false)
+		digitalWrite(schedules.relayPin, HIGH);
 }
 
 void Relay::setTempOverrideFlag() {
@@ -103,7 +106,23 @@ void Relay::setTempOverrideFlag() {
 	schedules.tempOverrideFlag = true;
 }
 
+byte Relay::getTempOverrideState() {
+	return schedules.tempOverrideState;
+}
+
 bool Relay::getTempOverrideStatus() {
 	return schedules.tempOverrideFlag;
+}
+
+void Relay::setTempOverrideStarted() {
+	schedules.tempOverrideStarted = true;
+}
+
+void Relay::clearTempOverrideStarted() {
+	schedules.tempOverrideStarted = false;
+}
+
+bool Relay::getTempOverrideStartedStatus() {
+	return schedules.tempOverrideStarted;
 }
 ////------TEMPORARY OVERRIDE FUNCTIONS------//

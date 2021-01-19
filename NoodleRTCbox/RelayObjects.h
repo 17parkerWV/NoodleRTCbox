@@ -41,6 +41,15 @@
 #define ROW_IN_COL_OUT COL_BITS
 #define COL_IN_ROW_OUT ROW_BITS
 
+#define DIGITAL_PIN_42 (1<<7)	//Pin 42, PL7
+#define DIGITAL_PIN_43 (1<<0)	//Pin 43, PD0
+#define DIGITAL_PIN_44 (1<<5)	//Pin 44, PL5
+#define DIGITAL_PIN_45 (1<<4)	//Pin 45, PL4
+#define DIGITAL_PIN_46 (1<<3)	//Pin 46, PL3
+#define DIGITAL_PIN_47 (1<<2)	//Pin 47, PL2
+#define DIGITAL_PIN_48 (1<<1)	//Pin 48, PL1
+#define DIGITAL_PIN_49 (1<<0)	//Pin 49, PL0
+
 class Relay {
 public:
 	friend class SubMenu;
@@ -91,6 +100,15 @@ public:
 	void setTempOverrideFlag();
 		//Get the status of the tempoverride flag
 	bool getTempOverrideStatus();
+		//get the state the override is in
+	byte getTempOverrideState();
+
+		//set the status of the tempOverrideStarted flag
+	void setTempOverrideStarted();
+		//clear the status of the tempOverrideStarted flag
+	void clearTempOverrideStarted();
+		//return the status of the tempOverrideStarted flag
+	bool getTempOverrideStartedStatus();
 
 private:
 		//This struct is going to hold the scheduled times, mostly initialized because none of this needs to be initailized differently
@@ -116,13 +134,16 @@ private:
 			//These three store the hour and minute of the start of the temporary override, and the end time
 		int tempOverrideHour = 0;				
 		int tempOverrideMinute = 0;		
+		int tempOverrideOffDayOffset = 0;
 		int tempOverrideOffHour = 0;
 		int tempOverrideOffMinute = 0;
 			//Whether there is a temporary override in place
 		bool tempOverrideFlag = false;
+			//There are a lot of little issues that can come up and these flags will keep track if override has started/in progress
+		bool tempOverrideStarted = false;
 			//how long the temp override should last
 		int tempOverrideDuration = 0;
-			//Whether the temporary override is ON (1) or OFF (0)
+			//Whether the temporary override is ON (0) or OFF (1)	IT IS LIKE THIS BECAUSE THE RELAYS ARE "ACTIVE LOW"
 		byte tempOverrideState = 0b00000000;
 			//number of the physical pin the corresponding relay is connected to
 		int relayPin;						

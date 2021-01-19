@@ -44,9 +44,9 @@ DateTime clockSecondObj;
 SubMenu subMenuObj;
 
 //These are for the interrupt
+#define BUILT_IN_LED (1<<7)		//digital pin 13, PB7
 #define DIGITAL_PIN_2 (1<<4)	//(OC3B/INT4) Port E bit 4
-volatile byte counter = 0b00000000;
-volatile byte state = 0b00000001;
+volatile int counter = 0;
 
 
 ////------MISC------////
@@ -87,9 +87,16 @@ void temporaryOverride();
 void temporaryOverrideStatus();
 
 ISR(INT4_vect) {
-	
-	digitalWrite(13, state);
-	state ^= (0b00000001);
+	//flips the BUILT IN LED HIGH when it starts and turns it off when it leaves
+	if (counter >= 2) {
+		PORTB ^= BUILT_IN_LED;
+		subMenuObj.timeControl(clockSecondObj.day(), clockSecondObj.hour(), clockSecondObj.minute());
+		counter = 0;
+	}
+	else {
+		counter++;
+	}
+	//PORTB ^= BUILT_IN_LED;
 }
 
 void setup() {
@@ -103,8 +110,8 @@ void setup() {
 		errorQuit(2);
 
 	//FOR THE INTERRUPTS
-	pinMode(13, OUTPUT);
-	digitalWrite(13, LOW);
+	DDRB |= BUILT_IN_LED;		//set PB7 (digital pin 13) as output
+	PORTB =0b00000000;			//write digital pin 13 LOW and the other pins are INPUTS without the PULLUP
 	clockObj.writeSqwPinMode(DS3231_SquareWave1Hz);	//Enable the 1Hz squarewave clock
 	DDRE = 0b00000000;	//All bit in port E are inputs
 	EIMSK = 0b00000000;	//All interrupts are masked out (recommended in the datasheet)

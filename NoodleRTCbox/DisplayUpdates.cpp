@@ -179,6 +179,8 @@ void DisplayClass::enterStartingHour() {
 	OLED.setCursor(0, 0);
 	OLED.print(F("Enter starting hour  using 24 hour format Press STAR to cancel Press D when done"));
 	OLED.fillRect(0, 32, 128, 48, BLACK);
+	OLED.setCursor(0, 52);
+	OLED.print(F("24 HOUR FORMAT ONLY"));
 	OLED.display();
 }
 
@@ -222,13 +224,13 @@ void DisplayClass::enterPowerState() {
 
 void DisplayClass::printTime(int time, int loopCount) {
 	OLED.setCursor(0, 0);
-	OLED.fillRect(0, 32, 128, 48, BLACK);
+	OLED.fillRect(0, 32, 128, 20, BLACK);
 	OLED.display();
 	OLED.setTextSize(2);
-	OLED.setCursor(48, 42);
+	OLED.setCursor(48, 35);
 	OLED.print(time);
 	if (loopCount == 1)
-		OLED.fillRect(58, 32, 16, 32, BLACK);
+		OLED.fillRect(58, 32, 16, 20, BLACK);
 	OLED.display();
 }
 
@@ -288,7 +290,7 @@ void DisplayClass::displaySingleObjectTempOverrideStatus(int hour, int minute, i
 		OLED.println(F("          PM"));
 	}
 	OLED.print(F("Forced state: "));
-	OLED.println((state == 1) ? "ON" : "OFF");
+	OLED.println((state == 0) ? "ON" : "OFF");
 	OLED.print(F("For "));
 	OLED.print(duration);
 	OLED.print(F(" minutes"));

@@ -32,7 +32,7 @@ public:
 	void eightRelayNumbers();
 	//When printing status of relays, this prints black rectangles over them to prevent having to refresh the whole screen
 	void clearRelayUpdate();
-	//In case they input a bogus time
+	//In case they input a bogus time, also good for displaying messages before returning!
 	void displayError(String);
 	//displays 'cleared'
 	void displayCleared();

@@ -70,11 +70,20 @@ void waitForAnyLetterPress() {
 ////------END GENERAL UTILITY FUNCTIONS------////
 
 ////------FUNCTIONS FOR THE ISR------////
-bool SubMenu::isInTempOverrideRange() {
-
-}
-
-bool SubMenu::isInScheduleSetRange() {
+//It is going to be typed out so that I do not have to put it in a FOR loop, it'll look gross though
+void SubMenu::timeControl(int currentDay, int currentHour, int currentMinute) {
+	//POWER OBJECT 0//
+	if (powerArray[0].getTempOverrideStatus() == true) {
+		if ((powerArray[0].schedules.tempOverrideHour == currentHour) && (powerArray[0].schedules.tempOverrideMinute == currentMinute)) {
+			powerArray[0].setTempOverrideStarted();
+			digitalWrite(powerArray[0].schedules.relayPin, powerArray[0].getTempOverrideState());
+		}
+		if (powerArray[0].getTempOverrideStartedStatus() == true) {
+			if ((powerArray[0].schedules.tempOverrideOffHour <= currentHour) && (powerArray[0].schedules.tempOverrideOffMinute <= currentMinute))
+				powerArray[0].clearTempOverrideFlag();
+		}
+		//if (powerArray[0].scheudles.tempOverrideStarted == false) {check if there is a schedule that should be going}
+	}
 
 }
 ////------END FUNCTIONS FOR THE ISR------////
@@ -855,9 +864,9 @@ byte SubMenu::inputPowerState() {	//this should only allow 0 or 1 (or # to cance
 	while (1) {
 		byte buttonPress = buttonPoll();
 		if (buttonPress == NUM_PAD_1)
-			return 1;
-		if (buttonPress == NUM_PAD_0)
 			return 0;
+		if (buttonPress == NUM_PAD_0)
+			return 1;
 		if (buttonPress == NUM_PAD_SHARP)
 			return -1;
 	}
@@ -932,6 +941,10 @@ void SubMenu::promptTempOverrideTime(int object) {
 		delayWithoutDelay(1500);
 		return;
 	}
+	powerArray[object].schedules.tempOverrideOffMinute = (duration + powerArray[object].schedules.tempOverrideMinute) % 60;	//stores the minute it is OFF
+	int tempHourVar = (duration / 60);										//stores the hour override is OFF
+	powerArray[object].schedules.tempOverrideOffHour = (powerArray[object].schedules.tempOverrideHour + tempHourVar) % 24;
+	powerArray[object].schedules.tempOverrideOffDayOffset = (powerArray[object].schedules.tempOverrideHour + tempHourVar) / 24;	//whether or not there is a day overflow
 	powerArray[object].schedules.tempOverrideDuration = duration;
 	//Get the POWER STATE//
 	subMenuDisplayObject.enterPowerState();
@@ -941,7 +954,9 @@ void SubMenu::promptTempOverrideTime(int object) {
 	}
 	powerArray[object].schedules.tempOverrideState = powerState;
 	//FINALIZE - set the flag
+	subMenuDisplayObject.displayError(F("Set"));
 	powerArray[object].setTempOverrideFlag();
+	delayWithoutDelay(1200);
 	return;
 }
 ////------END NON-LOOPING MENU FUNCTIONS/SUB MENU FLOW CONTROL FUNCTIONS------////
