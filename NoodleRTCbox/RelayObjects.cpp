@@ -1,16 +1,12 @@
 #include "RelayObjects.h"
 
 //These functions control power and time
-void Relay::setTimeOn(int mon, int day, int hr, int min) {
-	schedules.monthOn = mon;
-	schedules.dayOn = day;
+void Relay::setTimeOn(int hr, int min) {
 	schedules.hourOn = hr;
 	schedules.minuteOn = min;
 }
 
-void Relay::setTimeOff(int mon, int day, int hr, int min) {
-	schedules.monthOff = mon;
-	schedules.dayOff = day;
+void Relay::setTimeOff(int hr, int min) {
 	schedules.hourOff = hr;
 	schedules.minuteOff = min;
 }
@@ -60,11 +56,12 @@ bool Relay::getManualOverrideFlagStatus() {
 }
 
 void Relay::off(void) {
-	digitalWrite(schedules.relayPin, HIGH);		
-	schedules.powered = false;					
-	schedules.scheduleSetFlag = false;
-	schedules.tempOverrideFlag = false;
-	schedules.manualOverrideFlag = true;
+	digitalWrite(schedules.relayPin, HIGH);
+	clearPoweredState();
+	clearScheduleSetFlag();
+	clearTempOverrideFlag();
+	setManualOverrideFlag();
+	clearTempOverrideStarted();
 }
 
 bool Relay::getScheduleSetFlagStatus() {
@@ -88,7 +85,7 @@ void Relay::clearTempOverrideFlag() {
 	clearManualOverrideFlag();
 	schedules.tempOverrideFlag = false;
 	clearTempOverrideStarted();
-	if (schedules.scheduleSetFlag == false)
+	if (getScheduleSetFlagStatus() == false)
 		digitalWrite(schedules.relayPin, HIGH);
 }
 

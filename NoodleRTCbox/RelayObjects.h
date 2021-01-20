@@ -53,98 +53,94 @@
 class Relay {
 public:
 	friend class SubMenu;
-		//pins of the relays
-	const int relayArrayPins[8] = { 42,43,44,45,46,47,48,49 };	
-		//Turns off specified relay
-	void off(void);								
-		//Sets the time it will turn on
-	void setTimeOn(int, int, int, int);			
-		//sets the time it wil turn off
-	void setTimeOff(int, int, int, int);		
+	//pins of the relays
+	const int relayArrayPins[8] = { 42,43,44,45,46,47,48,49 };
+	//Turns off specified relay
+	void off(void);
+	//Sets the time it will turn on
+	void setTimeOn(int, int);
+	//sets the time it wil turn off
+	void setTimeOff(int, int);
 
 	//***POWERED FUNCTIONS***//
 		//flip the state of power (on or off) and update powered flag
-	void flipPowerState(void);		
-		//Get the powered status of the object
+	void flipPowerState(void);
+	//Return the powered status of the object
 	bool getPowerStatus();
-		//clear the powered status
+	//clear the powered status
 	void clearPoweredState();
-		//set powered state
+	//set powered state
 	void setPoweredState();
 
 	//***SCHEDULE FUNCTIONS***//
 		//Set the schedule set flag
 	void setScheduleSetFlag();
-		//Clear the schedule set flag
+	//Clear the schedule set flag
 	void clearScheduleSetFlag();
-		//return the status of the schedule ste flag
+	//return the status of the schedule ste flag
 	bool getScheduleSetFlagStatus();
 
 	//***MANUAL OVERRIDE FUNCTIONS***//
 		//set the manualoverride Flag
 	void setManualOverrideFlag();
-		//clear the manual override flag
+	//clear the manual override flag
 	void clearManualOverrideFlag();
-		//return the status of the manual override flag
+	//return the status of the manual override flag
 	bool getManualOverrideFlagStatus();
-		//flip the state of the manualOverrideFlag. schedule set flag must be FALSE
+	//flip the state of the manualOverrideFlag. schedule set flag must be FALSE
 	void flipManualOverrideFlag(void);
 
 	//***TEMPORARY OVERRIDE FUNCTIONS***//
 	//The only place where anything temp override is accessed without functions is in displaySingleObjectTempOverrideStatus is in SubMenus.cpp, just for displaying purposes
 	//Clears the temp override flag
 	void clearTempOverrideFlag();
-		//Set the tempoverride flag
+	//Set the tempoverride flag
 	void setTempOverrideFlag();
-		//Get the status of the tempoverride flag
+	//return the status of the tempoverride flag
 	bool getTempOverrideStatus();
-		//get the state the override is in
+	//return the state the override is in
 	byte getTempOverrideState();
 
-		//set the status of the tempOverrideStarted flag
+	//set the status of the tempOverrideStarted flag
 	void setTempOverrideStarted();
-		//clear the status of the tempOverrideStarted flag
+	//clear the status of the tempOverrideStarted flag
 	void clearTempOverrideStarted();
-		//return the status of the tempOverrideStarted flag
+	//return the status of the tempOverrideStarted flag
 	bool getTempOverrideStartedStatus();
 
 private:
-		//This struct is going to hold the scheduled times, mostly initialized because none of this needs to be initailized differently
+	//This struct is going to hold the scheduled times, mostly initialized because none of this needs to be initailized differently
 	struct schedules {
-		int monthOn = 0;
-		int dayOn = 0;
 		int hourOn = 0;
 		int minuteOn = 0;
-		int monthOff = 0;
-		int dayOff = 0;
 		int hourOff = 0;
 		int minuteOff = 0;
-			//Whether or not it is being overridden, flag for other parts of the program
-		bool manualOverrideFlag = true;	
-			//Whether or not it is on or off (for manual override) power state of the relay must be in sync with this flag!!
-		bool powered = false;		
-			//Override flag and powered are more or less local to the override menu, this flag will communicate if a schedule is set
-			//Specifically, if the relay is overriden, it is tripped and can only be reset by setting a schedule again
-			//Rule 1: If the schedule flag is set, it cannot be manually controlled
-			//Rule 2: To set the flag, a schedule must be set
-			//Rule 3: The schedule flag can only be cleared in the schedules menu
+		//Whether or not it is being overridden, flag for other parts of the program
+		bool manualOverrideFlag = true;
+		//Whether or not it is on or off (for manual override) power state of the relay must be in sync with this flag!!
+		bool powered = false;
+		//Override flag and powered are more or less local to the override menu, this flag will communicate if a schedule is set
+		//Specifically, if the relay is overriden, it is tripped and can only be reset by setting a schedule again
+		//Rule 1: If the schedule flag is set, it cannot be manually controlled
+		//Rule 2: To set the flag, a schedule must be set
+		//Rule 3: The schedule flag can only be cleared in the schedules menu
 		bool scheduleSetFlag = false;
-			//These three store the hour and minute of the start of the temporary override, and the end time
-		int tempOverrideHour = 0;				
-		int tempOverrideMinute = 0;		
-		int tempOverrideOffDayOffset = 0;
+		//These three store the hour and minute of the start of the temporary override, and the end time
+		int tempOverrideHour = 0;
+		int tempOverrideMinute = 0;
+		int tempOverrideOffDayOffset = 0;	//NOT SURE if I'll need this one, it would be used to help with hour/day overflow
 		int tempOverrideOffHour = 0;
 		int tempOverrideOffMinute = 0;
-			//Whether there is a temporary override in place
+		//Whether there is a temporary override in place
 		bool tempOverrideFlag = false;
-			//There are a lot of little issues that can come up and these flags will keep track if override has started/in progress
+		//There are a lot of little issues that can come up and these flags will keep track if override has started/in progress
 		bool tempOverrideStarted = false;
-			//how long the temp override should last
+		//how long the temp override should last
 		int tempOverrideDuration = 0;
-			//Whether the temporary override is ON (0) or OFF (1)	IT IS LIKE THIS BECAUSE THE RELAYS ARE "ACTIVE LOW"
+		//Whether the temporary override is ON (0) or OFF (1)	IT IS LIKE THIS BECAUSE THE RELAYS ARE "ACTIVE LOW"
 		byte tempOverrideState = 0b00000000;
-			//number of the physical pin the corresponding relay is connected to
-		int relayPin;						
+		//number of the physical pin the corresponding relay is connected to
+		int relayPin;
 	} schedules;
 };
 #endif 

@@ -17,31 +17,39 @@ void waitForAnyLetterPress();
 
 class SubMenu : public Relay {
 public:
+	//pointers to get functions
+	bool (Relay::* getSchedFlag)() = &Relay::getManualOverrideFlagStatus;
+	bool (Relay::* getTempFlag)();
+	bool (Relay::* getManualFlag)();
+	bool (Relay::* getPower)();
+	bool (Relay::* getTempStarted)();
+
+	//New display header function
+	void displayHeader(String);
+	//new status printer
+	void displayStatuses(bool Relay::*);
+
 	//INITIALIZING
 	//begin() the display and initialize font and text color
 	bool initializeDisplay();
 	//assign the relays their corresponding pin INPUT
 	void initializePins();
 
+
 	//DISPLAYING
 	//displays the selections on the main menu
 	void displayMainMenu();
 	//displays the relay numbers - 1 through 4 on the left, 5 through 8 on the right
 	void displayEightRelayNumbers();
-	//prints the top part of the manual on/off screen, where pressing 1-8 turns on/off corresponding relay. This redirects to the DisplayObject's function
-	void displayManualOnOffScreen();
 	//when you pick option C from the main menu - prints the options to go to on/off menu or enable/disable menu. This redirects to DisplayObject's function
 	void displayManualOverrideSubMenuDisplay();
-	//prints the screen header where pressing 1-8 enables/disables manual control or the relay's power status
-	void displayEnableDisableRelayScreen();
+
 	//prints a black bar over the time to avoid having to clear the display
 	void clearCurrentTime();
 	//displays the current time
 	void displayCurrentTime(int, int);
 	//displays the schedules sub menu and the options
 	void displaySchedulesSubMenuDisplay();
-	//Displays the header info for the screen where the selected relay will be completely wiped
-	void displayCompleteOffScreen();
 	//Asks the user "are you sure?" //Currently unused
 	void displayConfirmationScreen();
 
@@ -66,8 +74,8 @@ public:
 	void enableDisableRelaySubMenu();
 	//waits for button input and turns the relays on/off if conditions are met (this is a while(1) loop)
 	void manualOnOffSubMenu();
-	//The submenu that allows/disallows schedules to be set
-	void enableDisableSchedulesSubMenu();
+	//The submenu that shows the status of set schedules
+	void scheduleSetStatusWhileLoop();
 	//sub menu where selected relay is turned OFF and flags set FALSE
 	void completeOffSubMenu();
 
@@ -76,10 +84,9 @@ public:
 	bool confirmationSubMenu();
 
 	//TEMPORARY OVERRIDE FUNCTIONS
-	void displayTempOverrideScreen();
 	void displayTempOverrideSubMenu();
 	void displayTempOverrideStatus();
-	void displayTempOverrideInfoScreen();
+
 	void tempOverrideStatusWhileLoop();
 	//This is the first while(1) menu, waiting for a relay to be selected (or a cancel)
 	void chooseRelay();

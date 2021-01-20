@@ -14,6 +14,13 @@ void DisplayClass::overrideSubMenuDisplay() {
 	OLED.display();
 }
 
+void DisplayClass::printHeader(String message) {
+	OLED.setTextSize(1);
+	OLED.setCursor(0, 0);
+	OLED.print(message);
+	OLED.display();
+}
+
 void DisplayClass::currentTime(int hour, int min) {
 	OLED.setTextSize(2);
 	OLED.setCursor(0, 0);
@@ -102,26 +109,6 @@ void DisplayClass::clearRelayUpdate() {
 	OLED.display();
 }
 
-void DisplayClass::manualOnOff() {
-	OLED.setTextSize(1);
-	OLED.setCursor(0, 0);
-	OLED.print(F("ON means ON OFF meansOFF, easy   * - back"));
-	OLED.display();
-}
-
-void DisplayClass::enableDisableRelayScreen() {
-	OLED.setTextSize(1);
-	OLED.setCursor(0, 0);
-	OLED.print(F("ON enables manual\ncontrol     * - back"));
-	OLED.display();
-}
-
-void DisplayClass::completeOffScreen() {
-	OLED.setCursor(0, 0);
-	OLED.setTextSize(1);
-	OLED.print(F("Select an outlet to  be reset    * - back"));
-	OLED.display();
-}
 
 void DisplayClass::confirmationScreen() {
 	OLED.clearDisplay();
@@ -135,13 +122,6 @@ void DisplayClass::confirmationScreen() {
 	OLED.display();
 }
 
-//TEMPORARY OVERRIDE FUNCTIONS
-void DisplayClass::temporaryOverrideDisplay() {
-	OLED.setTextSize(1);
-	OLED.setCursor(0, 0);
-	OLED.print(F("Select an outlet\n* - back"));
-	OLED.display();
-}
 
 void DisplayClass::confirmClearTempOverride() {
 	OLED.clearDisplay();
@@ -251,13 +231,6 @@ void DisplayClass::tempOverrideSubMenu() {
 	OLED.display();
 }
 
-void DisplayClass::tempOverrideStatus() {
-	OLED.setCursor(0, 0);
-	OLED.setTextSize(1);
-	OLED.println(F("Choose one to show\nstatus   * - back"));
-	OLED.display();
-}
-
 void DisplayClass::displaySingleObjectTempOverrideStatus(int hour, int minute, int duration, byte state) {
 	OLED.clearDisplay();
 	OLED.display();
@@ -292,3 +265,9 @@ void DisplayClass::displaySingleObjectTempOverrideStatus(int hour, int minute, i
 	OLED.display();
 }
 //END TEMPORARY OVERRIDE MENU
+
+//SCHEDULES DISPLAYS
+void DisplayClass::displaySingleObjectScheduleStatus(int hourOn, int minOn, int hourOff, int minOff) {
+
+}
+//END SCHEDULES DISPLAYS

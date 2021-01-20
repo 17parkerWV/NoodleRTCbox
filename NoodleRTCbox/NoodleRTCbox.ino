@@ -68,8 +68,10 @@ void updateCurrentTime();
 void manualOverrideSubMenu();
 //From the main menu - press A to get to the schedules menu
 void schedulesSubMenu();
-//Displays the title info for the enable/disable schedule submenu
-void enableDisableScheduleSubMenu();
+//Displays the title info for the schedules that are set
+void scheduleSetStatus();
+//Where you go to set a schedule
+void setScheduleSubMenu();
 //Shows options in the temporaryOverrideSubMenu
 void temporaryOverrideSubMenu();
 //completely turns off everything about a relay
@@ -97,6 +99,7 @@ ISR(INT4_vect) {
 
 void setup() {
 	subMenuObj.initializePins();		//Initializes the relay pins and sets them as OUTPUT and turns them off()
+	subMenuObj.initializeFunctionPtrs();
 	if (subMenuObj.initializeDisplay() == false) {		//Initializes the display object and also checks to make sure it began (begin())
 		//Error message, maybe a colored LED?
 	}
@@ -193,21 +196,14 @@ void schedulesSubMenu() {
 		currentMillis = millis();
 		while ((millis() - currentMillis) <= 5000L) {
 			byte buttonPress = buttonPoll();
-			if ((buttonPress & ROW_BITS) == ROW_1) {
-				if (buttonPress == NUM_PAD_1) {
-
-				}
-				if (buttonPress == NUM_PAD_2) {	//View schedules
-
-				}
-				if (buttonPress == NUM_PAD_3) {		//clear schedules
-					enableDisableScheduleSubMenu();
-				}
-			}
-			if (buttonPress == NUM_PAD_4) {
+			if (buttonPress == NUM_PAD_1) 		//Set new schedule
+				setScheduleSubMenu();
+			if (buttonPress == NUM_PAD_2) 		//View schedules
+				scheduleSetStatus();
+			//if (buttonPress == NUM_PAD_3) 	//Nothing here....	
+			if (buttonPress == NUM_PAD_4) 		//Disable everything
 				completeOffSubMenu();
-			}
-			if (buttonPress == NUM_PAD_SHARP)
+			if (buttonPress == NUM_PAD_SHARP)	//Quit back
 				return;
 		}
 		updateClockObj();
@@ -242,15 +238,17 @@ void [SubMenuOption]{
 //Main Menu -> C -> 1. Menu where manualOverrideFlag is flipped for each relay
 void enableDisableRelay() {
 	subMenuObj.displayEightRelayNumbers();
-	subMenuObj.displayEnableDisableRelayScreen();
+	subMenuObj.displayHeader(F("ON enables manual\ncontrol     * - back"));
 	subMenuObj.displayOverrideFlagStatus();
 	subMenuObj.enableDisableRelaySubMenu();
 	subMenuObj.displayManualOverrideSubMenuDisplay();
+
+	subMenuObj.displayStatuses(&(subMenuObj.getPower));
 }
 //MainMenu -> C -> 2. Menu where power state of relay is flipped, if manualOverrideFlag == false
 void manualOnOff() {
 	subMenuObj.displayEightRelayNumbers();
-	subMenuObj.displayManualOnOffScreen();
+	subMenuObj.displayHeader(F("ON means ON OFF meansOFF, easy   * - back"));
 	subMenuObj.displayOnOffStatus();
 	subMenuObj.manualOnOffSubMenu();
 	subMenuObj.displayManualOverrideSubMenuDisplay();
@@ -258,7 +256,7 @@ void manualOnOff() {
 //Main Menu -> B -> 1. Menu where tempOverrideFlag is flipped
 void temporaryOverride() {
 	subMenuObj.displayEightRelayNumbers();
-	subMenuObj.displayTempOverrideScreen();
+	subMenuObj.displayHeader(F("Select an outlet\n* - back"));
 	subMenuObj.displayTempOverrideStatus();
 	subMenuObj.chooseRelay();
 	subMenuObj.displayTempOverrideSubMenu();
@@ -266,23 +264,30 @@ void temporaryOverride() {
 //Main Menu -> B -> 2. Menu where a relay is selected and its tempOverride status is shown
 void temporaryOverrideStatus() {
 	subMenuObj.displayEightRelayNumbers();
-	subMenuObj.displayTempOverrideInfoScreen();
+	subMenuObj.displayHeader(F("Choose one to show\nstatus   * - back"));
 	subMenuObj.displayTempOverrideStatus();
 	subMenuObj.tempOverrideStatusWhileLoop();
 	subMenuObj.displayTempOverrideSubMenu();
 }
-//Main Menu -> A -> 3. Menu where scheduleSetFlag is viewed/cleared ONLY
-void enableDisableScheduleSubMenu() {
+//Main Manu -> A -> 1. Menu where schedule is set (or cleared if one exists)
+void setScheduleSubMenu() {
 	subMenuObj.displayEightRelayNumbers();
+
+
+}
+//Main Menu -> A -> 2. Menu where set schedule is viewed
+void scheduleSetStatus() {
+	subMenuObj.displayEightRelayNumbers();
+	subMenuObj.displayHeader(F("Choose one to show\nstatus * -back"));
 	subMenuObj.displayScheduleSetFlagStatus();
-	subMenuObj.enableDisableSchedulesSubMenu();
+	subMenuObj.scheduleSetStatusWhileLoop();
 	subMenuObj.displaySchedulesSubMenuDisplay();
 	updateCurrentTime();
 }
 //Main Menu -> A -> 4.
 void completeOffSubMenu() {
 	subMenuObj.displayEightRelayNumbers();
-	subMenuObj.displayCompleteOffScreen();
+	subMenuObj.displayHeader(F("Select an outlet to  be reset    * - back"));
 	subMenuObj.completeOffSubMenu();
 	subMenuObj.displaySchedulesSubMenuDisplay();
 	updateCurrentTime();

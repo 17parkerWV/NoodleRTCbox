@@ -18,6 +18,10 @@ bool SubMenu::initializeDisplay() {
 	subMenuDisplayObject.OLED.setTextColor(WHITE);
 	return true;
 }
+//Prints the header for the screen
+void SubMenu::displayHeader(String message) {
+	subMenuDisplayObject.printHeader(message);
+}
 //Initializes the relay objects with the physical pins they control
 void SubMenu::initializePins() {
 	for (int i = 0; i <= 7; i++) {
@@ -135,22 +139,13 @@ void SubMenu::displayMainMenu() {
 void SubMenu::displayEightRelayNumbers() {
 	subMenuDisplayObject.eightRelayNumbers();
 }
-//Main Menu --> C --> 2. Displays the header info for the screen where you turn relays on and off. (NOT the flags, but FLAGS need to be true to turn on)
-void SubMenu::displayManualOnOffScreen() {
-	subMenuDisplayObject.manualOnOff();
-}
+
 //Main Menu --> C. Displays the menu items for the OverrideFlagSubMenu
 void SubMenu::displayManualOverrideSubMenuDisplay() {
 	subMenuDisplayObject.overrideSubMenuDisplay();
 }
-//Main Menu --> C --> 1. Displays the header info for the screen where you flip the overrideFlag for the objects. (NOT the relays, these allow relays to go ON/OFF)
-void SubMenu::displayEnableDisableRelayScreen() {
-	subMenuDisplayObject.enableDisableRelayScreen();
-}
-//Main Menu --> B --> 1. Displays the header for the screen where you choose an object to set a temporary override
-void SubMenu::displayTempOverrideScreen() {
-	subMenuDisplayObject.temporaryOverrideDisplay();
-}
+
+
 //Clears the screen and displays "Cleared". So far, used to confirm that a variable/flag has been cleared
 void SubMenu::displayCleared() {
 	subMenuDisplayObject.displayCleared();
@@ -160,14 +155,8 @@ void SubMenu::displayCleared() {
 void SubMenu::displayTempOverrideSubMenu() {
 	subMenuDisplayObject.tempOverrideSubMenu();
 }
-//Main Menu --> B --> 2. Displays the header info for the screen where you select an object to have its Temp Override status/info shown on screen
-void SubMenu::displayTempOverrideInfoScreen() {
-	subMenuDisplayObject.tempOverrideStatus();
-}
-//Main Menu --> A --> 4. Displays the header info for the screen where the selected relay is completely reset
-void SubMenu::displayCompleteOffScreen() {
-	subMenuDisplayObject.completeOffScreen();
-}
+
+
 //Displays "are you sure?"
 void SubMenu::displayConfirmationScreen() {
 	subMenuDisplayObject.confirmationScreen();
@@ -175,7 +164,7 @@ void SubMenu::displayConfirmationScreen() {
 ////------END subMenuDisplayObject DISPLAYING FUNCTIONS------////
 
 ////------DISPLAY STATUS UPDATE FUNCTIONS------////
-//Print the status of the 8 objects' scheduleSetFlag, YES if schedule is set, NO if not. Used with displayEightRelayNumbers
+//Print the status of the 8 objects' scheduleSetFlag, SET if schedule is set, OFF if not. Used with displayEightRelayNumbers
 void SubMenu::displayScheduleSetFlagStatus() {
 	for (int spot = 0; spot <= 3; spot++) {
 		subMenuDisplayObject.OLED.setCursor(22, 16 + (spot * 12));
@@ -187,6 +176,19 @@ void SubMenu::displayScheduleSetFlagStatus() {
 	}
 	subMenuDisplayObject.OLED.display();
 }
+void SubMenu::displayStatuses(bool Relay::*func) {
+	for (int spot = 0; spot <= 3; spot++) {
+		subMenuDisplayObject.OLED.setCursor(22, 16 + (spot * 12));
+		subMenuDisplayObject.OLED.println((powerArray[spot].*func) ? "ON" : "OFF");
+	}
+	for (int spot = 0; spot <= 3; spot++) {
+		subMenuDisplayObject.OLED.setCursor(86, 16 + (spot * 12));
+		subMenuDisplayObject.OLED.println((powerArray[spot + 4].*func) ? "ON" : "OFF");
+	}
+	subMenuDisplayObject.OLED.display();
+}
+
+
 //Print the status of the 8 objects' manualOverrideFlag. ON means manual control (ON/OFF) is allowed, OFF means it is not. Used with displayEightRelayNumbers
 void SubMenu::displayOverrideFlagStatus() {
 	for (int spot = 0; spot <= 3; spot++) {
@@ -368,71 +370,71 @@ void SubMenu::manualOnOffSubMenu() {
 		}
 	}
 }
-//Main Menu --> A --> 3. Waits for input. Clears the scheduleSetFlag if (powered == false)
-void SubMenu::enableDisableSchedulesSubMenu() {
+//Main Menu --> A --> 2. Waits for input. Displays current schedule on chosen relay
+void SubMenu::scheduleSetStatusWhileLoop() {
 	while (1) {
 		byte buttonByte = buttonPoll();
 		if ((buttonByte & COL_BITS) == COL_1) {
 			if (buttonByte == NUM_PAD_1) {
 				if (powerArray[0].getScheduleSetFlagStatus() == true) {
-					powerArray[0].clearScheduleSetFlag();
-					subMenuDisplayObject.clearRelayUpdate();
-					displayScheduleSetFlagStatus();
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(powerArray[0].schedules.hourOn, powerArray[0].schedules.minuteOn, powerArray[0].schedules.hourOff, powerArray[0].schedules.minuteOff);
+					waitForAnyLetterPress();
+					return;
 				}
 			}
 			if (buttonByte == NUM_PAD_4) {
 				if (powerArray[3].getScheduleSetFlagStatus() == true) {
-					powerArray[3].clearScheduleSetFlag();
-					subMenuDisplayObject.clearRelayUpdate();
-					displayScheduleSetFlagStatus();
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(powerArray[3].schedules.hourOn, powerArray[3].schedules.minuteOn, powerArray[3].schedules.hourOff, powerArray[3].schedules.minuteOff);
+					waitForAnyLetterPress();
+					return;
 				}
 			}
 			if (buttonByte == NUM_PAD_7) {
 				if (powerArray[6].getScheduleSetFlagStatus() == true) {
-					powerArray[6].clearScheduleSetFlag();
-					subMenuDisplayObject.clearRelayUpdate();
-					displayScheduleSetFlagStatus();
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(powerArray[6].schedules.hourOn, powerArray[6].schedules.minuteOn, powerArray[6].schedules.hourOff, powerArray[6].schedules.minuteOff);
+					waitForAnyLetterPress();
+					return;
 				}
 			}
 			if (buttonByte == NUM_PAD_STAR)
-				break;
+				return;
 		}
 		if ((buttonByte & COL_BITS) == COL_2) {
 			if (buttonByte == NUM_PAD_2) {
 				if (powerArray[1].getScheduleSetFlagStatus() == true) {
-					powerArray[1].clearScheduleSetFlag();
-					subMenuDisplayObject.clearRelayUpdate();
-					displayScheduleSetFlagStatus();
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(powerArray[1].schedules.hourOn, powerArray[1].schedules.minuteOn, powerArray[1].schedules.hourOff, powerArray[1].schedules.minuteOff);
+					waitForAnyLetterPress();
+					return;
 				}
 			}
 			if (buttonByte == NUM_PAD_5) {
 				if (powerArray[4].getScheduleSetFlagStatus() == true) {
-					powerArray[4].clearScheduleSetFlag();
-					subMenuDisplayObject.clearRelayUpdate();
-					displayScheduleSetFlagStatus();
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(powerArray[4].schedules.hourOn, powerArray[4].schedules.minuteOn, powerArray[4].schedules.hourOff, powerArray[4].schedules.minuteOff);
+					waitForAnyLetterPress();
+					return;
 				}
 			}
 			if (buttonByte == NUM_PAD_8) {
 				if (powerArray[7].getScheduleSetFlagStatus() == true) {
-					powerArray[7].clearScheduleSetFlag();
-					subMenuDisplayObject.clearRelayUpdate();
-					displayScheduleSetFlagStatus();
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(powerArray[7].schedules.hourOn, powerArray[7].schedules.minuteOn, powerArray[7].schedules.hourOff, powerArray[7].schedules.minuteOff);
+					waitForAnyLetterPress();
+					return;
 				}
 			}
 		}
 		if ((buttonByte & COL_BITS) == COL_3) {
 			if (buttonByte == NUM_PAD_3) {
 				if (powerArray[2].getScheduleSetFlagStatus() == true) {
-					powerArray[2].clearScheduleSetFlag();
-					subMenuDisplayObject.clearRelayUpdate();
-					displayScheduleSetFlagStatus();
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(powerArray[2].schedules.hourOn, powerArray[2].schedules.minuteOn, powerArray[2].schedules.hourOff, powerArray[2].schedules.minuteOff);
+					waitForAnyLetterPress();
+					return;
 				}
 			}
 			if (buttonByte == NUM_PAD_6) {
 				if (powerArray[5].getScheduleSetFlagStatus() == true) {
-					powerArray[5].clearScheduleSetFlag();
-					subMenuDisplayObject.clearRelayUpdate();
-					displayScheduleSetFlagStatus();
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(powerArray[5].schedules.hourOn, powerArray[5].schedules.minuteOn, powerArray[5].schedules.hourOff, powerArray[5].schedules.minuteOff);
+					waitForAnyLetterPress();
+					return;
 				}
 			}
 		}
@@ -465,7 +467,6 @@ void SubMenu::tempOverrideStatusWhileLoop() {
 		}
 		if (buttonByte == NUM_PAD_4) {
 			if (powerArray[3].getTempOverrideStatus() == true) {
-
 				subMenuDisplayObject.displaySingleObjectTempOverrideStatus((powerArray[3].schedules.tempOverrideHour), (powerArray[3].schedules.tempOverrideMinute), (powerArray[3].schedules.tempOverrideDuration), (powerArray[3].schedules.tempOverrideState));
 				waitForAnyLetterPress();
 				return;
