@@ -17,24 +17,31 @@ void waitForAnyLetterPress();
 
 class SubMenu : public Relay {
 public:
-	//pointers to get functions
-	bool (Relay::* getSchedFlag)() = &Relay::getManualOverrideFlagStatus;
-	bool (Relay::* getTempFlag)();
-	bool (Relay::* getManualFlag)();
-	bool (Relay::* getPower)();
-	bool (Relay::* getTempStarted)();
+	//return the status of the shecduleSetFlag
+	bool (Relay::* getSchedFlag)() = &Relay::getScheduleSetFlagStatus;
+	//return the status of the tempOverrideFlag (if an override exists)
+	bool (Relay::* getTempFlag)() = &Relay::getTempOverrideStatus;
+	//returns the status of the manualOnOffFlag (if manual on/off is permitted)
+	bool (Relay::* getManualFlag)() = &Relay::getManualOverrideFlagStatus;
+	//return if the relay is on/off
+	bool (Relay::* getPower)() = &Relay::getPowerStatus;
+	//return if the relay is currently in an override
+	bool (Relay::* getTempStarted)() = &Relay::getTempOverrideStartedStatus;
+	//clear the status of the temp override flag
+	void (Relay::* clearTempOverrideFlag)() = &Relay::clearTempOverrideFlag;
+	//clear the status of the schedule set flag
+	void (Relay::* clearScheduleSetFlag)() = &Relay::clearScheduleSetFlag;
 
 	//New display header function
 	void displayHeader(String);
 	//new status printer
-	void displayStatuses(bool Relay::*);
+	void displayStatuses(bool (Relay::*)());
 
 	//INITIALIZING
 	//begin() the display and initialize font and text color
 	bool initializeDisplay();
 	//assign the relays their corresponding pin INPUT
 	void initializePins();
-
 
 	//DISPLAYING
 	//displays the selections on the main menu
@@ -52,16 +59,6 @@ public:
 	void displaySchedulesSubMenuDisplay();
 	//Asks the user "are you sure?" //Currently unused
 	void displayConfirmationScreen();
-
-	//STATUS UPDATES
-	//prints the status of the 8 relay's manualOverrideFlag variable. works in tandem with displayEightRelayNumbers
-	void displayOverrideFlagStatus();
-	//prints the status of the 8 relay's powered variable. works in tandem with displayEightRelayNumbers
-	void displayOnOffStatus();
-	//prints the status of the scheduleFlag
-	void displayScheduleSetFlagStatus();
-	//Prints 'clear'
-	void displayCleared();
 
 	//RELAY OBJECTS
 	//goes through the 8 Relay powerArray[8] objects and makes each one call the member function off()
@@ -85,13 +82,12 @@ public:
 
 	//TEMPORARY OVERRIDE FUNCTIONS
 	void displayTempOverrideSubMenu();
-	void displayTempOverrideStatus();
 
 	void tempOverrideStatusWhileLoop();
 	//This is the first while(1) menu, waiting for a relay to be selected (or a cancel)
-	void chooseRelay();
+	void chooseRelay(bool (Relay::* statusFunc)(), void (Relay::* clearingFunc)());
 	//this is in case you want to clear the tempoverrideflag
-	void confirmClear(Relay*);
+	void confirmClear(Relay*, void (Relay::* clearingFunc)());
 	//Prompt user for starting hour, might be able to overload for use with the schedules setting menu
 	int inputTime();
 	int inputDuration();

@@ -53,6 +53,7 @@
 class Relay {
 public:
 	friend class SubMenu;
+
 	//pins of the relays
 	const int relayArrayPins[8] = { 42,43,44,45,46,47,48,49 };
 	//Turns off specified relay

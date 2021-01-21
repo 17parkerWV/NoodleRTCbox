@@ -99,7 +99,6 @@ ISR(INT4_vect) {
 
 void setup() {
 	subMenuObj.initializePins();		//Initializes the relay pins and sets them as OUTPUT and turns them off()
-	subMenuObj.initializeFunctionPtrs();
 	if (subMenuObj.initializeDisplay() == false) {		//Initializes the display object and also checks to make sure it began (begin())
 		//Error message, maybe a colored LED?
 	}
@@ -132,7 +131,7 @@ void setup() {
 	//Function to notify that all schedules were wiped out
 	subMenuObj.displayMainMenu();
 }
-
+//MAIN MENU***
 void loop() {
 	byte buttonData = buttonPoll();
 	if ((buttonData & COL_BITS) == (COL_4)) {
@@ -239,17 +238,15 @@ void [SubMenuOption]{
 void enableDisableRelay() {
 	subMenuObj.displayEightRelayNumbers();
 	subMenuObj.displayHeader(F("ON enables manual\ncontrol     * - back"));
-	subMenuObj.displayOverrideFlagStatus();
+	subMenuObj.displayStatuses(subMenuObj.getManualFlag);
 	subMenuObj.enableDisableRelaySubMenu();
 	subMenuObj.displayManualOverrideSubMenuDisplay();
-
-	subMenuObj.displayStatuses(&(subMenuObj.getPower));
 }
 //MainMenu -> C -> 2. Menu where power state of relay is flipped, if manualOverrideFlag == false
 void manualOnOff() {
 	subMenuObj.displayEightRelayNumbers();
 	subMenuObj.displayHeader(F("ON means ON OFF meansOFF, easy   * - back"));
-	subMenuObj.displayOnOffStatus();
+	subMenuObj.displayStatuses(subMenuObj.getPower);
 	subMenuObj.manualOnOffSubMenu();
 	subMenuObj.displayManualOverrideSubMenuDisplay();
 }
@@ -257,29 +254,30 @@ void manualOnOff() {
 void temporaryOverride() {
 	subMenuObj.displayEightRelayNumbers();
 	subMenuObj.displayHeader(F("Select an outlet\n* - back"));
-	subMenuObj.displayTempOverrideStatus();
-	subMenuObj.chooseRelay();
+	subMenuObj.displayStatuses(subMenuObj.getTempFlag);
+	subMenuObj.chooseRelay(subMenuObj.getTempFlag, subMenuObj.clearTempOverrideFlag);
 	subMenuObj.displayTempOverrideSubMenu();
 }
 //Main Menu -> B -> 2. Menu where a relay is selected and its tempOverride status is shown
 void temporaryOverrideStatus() {
 	subMenuObj.displayEightRelayNumbers();
 	subMenuObj.displayHeader(F("Choose one to show\nstatus   * - back"));
-	subMenuObj.displayTempOverrideStatus();
+	subMenuObj.displayStatuses(subMenuObj.getTempFlag);
 	subMenuObj.tempOverrideStatusWhileLoop();
 	subMenuObj.displayTempOverrideSubMenu();
 }
 //Main Manu -> A -> 1. Menu where schedule is set (or cleared if one exists)
 void setScheduleSubMenu() {
 	subMenuObj.displayEightRelayNumbers();
-
-
+	subMenuObj.displayHeader(F("Pick one to set \nschedule     * - back"));
+	subMenuObj.displayStatuses(subMenuObj.getSchedFlag);
+	subMenuObj.chooseRelay(subMenuObj.getSchedFlag, subMenuObj.clearScheduleSetFlag);
 }
 //Main Menu -> A -> 2. Menu where set schedule is viewed
 void scheduleSetStatus() {
 	subMenuObj.displayEightRelayNumbers();
 	subMenuObj.displayHeader(F("Choose one to show\nstatus * -back"));
-	subMenuObj.displayScheduleSetFlagStatus();
+	subMenuObj.displayStatuses(subMenuObj.getSchedFlag);
 	subMenuObj.scheduleSetStatusWhileLoop();
 	subMenuObj.displaySchedulesSubMenuDisplay();
 	updateCurrentTime();

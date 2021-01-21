@@ -123,12 +123,12 @@ void DisplayClass::confirmationScreen() {
 }
 
 
-void DisplayClass::confirmClearTempOverride() {
+void DisplayClass::confirmClearFlag() {
 	OLED.clearDisplay();
 	OLED.display();
 	OLED.setCursor(0, 0);
 	OLED.setTextSize(1);
-	OLED.print(F("There is already an\noverride set \nWould you like to\nclear it?\n\nPress A to clear\nPress B to cancel "));
+	OLED.print(F("Something is already set, would you like  to clear it?\nPress A to clear\nPress B to cancel "));
 	OLED.display();
 }
 
@@ -174,15 +174,6 @@ void DisplayClass::enterDuration() {
 	OLED.setCursor(0, 0);
 	OLED.print(F("Enter duration of\noverride in minutes\npress * to cancel\nPress 'D' when done"));
 	OLED.fillRect(0, 40, 128, 48, BLACK);
-	OLED.display();
-}
-
-void DisplayClass::displayCleared() {
-	OLED.clearDisplay();
-	OLED.display();
-	OLED.setTextSize(2);
-	OLED.setCursor(0, 0);
-	OLED.print(F("Cleared"));
 	OLED.display();
 }
 

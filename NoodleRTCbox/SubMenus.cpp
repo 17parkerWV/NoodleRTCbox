@@ -76,43 +76,18 @@ void waitForAnyLetterPress() {
 ////------FUNCTIONS FOR THE ISR------////
 //It is going to be typed out so that I do not have to put it in a FOR loop, it'll look gross though
 void SubMenu::timeControl(int currentDay, int currentHour, int currentMinute) {
-	//POWER OBJECT 0//
-	if (powerArray[0].getTempOverrideStatus() == true) {
-		if ((powerArray[0].schedules.tempOverrideHour == currentHour) && (powerArray[0].schedules.tempOverrideMinute == currentMinute)) {
-			powerArray[0].setTempOverrideStarted();
-			digitalWrite(powerArray[0].schedules.relayPin, powerArray[0].getTempOverrideState());
+	for (int relay = 0; relay <= 7; relay++) {
+		if (powerArray[relay].getTempOverrideStatus() == true) {
+			if ((powerArray[relay].schedules.tempOverrideHour == currentHour) && (powerArray[relay].schedules.tempOverrideMinute == currentMinute)) {
+				powerArray[relay].setTempOverrideStarted();
+				digitalWrite(powerArray[relay].schedules.relayPin, powerArray[relay].getTempOverrideState());
+			}
+			if (powerArray[0].getTempOverrideStartedStatus() == true) {
+				if ((powerArray[relay].schedules.tempOverrideOffHour <= currentHour) && (powerArray[relay].schedules.tempOverrideOffMinute <= currentMinute))
+					powerArray[relay].clearTempOverrideFlag();
+			}
+			//if (powerArray[relay].scheudles.tempOverrideStarted == false) {check if there is a schedule that should be going}
 		}
-		if (powerArray[0].getTempOverrideStartedStatus() == true) {
-			if ((powerArray[0].schedules.tempOverrideOffHour <= currentHour) && (powerArray[0].schedules.tempOverrideOffMinute <= currentMinute))
-				powerArray[0].clearTempOverrideFlag();
-		}
-		//if (powerArray[0].scheudles.tempOverrideStarted == false) {check if there is a schedule that should be going}
-	}
-
-	//POWER OBJECT 1//
-	if (powerArray[1].getTempOverrideStatus() == true) {
-		if ((powerArray[1].schedules.tempOverrideHour == currentHour) && (powerArray[1].schedules.tempOverrideMinute == currentMinute)) {
-			powerArray[1].setTempOverrideStarted();
-			digitalWrite(powerArray[1].schedules.relayPin, powerArray[1].getTempOverrideState());
-		}
-		if (powerArray[1].getTempOverrideStartedStatus() == true) {
-			if ((powerArray[1].schedules.tempOverrideOffHour <= currentHour) && (powerArray[1].schedules.tempOverrideOffMinute <= currentMinute))
-				powerArray[1].clearTempOverrideFlag();
-		}
-		//if (powerArray[1].scheudles.tempOverrideStarted == false) {check if there is a schedule that should be going}
-	}
-
-	//POWER OBJECT 2//
-	if (powerArray[2].getTempOverrideStatus() == true) {
-		if ((powerArray[2].schedules.tempOverrideHour == currentHour) && (powerArray[2].schedules.tempOverrideMinute == currentMinute)) {
-			powerArray[2].setTempOverrideStarted();
-			digitalWrite(powerArray[2].schedules.relayPin, powerArray[2].getTempOverrideState());
-		}
-		if (powerArray[2].getTempOverrideStartedStatus() == true) {
-			if ((powerArray[2].schedules.tempOverrideOffHour <= currentHour) && (powerArray[2].schedules.tempOverrideOffMinute <= currentMinute))
-				powerArray[2].clearTempOverrideFlag();
-		}
-		//if (powerArray[2].scheudles.tempOverrideStarted == false) {check if there is a schedule that should be going}
 	}
 }
 ////------END FUNCTIONS FOR THE ISR------////
@@ -145,12 +120,6 @@ void SubMenu::displayManualOverrideSubMenuDisplay() {
 	subMenuDisplayObject.overrideSubMenuDisplay();
 }
 
-
-//Clears the screen and displays "Cleared". So far, used to confirm that a variable/flag has been cleared
-void SubMenu::displayCleared() {
-	subMenuDisplayObject.displayCleared();
-	delayWithoutDelay(1000);
-}
 //Main Menu --> B. Displays the header info and options for the TempOverride Sub Menu
 void SubMenu::displayTempOverrideSubMenu() {
 	subMenuDisplayObject.tempOverrideSubMenu();
@@ -164,64 +133,14 @@ void SubMenu::displayConfirmationScreen() {
 ////------END subMenuDisplayObject DISPLAYING FUNCTIONS------////
 
 ////------DISPLAY STATUS UPDATE FUNCTIONS------////
-//Print the status of the 8 objects' scheduleSetFlag, SET if schedule is set, OFF if not. Used with displayEightRelayNumbers
-void SubMenu::displayScheduleSetFlagStatus() {
+void SubMenu::displayStatuses(bool (Relay::* func)()) {
 	for (int spot = 0; spot <= 3; spot++) {
 		subMenuDisplayObject.OLED.setCursor(22, 16 + (spot * 12));
-		subMenuDisplayObject.OLED.println(powerArray[spot].getScheduleSetFlagStatus() ? "SET" : "OFF");
+		subMenuDisplayObject.OLED.println((powerArray[spot].*func)() ? "ON" : "OFF");
 	}
 	for (int spot = 0; spot <= 3; spot++) {
 		subMenuDisplayObject.OLED.setCursor(86, 16 + (spot * 12));
-		subMenuDisplayObject.OLED.println(powerArray[spot + 4].getScheduleSetFlagStatus() ? "SET" : "OFF");
-	}
-	subMenuDisplayObject.OLED.display();
-}
-void SubMenu::displayStatuses(bool Relay::*func) {
-	for (int spot = 0; spot <= 3; spot++) {
-		subMenuDisplayObject.OLED.setCursor(22, 16 + (spot * 12));
-		subMenuDisplayObject.OLED.println((powerArray[spot].*func) ? "ON" : "OFF");
-	}
-	for (int spot = 0; spot <= 3; spot++) {
-		subMenuDisplayObject.OLED.setCursor(86, 16 + (spot * 12));
-		subMenuDisplayObject.OLED.println((powerArray[spot + 4].*func) ? "ON" : "OFF");
-	}
-	subMenuDisplayObject.OLED.display();
-}
-
-
-//Print the status of the 8 objects' manualOverrideFlag. ON means manual control (ON/OFF) is allowed, OFF means it is not. Used with displayEightRelayNumbers
-void SubMenu::displayOverrideFlagStatus() {
-	for (int spot = 0; spot <= 3; spot++) {
-		subMenuDisplayObject.OLED.setCursor(22, 16 + (spot * 12));
-		subMenuDisplayObject.OLED.println(powerArray[spot].getManualOverrideFlagStatus() ? "ON" : "OFF");
-	}
-	for (int spot = 0; spot <= 3; spot++) {
-		subMenuDisplayObject.OLED.setCursor(86, 16 + (spot * 12));
-		subMenuDisplayObject.OLED.println(powerArray[spot + 4].getManualOverrideFlagStatus() ? "ON" : "OFF");
-	}
-	subMenuDisplayObject.OLED.display();
-}
-//Print the status of the 8 objects' powered status. ON means the relay is ON, OFF means it is OFF. Used with displayEightRelayNumbers
-void SubMenu::displayOnOffStatus() {
-	for (int spot = 0; spot <= 3; spot++) {
-		subMenuDisplayObject.OLED.setCursor(22, 16 + (spot * 12));
-		subMenuDisplayObject.OLED.println(powerArray[spot].getPowerStatus() ? "ON" : "OFF");
-	}
-	for (int spot = 0; spot <= 3; spot++) {
-		subMenuDisplayObject.OLED.setCursor(86, 16 + (spot * 12));
-		subMenuDisplayObject.OLED.println(powerArray[spot + 4].getPowerStatus() ? "ON" : "OFF");
-	}
-	subMenuDisplayObject.OLED.display();
-}
-//Print the status of the 8 objects' tempOverrideFlag. SET means a temp override is SET, OFF means one is NOT SET. Used with displayEightRelayNumbers
-void SubMenu::displayTempOverrideStatus() {
-	for (int spot = 0; spot <= 3; spot++) {
-		subMenuDisplayObject.OLED.setCursor(22, 16 + (spot * 12));
-		subMenuDisplayObject.OLED.println(powerArray[spot].getTempOverrideStatus() ? "SET" : "OFF");
-	}
-	for (int spot = 0; spot <= 3; spot++) {
-		subMenuDisplayObject.OLED.setCursor(86, 16 + (spot * 12));
-		subMenuDisplayObject.OLED.println(powerArray[spot + 4].getTempOverrideStatus() ? "SET" : "OFF");
+		subMenuDisplayObject.OLED.println((powerArray[spot + 4].*func)() ? "ON" : "OFF");
 	}
 	subMenuDisplayObject.OLED.display();
 }
@@ -238,21 +157,21 @@ void SubMenu::enableDisableRelaySubMenu() {
 				if (powerArray[0].getPowerStatus() == false && powerArray[0].getScheduleSetFlagStatus() == false && powerArray[0].getTempOverrideStatus() == false) {
 					powerArray[0].flipManualOverrideFlag();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOverrideFlagStatus();
+					displayStatuses(getManualFlag);
 				}
 			}
 			if (buttonByte == NUM_PAD_4) {
 				if (powerArray[3].getPowerStatus() == false && powerArray[3].getScheduleSetFlagStatus() == false && powerArray[3].getTempOverrideStatus() == false) {
 					powerArray[3].flipManualOverrideFlag();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOverrideFlagStatus();
+					displayStatuses(getManualFlag);
 				}
 			}
 			if (buttonByte == NUM_PAD_7) {
 				if (powerArray[6].getPowerStatus() == false && powerArray[6].getScheduleSetFlagStatus() == false && powerArray[6].getTempOverrideStatus() == false) {
 					powerArray[6].flipManualOverrideFlag();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOverrideFlagStatus();
+					displayStatuses(getManualFlag);
 				}
 			}
 			if (buttonByte == NUM_PAD_STAR)
@@ -263,21 +182,21 @@ void SubMenu::enableDisableRelaySubMenu() {
 				if (powerArray[1].getPowerStatus() == false && powerArray[1].getScheduleSetFlagStatus() == false && powerArray[1].getTempOverrideStatus() == false) {
 					powerArray[1].flipManualOverrideFlag();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOverrideFlagStatus();
+					displayStatuses(getManualFlag);
 				}
 			}
 			if (buttonByte == NUM_PAD_5) {
 				if (powerArray[4].getPowerStatus() == false && powerArray[4].getScheduleSetFlagStatus() == false && powerArray[4].getTempOverrideStatus() == false) {
 					powerArray[4].flipManualOverrideFlag();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOverrideFlagStatus();
+					displayStatuses(getManualFlag);
 				}
 			}
 			if (buttonByte == NUM_PAD_8) {
 				if (powerArray[7].getPowerStatus() == false && powerArray[7].getScheduleSetFlagStatus() == false && powerArray[7].getTempOverrideStatus() == false) {
 					powerArray[7].flipManualOverrideFlag();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOverrideFlagStatus();
+					displayStatuses(getManualFlag);
 				}
 			}
 		}
@@ -286,14 +205,14 @@ void SubMenu::enableDisableRelaySubMenu() {
 				if (powerArray[2].getPowerStatus() == false && powerArray[2].getScheduleSetFlagStatus() == false && powerArray[2].getTempOverrideStatus() == false) {
 					powerArray[2].flipManualOverrideFlag();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOverrideFlagStatus();
+					displayStatuses(getManualFlag);
 				}
 			}
 			if (buttonByte == NUM_PAD_6) {
 				if (powerArray[5].getPowerStatus() == false && powerArray[5].getScheduleSetFlagStatus() == false && powerArray[5].getTempOverrideStatus() == false) {
 					powerArray[5].flipManualOverrideFlag();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOverrideFlagStatus();
+					displayStatuses(getManualFlag);
 				}
 			}
 		}
@@ -308,21 +227,21 @@ void SubMenu::manualOnOffSubMenu() {
 				if (powerArray[0].getManualOverrideFlagStatus() == true || (powerArray[0].getTempOverrideStatus() == false && powerArray[0].getScheduleSetFlagStatus() == false)) {
 					powerArray[0].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOnOffStatus();
+					displayStatuses(getPower);
 				}
 			}
 			if (buttonByte == NUM_PAD_4) {
 				if (powerArray[3].getManualOverrideFlagStatus() == true || (powerArray[3].getTempOverrideStatus() == false && powerArray[3].getScheduleSetFlagStatus() == false)) {
 					powerArray[3].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOnOffStatus();
+					displayStatuses(getPower);
 				}
 			}
 			if (buttonByte == NUM_PAD_7) {
 				if (powerArray[6].getManualOverrideFlagStatus() == true || (powerArray[6].getTempOverrideStatus() == false && powerArray[6].getScheduleSetFlagStatus() == false)) {
 					powerArray[6].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOnOffStatus();
+					displayStatuses(getPower);
 				}
 			}
 			if (buttonByte == NUM_PAD_STAR)
@@ -333,7 +252,7 @@ void SubMenu::manualOnOffSubMenu() {
 				if (powerArray[1].getManualOverrideFlagStatus() == true || (powerArray[1].getTempOverrideStatus() == false && powerArray[1].getScheduleSetFlagStatus() == false)) {
 					powerArray[1].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOnOffStatus();
+					displayStatuses(getPower);
 				}
 			}
 			if (buttonByte == NUM_PAD_5) {
@@ -341,14 +260,14 @@ void SubMenu::manualOnOffSubMenu() {
 				if (powerArray[4].getManualOverrideFlagStatus() == true || (powerArray[4].getTempOverrideStatus() == false && powerArray[4].getScheduleSetFlagStatus() == false)) {
 					powerArray[4].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOnOffStatus();
+					displayStatuses(getPower);
 				}
 			}
 			if (buttonByte == NUM_PAD_8) {
 				if (powerArray[7].getManualOverrideFlagStatus() == true || (powerArray[7].getTempOverrideStatus() == false && powerArray[7].getScheduleSetFlagStatus() == false)) {
 					powerArray[7].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOnOffStatus();
+					displayStatuses(getPower);
 				}
 			}
 		}
@@ -357,14 +276,14 @@ void SubMenu::manualOnOffSubMenu() {
 				if (powerArray[2].getManualOverrideFlagStatus() == true || (powerArray[2].getTempOverrideStatus() == false && powerArray[2].getScheduleSetFlagStatus() == false)) {
 					powerArray[2].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOnOffStatus();
+					displayStatuses(getPower);
 				}
 			}
 			if (buttonByte == NUM_PAD_6) {
 				if (powerArray[5].getManualOverrideFlagStatus() == true || (powerArray[5].getTempOverrideStatus() == false && powerArray[5].getScheduleSetFlagStatus() == false)) {
 					powerArray[5].flipPowerState();
 					subMenuDisplayObject.clearRelayUpdate();
-					displayOnOffStatus();
+					displayStatuses(getPower);
 				}
 			}
 		}
@@ -505,69 +424,69 @@ void SubMenu::tempOverrideStatusWhileLoop() {
 	}
 }
 //Main Menu --> B --> 1. Waits for input. Displays status of temporary override flag (SET/OFF). Waits for parameters to new temp override, or clears if an override is active already
-void SubMenu::chooseRelay() {
+void SubMenu::chooseRelay(bool (Relay::* statusFunc)(), void (Relay::* clearingFunc)()) {
 	int chosenArray = -1;
 	while (1) {
 		byte buttonByte = buttonPoll();
 		if (buttonByte == NUM_PAD_1) {
-			if (powerArray[0].getTempOverrideStatus() == true) {
-				confirmClear(&(powerArray[0]));
+			if ((powerArray[0].*statusFunc)() == true) {
+				confirmClear(&(powerArray[0]), clearingFunc);
 				return;
 			}
 			promptTempOverrideTime(0);
 			return;
 		}
 		if (buttonByte == NUM_PAD_2) {
-			if (powerArray[1].getTempOverrideStatus() == true) {
-				confirmClear(&(powerArray[1]));
+			if ((powerArray[1].*statusFunc)() == true) {
+				confirmClear(&(powerArray[1]), clearingFunc);
 				return;
 			}
 			promptTempOverrideTime(1);
 			return;
 		}
 		if (buttonByte == NUM_PAD_3) {
-			if (powerArray[2].getTempOverrideStatus() == true) {
-				confirmClear(&(powerArray[2]));
+			if ((powerArray[2].*statusFunc)() == true) {
+				confirmClear(&(powerArray[2]), clearingFunc);
 				return;
 			}
 			promptTempOverrideTime(2);
 			return;
 		}
 		if (buttonByte == NUM_PAD_4) {
-			if (powerArray[3].getTempOverrideStatus() == true) {
-				confirmClear(&(powerArray[3]));
+			if ((powerArray[3].*statusFunc)() == true) {
+				confirmClear(&(powerArray[3]), clearingFunc);
 				return;
 			}
 			promptTempOverrideTime(3);
 			return;
 		}
 		if (buttonByte == NUM_PAD_5) {
-			if (powerArray[4].getTempOverrideStatus() == true) {
-				confirmClear(&(powerArray[4]));
+			if ((powerArray[4].*statusFunc)() == true) {
+				confirmClear(&(powerArray[4]), clearingFunc);
 				return;
 			}
 			promptTempOverrideTime(4);
 			return;
 		}
 		if (buttonByte == NUM_PAD_6) {
-			if (powerArray[5].getTempOverrideStatus() == true) {
-				confirmClear(&(powerArray[5]));
+			if ((powerArray[5].*statusFunc)() == true) {
+				confirmClear(&(powerArray[5]), clearingFunc);
 				return;
 			}
 			promptTempOverrideTime(5);
 			return;
 		}
 		if (buttonByte == NUM_PAD_7) {
-			if (powerArray[6].getTempOverrideStatus() == true) {
-				confirmClear(&(powerArray[6]));
+			if ((powerArray[6].*statusFunc)() == true) {
+				confirmClear(&(powerArray[6]), clearingFunc);
 				return;
 			}
 			promptTempOverrideTime(6);
 			return;
 		}
 		if (buttonByte == NUM_PAD_8) {
-			if (powerArray[7].getTempOverrideStatus() == true) {
-				confirmClear(&(powerArray[7]));
+			if ((powerArray[7].*statusFunc)() == true) {
+				confirmClear(&(powerArray[7]), clearingFunc);
 				return;
 			}
 			promptTempOverrideTime(7);
@@ -773,7 +692,7 @@ void SubMenu::completeOffSubMenu() {
 				return;
 			if (confirmed == true) {
 				powerArray[0].off();
-				displayCleared();
+				subMenuDisplayObject.displayError(F("Cleared"));
 				return;
 			}
 		}
@@ -783,7 +702,7 @@ void SubMenu::completeOffSubMenu() {
 				return;
 			if (confirmed == true) {
 				powerArray[1].off();
-				displayCleared();
+				subMenuDisplayObject.displayError(F("Cleared"));
 				return;
 			}
 		}
@@ -793,7 +712,7 @@ void SubMenu::completeOffSubMenu() {
 				return;
 			if (confirmed == true) {
 				powerArray[2].off();
-				displayCleared();
+				subMenuDisplayObject.displayError(F("Cleared"));
 				return;
 			}
 		}
@@ -803,7 +722,7 @@ void SubMenu::completeOffSubMenu() {
 				return;
 			if (confirmed == true) {
 				powerArray[3].off();
-				displayCleared();
+				subMenuDisplayObject.displayError(F("Cleared"));
 				return;
 			}
 		}
@@ -813,7 +732,7 @@ void SubMenu::completeOffSubMenu() {
 				return;
 			if (confirmed == true) {
 				powerArray[4].off();
-				displayCleared();
+				subMenuDisplayObject.displayError(F("Cleared"));
 				return;
 			}
 		}
@@ -823,7 +742,7 @@ void SubMenu::completeOffSubMenu() {
 				return;
 			if (confirmed == true) {
 				powerArray[5].off();
-				displayCleared();
+				subMenuDisplayObject.displayError(F("Cleared"));
 				return;
 			}
 		}
@@ -833,7 +752,7 @@ void SubMenu::completeOffSubMenu() {
 				return;
 			if (confirmed == true) {
 				powerArray[6].off();
-				displayCleared();
+				subMenuDisplayObject.displayError(F("Cleared"));
 				return;
 			}
 		}
@@ -843,7 +762,7 @@ void SubMenu::completeOffSubMenu() {
 				return;
 			if (confirmed == true) {
 				powerArray[7].off();
-				displayCleared();
+				subMenuDisplayObject.displayError(F("Cleared"));
 				return;
 			}
 		}
@@ -854,14 +773,14 @@ void SubMenu::completeOffSubMenu() {
 }
 //Confirmation menu that is displayed when a set temp override flag is selected to be deleted
 //I had it pass the object so I can keep the clearing functions AND the display function wrapped up
-void SubMenu::confirmClear(Relay* arrObj) {
-	subMenuDisplayObject.confirmClearTempOverride();
+void SubMenu::confirmClear(Relay* arrObj, void (Relay::* clearFunc)()) {
+	subMenuDisplayObject.confirmClearFlag();
 	while (1) {
 		byte buttonByte = buttonPoll();
 		if ((buttonByte & COL_BITS) == COL_4) {
 			if (buttonByte == NUM_PAD_A) {
-				arrObj->clearTempOverrideFlag();
-				displayCleared();
+				(arrObj->*clearFunc)();
+				subMenuDisplayObject.displayError(F("Cleared"));
 				break;
 			}
 			if (buttonByte == NUM_PAD_B)

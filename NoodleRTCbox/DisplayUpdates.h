@@ -37,8 +37,6 @@ public:
 	void clearRelayUpdate();
 	//In case they input a bogus time, also good for displaying messages before returning!
 	void displayError(String);
-	//displays 'cleared'
-	void displayCleared();
 	//Asks "are you sure?"
 	void confirmationScreen();
 
@@ -70,7 +68,7 @@ public:
 	//draws a black rectangle over the time to avoid clearing the whole screen
 	void clearCurrentTime();
 	//When you select a relay that already has tempOverrideFlag = true
-	void confirmClearTempOverride();
+	void confirmClearFlag();
 
 private:
 	Adafruit_SSD1306 OLED;
