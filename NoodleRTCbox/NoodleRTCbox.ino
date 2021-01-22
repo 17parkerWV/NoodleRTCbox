@@ -86,16 +86,12 @@ void temporaryOverrideStatus();
 
 ISR(INT4_vect) {
 	//flips the BUILT IN LED HIGH when it starts and turns it off when it leaves
+	counter++;
 	if (counter >= 2) {
 		updateClockObj();
-		PORTB ^= BUILT_IN_LED;
-		subMenuObj.timeControl(clockSecondObj.day(), clockSecondObj.hour(), clockSecondObj.minute());
+		//subMenuObj.timeControl(clockSecondObj.day(), clockSecondObj.hour(), clockSecondObj.minute());
 		counter = 0;
 	}
-	else {
-		counter++;
-	}
-	PORTB ^= BUILT_IN_LED;
 }
 
 void setup() {
@@ -116,6 +112,7 @@ void setup() {
 	clockObj.writeSqwPinMode(DS3231_SquareWave1Hz);	//Enable the 1Hz squarewave clock
 	DDRE = 0b00000000;	//All bit in port E are inputs
 	EIMSK = 0b00000000;	//All interrupts are masked out (recommended in the datasheet)
+	MCUCR |= (0 << 4);		//Set the pullup disable bit LOW
 	PORTE |= DIGITAL_PIN_2;		//Bit 4 has pullup resistor enabled
 	EICRB = 0b00000010;			//Falling edge interrupt enabled on INT4 (pin 2)
 	EIMSK |= DIGITAL_PIN_2;		//Bit 4 (INT4) interrupt mask bit to 1
