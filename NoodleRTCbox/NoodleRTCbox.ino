@@ -86,15 +86,16 @@ void temporaryOverrideStatus();
 
 ISR(INT4_vect) {
 	EIMSK = 0b00000000;
-	//flips the BUILT IN LED HIGH when it starts and turns it off when it leaves
-	counter++;
 	if (counter >= 2) {
+		PORTB ^= BUILT_IN_LED;
 		updateClockObj();
-		//subMenuObj.timeControl(clockSecondObj.day(), clockSecondObj.hour(), clockSecondObj.minute());
+		subMenuObj.timeControl(clockSecondObj.day(), clockSecondObj.hour(), clockSecondObj.minute());
 		counter = 0;
 	}
-	EIFR |= (1 << 4);
-	EIMSK = (0 << 4);
+	else {
+		counter++;
+	}
+	EIMSK = (1 << 4);
 }
 
 void setup() {
@@ -121,13 +122,14 @@ void setup() {
 	EIMSK |= DIGITAL_PIN_2;		//Bit 4 (INT4) interrupt mask bit to 1
 	sei();
 
+	clockSecondObj = clockObj.now();
+
 	//This is the interrupt pin, I think, it was set to pin 22, not 2, but I'm pretty sure that 22 was a mistake
 	digitalWrite(2, INPUT_PULLUP);
 	//Set up the keypad inputs/outputs
 	DDRC = ROW_IN_COL_OUT;
 	PORTC = COL_LOW_ROW_PULLUP;
 
-	clockSecondObj = clockObj.now();
 	//Maybe function to set the clock?
 	//Function to notify that all schedules were wiped out
 	subMenuObj.displayMainMenu();

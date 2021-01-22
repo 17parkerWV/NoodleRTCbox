@@ -143,8 +143,8 @@ void DisplayClass::displayError(String word) {
 	OLED.setTextSize(1);
 	OLED.setCursor(32, 38);
 	OLED.print(F("returning..."));
-	delayWithoutDelay(1200);
 	OLED.display();
+	delayWithoutDelay(1200);
 }
 
 void DisplayClass::enterTime(String top, String bottom) {
