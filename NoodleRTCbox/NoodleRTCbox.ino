@@ -46,7 +46,7 @@ SubMenu subMenuObj;
 //These are for the interrupt
 #define BUILT_IN_LED (1<<7)		//digital pin 13, PB7
 #define DIGITAL_PIN_2 (1<<4)	//(OC3B/INT4) Port E bit 4
-volatile int counter = 0;
+volatile byte counter = 0;
 
 
 //allows manual control of relay (not to be confused with manualOnOff, which actually turns them on/off)
@@ -85,6 +85,7 @@ void temporaryOverrideStatus();
 
 
 ISR(INT4_vect) {
+	EIMSK = 0b00000000;
 	//flips the BUILT IN LED HIGH when it starts and turns it off when it leaves
 	counter++;
 	if (counter >= 2) {
@@ -92,6 +93,8 @@ ISR(INT4_vect) {
 		//subMenuObj.timeControl(clockSecondObj.day(), clockSecondObj.hour(), clockSecondObj.minute());
 		counter = 0;
 	}
+	EIFR |= (1 << 4);
+	EIMSK = (0 << 4);
 }
 
 void setup() {
