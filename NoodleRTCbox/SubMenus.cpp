@@ -77,9 +77,12 @@ void waitForAnyLetterPress() {
 //It is going to be typed out so that I do not have to put it in a FOR loop, it'll look gross though
 //If the current time is WITHIN scheduled time, relay is ON
 void SubMenu::timeControl(int currentDay, int currentHour, int currentMinute) {
+	digitalWrite(powerArray[0].schedules.relayPin, LOW);
 	for (int relay = 0; relay <= 7; relay++) {
+		digitalWrite(powerArray[1].schedules.relayPin, LOW);
 		if (powerArray[relay].getTempOverrideStatus() == false && powerArray[relay].getScheduleSetFlagStatus() == false)
 			continue;
+		digitalWrite(powerArray[2].schedules.relayPin, LOW);
 		if (powerArray[relay].getTempOverrideStatus() == true) {
 			if ((powerArray[relay].schedules.tempOverrideHour == currentHour) && (powerArray[relay].schedules.tempOverrideMinute == currentMinute)) {
 				powerArray[relay].setTempOverrideStarted();
@@ -89,19 +92,24 @@ void SubMenu::timeControl(int currentDay, int currentHour, int currentMinute) {
 				powerArray[relay].clearTempOverrideFlag();
 				if (powerArray[relay].getScheduleSetFlagStatus() == false) {
 					powerArray[relay].clearPoweredState();
+					digitalWrite(powerArray[3].schedules.relayPin, LOW);
 					continue;
 				}
 			}
 		}
 		if ((powerArray[relay].getTempOverrideStartedStatus() == true) || (powerArray[relay].getScheduleSetFlagStatus() == false))
 			continue;
+		digitalWrite(powerArray[4].schedules.relayPin, LOW);
 		if ((powerArray[relay].schedules.powered == false) && (powerArray[relay].schedules.hourOn <= currentHour) && (powerArray[relay].schedules.hourOff >= currentHour) && (powerArray[relay].schedules.minuteOn <= currentMinute) && (powerArray[relay].schedules.minuteOff >= currentMinute)) {
 			powerArray[relay].setPoweredState();
+			digitalWrite(powerArray[5].schedules.relayPin, LOW);
 		}
 		else if ((powerArray[relay].schedules.hourOn >= currentHour) && (powerArray[relay].schedules.hourOff <= currentHour) && (powerArray[relay].schedules.minuteOn >= currentMinute) && (powerArray[relay].schedules.minuteOff <= currentMinute)) {
 			powerArray[relay].clearPoweredState();
+			digitalWrite(powerArray[6].schedules.relayPin, LOW);
 		}
 	}
+	digitalWrite(powerArray[7].schedules.relayPin, LOW);
 }
 
 ////------END FUNCTIONS FOR THE ISR------////

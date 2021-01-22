@@ -95,7 +95,7 @@ ISR(INT4_vect) {
 	else {
 		counter++;
 	}
-	//PORTB ^= BUILT_IN_LED;
+	PORTB ^= BUILT_IN_LED;
 }
 
 void setup() {
