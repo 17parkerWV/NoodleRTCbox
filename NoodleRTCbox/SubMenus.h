@@ -31,6 +31,10 @@ public:
 	void (Relay::* clearTempOverrideFlag)() = &Relay::clearTempOverrideFlag;
 	//clear the status of the schedule set flag
 	void (Relay::* clearScheduleSetFlag)() = &Relay::clearScheduleSetFlag;
+	//points to function to set schedule up
+	void (SubMenu::* promptSchedFunc)(int) = &SubMenu::promptScheduleTime;
+	//points to function to set tempOverride up
+	void (SubMenu::* promptOverrideFunc)(int) = &SubMenu::promptTempOverrideTime;
 
 	//New display header function
 	void displayHeader(String);
@@ -85,7 +89,7 @@ public:
 
 	void tempOverrideStatusWhileLoop();
 	//This is the first while(1) menu, waiting for a relay to be selected (or a cancel)
-	void chooseRelay(bool (Relay::* statusFunc)(), void (Relay::* clearingFunc)());
+	void chooseRelay(bool (Relay::* statusFunc)(), void (Relay::* clearingFunc)(), void (SubMenu::*promptFunc)(int relayNum));
 	//this is in case you want to clear the tempoverrideflag
 	void confirmClear(Relay*, void (Relay::* clearingFunc)());
 	//Prompt user for starting hour, might be able to overload for use with the schedules setting menu
@@ -93,6 +97,8 @@ public:
 	int inputDuration();
 	byte inputPowerState();
 	void promptTempOverrideTime(int);
+	//promts the user to set up schedule
+	void promptScheduleTime(int);
 
 	//INPUT VERIFICATION
 	//For making sure the inputs are legal

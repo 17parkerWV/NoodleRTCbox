@@ -87,6 +87,7 @@ void temporaryOverrideStatus();
 ISR(INT4_vect) {
 	//flips the BUILT IN LED HIGH when it starts and turns it off when it leaves
 	if (counter >= 2) {
+		updateClockObj();
 		PORTB ^= BUILT_IN_LED;
 		subMenuObj.timeControl(clockSecondObj.day(), clockSecondObj.hour(), clockSecondObj.minute());
 		counter = 0;
@@ -255,7 +256,7 @@ void temporaryOverride() {
 	subMenuObj.displayEightRelayNumbers();
 	subMenuObj.displayHeader(F("Select an outlet\n* - back"));
 	subMenuObj.displayStatuses(subMenuObj.getTempFlag);
-	subMenuObj.chooseRelay(subMenuObj.getTempFlag, subMenuObj.clearTempOverrideFlag);
+	subMenuObj.chooseRelay(subMenuObj.getTempFlag, subMenuObj.clearTempOverrideFlag, subMenuObj.promptOverrideFunc);
 	subMenuObj.displayTempOverrideSubMenu();
 }
 //Main Menu -> B -> 2. Menu where a relay is selected and its tempOverride status is shown
@@ -271,7 +272,9 @@ void setScheduleSubMenu() {
 	subMenuObj.displayEightRelayNumbers();
 	subMenuObj.displayHeader(F("Pick one to set \nschedule     * - back"));
 	subMenuObj.displayStatuses(subMenuObj.getSchedFlag);
-	subMenuObj.chooseRelay(subMenuObj.getSchedFlag, subMenuObj.clearScheduleSetFlag);
+	subMenuObj.chooseRelay(subMenuObj.getSchedFlag, subMenuObj.clearScheduleSetFlag, subMenuObj.promptSchedFunc);
+	subMenuObj.displaySchedulesSubMenuDisplay();
+	updateCurrentTime();
 }
 //Main Menu -> A -> 2. Menu where set schedule is viewed
 void scheduleSetStatus() {
@@ -287,6 +290,7 @@ void completeOffSubMenu() {
 	subMenuObj.displayEightRelayNumbers();
 	subMenuObj.displayHeader(F("Select an outlet to  be reset    * - back"));
 	subMenuObj.completeOffSubMenu();
+	delayWithoutDelay(1200);
 	subMenuObj.displaySchedulesSubMenuDisplay();
 	updateCurrentTime();
 }

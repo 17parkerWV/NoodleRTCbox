@@ -20,6 +20,8 @@
 #include "WProgram.h"
 #endif
 
+extern void delayWithoutDelay(int);
+
 class DisplayClass {
 public:
 	friend class SubMenu;
@@ -49,8 +51,7 @@ public:
 	void tempOverrideSubMenu();
 
 	//TEMPORARY OVERRIDE SUB MENUS (they get their own because it's going to be nested probably
-	void enterStartingHour();
-	void enterStartingMinute();
+	void enterTime(String top, String bottom);
 	void enterDuration();
 	void enterPowerState();
 	void displaySingleObjectTempOverrideStatus(int, int, int, byte);

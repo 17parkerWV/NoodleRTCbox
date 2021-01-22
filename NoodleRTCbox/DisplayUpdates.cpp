@@ -132,6 +132,7 @@ void DisplayClass::confirmClearFlag() {
 	OLED.display();
 }
 
+//this needs a delay after the calls to this function
 void DisplayClass::displayError(String word) {
 	OLED.clearDisplay();
 	OLED.display();
@@ -142,28 +143,19 @@ void DisplayClass::displayError(String word) {
 	OLED.setTextSize(1);
 	OLED.setCursor(32, 38);
 	OLED.print(F("returning..."));
+	delayWithoutDelay(1200);
 	OLED.display();
 }
 
-void DisplayClass::enterStartingHour() {
+void DisplayClass::enterTime(String top, String bottom) {
 	OLED.clearDisplay();
 	OLED.display();
 	OLED.setTextSize(1);
 	OLED.setCursor(0, 0);
-	OLED.print(F("Enter starting hour  using 24 hour format Press STAR to cancel Press D when done"));
+	OLED.print(top);
 	OLED.fillRect(0, 32, 128, 48, BLACK);
 	OLED.setCursor(0, 52);
-	OLED.print(F("24 HOUR FORMAT ONLY"));
-	OLED.display();
-}
-
-void DisplayClass::enterStartingMinute() {
-	OLED.clearDisplay();
-	OLED.display();
-	OLED.setTextSize(1);
-	OLED.setCursor(0, 0);
-	OLED.print(F("Enter starting\nminutes   * - back\nPress D when done"));
-	OLED.fillRect(0, 32, 128, 48, BLACK);
+	OLED.print(bottom);
 	OLED.display();
 }
 

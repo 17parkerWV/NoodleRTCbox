@@ -75,21 +75,35 @@ void waitForAnyLetterPress() {
 
 ////------FUNCTIONS FOR THE ISR------////
 //It is going to be typed out so that I do not have to put it in a FOR loop, it'll look gross though
+//If the current time is WITHIN scheduled time, relay is ON
 void SubMenu::timeControl(int currentDay, int currentHour, int currentMinute) {
 	for (int relay = 0; relay <= 7; relay++) {
+		if (powerArray[relay].getTempOverrideStatus() == false && powerArray[relay].getScheduleSetFlagStatus() == false)
+			continue;
 		if (powerArray[relay].getTempOverrideStatus() == true) {
 			if ((powerArray[relay].schedules.tempOverrideHour == currentHour) && (powerArray[relay].schedules.tempOverrideMinute == currentMinute)) {
 				powerArray[relay].setTempOverrideStarted();
 				digitalWrite(powerArray[relay].schedules.relayPin, powerArray[relay].getTempOverrideState());
 			}
-			if (powerArray[0].getTempOverrideStartedStatus() == true) {
-				if ((powerArray[relay].schedules.tempOverrideOffHour <= currentHour) && (powerArray[relay].schedules.tempOverrideOffMinute <= currentMinute))
-					powerArray[relay].clearTempOverrideFlag();
+			if ((powerArray[relay].getTempOverrideStartedStatus() == true) && (powerArray[relay].schedules.tempOverrideOffHour <= currentHour) && (powerArray[relay].schedules.tempOverrideOffMinute <= currentMinute)) {
+				powerArray[relay].clearTempOverrideFlag();
+				if (powerArray[relay].getScheduleSetFlagStatus() == false) {
+					powerArray[relay].clearPoweredState();
+					continue;
+				}
 			}
-			//if (powerArray[relay].scheudles.tempOverrideStarted == false) {check if there is a schedule that should be going}
+		}
+		if ((powerArray[relay].getTempOverrideStartedStatus() == true) || (powerArray[relay].getScheduleSetFlagStatus() == false))
+			continue;
+		if ((powerArray[relay].schedules.powered == false) && (powerArray[relay].schedules.hourOn <= currentHour) && (powerArray[relay].schedules.hourOff >= currentHour) && (powerArray[relay].schedules.minuteOn <= currentMinute) && (powerArray[relay].schedules.minuteOff >= currentMinute)) {
+			powerArray[relay].setPoweredState();
+		}
+		else if ((powerArray[relay].schedules.hourOn >= currentHour) && (powerArray[relay].schedules.hourOff <= currentHour) && (powerArray[relay].schedules.minuteOn >= currentMinute) && (powerArray[relay].schedules.minuteOff <= currentMinute)) {
+			powerArray[relay].clearPoweredState();
 		}
 	}
 }
+
 ////------END FUNCTIONS FOR THE ISR------////
 
 ////------subMenuDisplayObject DISPLAYING FUNCTIONS------////
@@ -424,7 +438,7 @@ void SubMenu::tempOverrideStatusWhileLoop() {
 	}
 }
 //Main Menu --> B --> 1. Waits for input. Displays status of temporary override flag (SET/OFF). Waits for parameters to new temp override, or clears if an override is active already
-void SubMenu::chooseRelay(bool (Relay::* statusFunc)(), void (Relay::* clearingFunc)()) {
+void SubMenu::chooseRelay(bool (Relay::* statusFunc)(), void (Relay::* clearingFunc)(), void (SubMenu::* promptFunc)(int relayNum)) {
 	int chosenArray = -1;
 	while (1) {
 		byte buttonByte = buttonPoll();
@@ -433,7 +447,7 @@ void SubMenu::chooseRelay(bool (Relay::* statusFunc)(), void (Relay::* clearingF
 				confirmClear(&(powerArray[0]), clearingFunc);
 				return;
 			}
-			promptTempOverrideTime(0);
+			(this->*promptFunc)(0);
 			return;
 		}
 		if (buttonByte == NUM_PAD_2) {
@@ -441,7 +455,7 @@ void SubMenu::chooseRelay(bool (Relay::* statusFunc)(), void (Relay::* clearingF
 				confirmClear(&(powerArray[1]), clearingFunc);
 				return;
 			}
-			promptTempOverrideTime(1);
+			(this->*promptFunc)(1);
 			return;
 		}
 		if (buttonByte == NUM_PAD_3) {
@@ -449,7 +463,7 @@ void SubMenu::chooseRelay(bool (Relay::* statusFunc)(), void (Relay::* clearingF
 				confirmClear(&(powerArray[2]), clearingFunc);
 				return;
 			}
-			promptTempOverrideTime(2);
+			(this->*promptFunc)(2);
 			return;
 		}
 		if (buttonByte == NUM_PAD_4) {
@@ -457,7 +471,7 @@ void SubMenu::chooseRelay(bool (Relay::* statusFunc)(), void (Relay::* clearingF
 				confirmClear(&(powerArray[3]), clearingFunc);
 				return;
 			}
-			promptTempOverrideTime(3);
+			(this->*promptFunc)(3);
 			return;
 		}
 		if (buttonByte == NUM_PAD_5) {
@@ -465,7 +479,7 @@ void SubMenu::chooseRelay(bool (Relay::* statusFunc)(), void (Relay::* clearingF
 				confirmClear(&(powerArray[4]), clearingFunc);
 				return;
 			}
-			promptTempOverrideTime(4);
+			(this->*promptFunc)(4);
 			return;
 		}
 		if (buttonByte == NUM_PAD_6) {
@@ -473,7 +487,7 @@ void SubMenu::chooseRelay(bool (Relay::* statusFunc)(), void (Relay::* clearingF
 				confirmClear(&(powerArray[5]), clearingFunc);
 				return;
 			}
-			promptTempOverrideTime(5);
+			(this->*promptFunc)(5);
 			return;
 		}
 		if (buttonByte == NUM_PAD_7) {
@@ -481,7 +495,7 @@ void SubMenu::chooseRelay(bool (Relay::* statusFunc)(), void (Relay::* clearingF
 				confirmClear(&(powerArray[6]), clearingFunc);
 				return;
 			}
-			promptTempOverrideTime(6);
+			(this->*promptFunc)(6);
 			return;
 		}
 		if (buttonByte == NUM_PAD_8) {
@@ -489,7 +503,7 @@ void SubMenu::chooseRelay(bool (Relay::* statusFunc)(), void (Relay::* clearingF
 				confirmClear(&(powerArray[7]), clearingFunc);
 				return;
 			}
-			promptTempOverrideTime(7);
+			(this->*promptFunc)(7);
 			return;
 		}
 		if (buttonByte == NUM_PAD_STAR)
@@ -844,7 +858,7 @@ void SubMenu::promptTempOverrideTime(int object) {
 	powerArray[object].schedules.tempOverrideHour = 0;
 	powerArray[object].schedules.tempOverrideMinute = 0;
 	powerArray[object].schedules.tempOverrideDuration = 0;
-	subMenuDisplayObject.enterStartingHour();
+	subMenuDisplayObject.enterTime((F("Enter starting hour  using 24 hour format Press STAR to cancel Press D when done")), (F("24 HOUR FORMAT ONLY")));
 	int hours = inputTime();
 	if (hours == -1) {
 		subMenuDisplayObject.displayError(F("Canceled"));
@@ -859,16 +873,16 @@ void SubMenu::promptTempOverrideTime(int object) {
 	}
 	powerArray[object].schedules.tempOverrideHour = hours;
 	//Get the starting MINUTE//
-	subMenuDisplayObject.enterStartingMinute();
+	subMenuDisplayObject.enterTime((F("Enter starting\nminutes   * - back\nPress D when done")), F(""));
 	powerArray[object].schedules.tempOverrideHour = hours;
 	int minutes = inputTime();
 	if (minutes == -1) {
 		subMenuDisplayObject.displayError(F("Canceled"));
+		return;
 	}
 	minutes = verifyMinute(minutes);
 	if (minutes == -1) {
 		subMenuDisplayObject.displayError(F("Invalid\nminutes"));
-		delayWithoutDelay(1500);
 		return;
 	}
 	powerArray[object].schedules.tempOverrideMinute = minutes;
@@ -877,13 +891,11 @@ void SubMenu::promptTempOverrideTime(int object) {
 	int duration = inputDuration();
 	if (duration == -1) {
 		subMenuDisplayObject.displayError(F("Canceled"));
-		delayWithoutDelay(1500);
 		return;
 	}
 	duration = verifyDuration(duration);
 	if (duration == -1) {
 		subMenuDisplayObject.displayError(F("Invalid\nDuration"));
-		delayWithoutDelay(1500);
 		return;
 	}
 	powerArray[object].schedules.tempOverrideOffMinute = (duration + powerArray[object].schedules.tempOverrideMinute) % 60;	//stores the minute it will turn OFF
@@ -903,7 +915,67 @@ void SubMenu::promptTempOverrideTime(int object) {
 	//FINALIZE - set the flag
 	subMenuDisplayObject.displayError(F("Set"));
 	powerArray[object].setTempOverrideFlag();
-	delayWithoutDelay(1200);
 	return;
 }
+
+void SubMenu::promptScheduleTime(int object) {
+	//RESET THE TIME
+	powerArray[object].schedules.hourOn = 0;
+	powerArray[object].schedules.minuteOn = 0;
+	powerArray[object].schedules.hourOff = 0;
+	powerArray[object].schedules.minuteOff = 0;
+	subMenuDisplayObject.enterTime((F("Enter hour to TURN ONusing 24 hour format Press STAR to cancel Press D when done")), (F("24 HOUR FORMAT ONLY")));
+	int startHour = inputTime();
+	if (startHour == -1) {
+		subMenuDisplayObject.displayError(F("Canceled"));
+		return;
+	}
+	startHour = verifyHour(startHour);
+	if (startHour == -1) {
+		subMenuDisplayObject.displayError(F("Invalid\nhour"));
+		return;
+	}
+	powerArray[object].schedules.hourOn = startHour;
+	subMenuDisplayObject.enterTime((F("Enter minute to TURN ON   * - back\nPress D when done")), F(""));
+	int startMinute = inputTime();
+	if (startMinute == -1) {
+		subMenuDisplayObject.displayError(F("Canceled"));
+		return;
+	}
+	startMinute = verifyMinute(startMinute);
+	if (startMinute == -1) {
+		subMenuDisplayObject.displayError(F("Invalid\nminute"));
+		return;
+	}
+	powerArray[object].schedules.minuteOn = startMinute;
+	subMenuDisplayObject.enterTime((F("What hour should it  turn off? Press STAR to cancel Press D when done")), (F("24 HOUR FORMAT ONLY")));	//I think this is too long but we'll see
+	int stopHour = inputTime();
+	if (stopHour == -1) {
+		subMenuDisplayObject.displayError(F("Canceled"));
+		return;
+	}
+	stopHour = verifyHour(stopHour);
+	if (stopHour == -1) {
+		subMenuDisplayObject.displayError(F("Invalid\nhour"));
+		return;
+	}
+	powerArray[object].schedules.hourOff = stopHour;
+	subMenuDisplayObject.enterTime((F("Enter minute to TURN ON   * - back\nPress D when done")), F(""));
+	int stopMinute = inputTime();
+	if (stopMinute == -1) {
+		subMenuDisplayObject.displayError(F("Canceled"));
+		return;
+	}
+	stopMinute = verifyMinute(stopMinute);
+	if (stopMinute == -1) {
+		subMenuDisplayObject.displayError(F("Invalid\nminute"));
+		return;
+	}
+	powerArray[object].schedules.minuteOff = stopMinute;
+	//FINALIZE - set the flag
+	subMenuDisplayObject.displayError(F("Set"));
+	powerArray[object].setScheduleSetFlag();
+	return;
+}
+
 ////------END NON-LOOPING MENU FUNCTIONS/SUB MENU FLOW CONTROL FUNCTIONS------////
