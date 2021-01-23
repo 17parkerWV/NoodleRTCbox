@@ -1,10 +1,3 @@
-/*
-delayWithoutDelay - has been caught in loop because the argument is always true?
-millis() - This thing is giving me headaches but I don't know if something is wrong with it
-
-Use my spare arduino mega to test hardware interrupts before getting close to this one
-*/
-
 #include "RelayObjects.h"
 #include "SubMenus.h"
 #include "DisplayUpdates.h"
@@ -22,22 +15,6 @@ Use my spare arduino mega to test hardware interrupts before getting close to th
 #include <SPI.h>
 #include <Wire.h>
 #include <RTClib.h>
-
-/*
-PIN LAYOUT FOR THE 4x4 NUMBER PAD:
-pins 1-4: ROW
-pins 5-8: COLUMN (5 is column 1, 6 is column 2, ...)
-ex: pin 2 + pin 7 = row 2 column 3 -> button [6]
-Set ROW as INPUT_PULLUP and COLUMN as OUTPUT -> LOW, then switch when ROW is detected
-PC0 (pin 37) - Pin 1 on number pad
-PC1 (pin 36) - Pin 2 on number pad
-PC2 (pin 35) - Pin 3 on number pad
-PC3 (pin 34) - Pin 4 on number pad
-PC4 (pin 33) - Pin 5 on number pad
-PC5 (pin 32) - Pin 6 on number pad
-PC6 (pin 31) - Pin 7 on number pad
-PC7 (pin 30) - Pin 8 on number pad
-*/
 
 RTC_DS3231 clockObj;
 DateTime clockSecondObj;
@@ -221,24 +198,6 @@ void schedulesSubMenu() {
 ////------END SUB MENUS (A, B, C, D FROM THE MAIN MENU------////
 
 ////------SUB MENU SELECTED OPTION SUB MENU------////
-/*
-*
-*
-///---These are called when a selection is made in their parents' sub menu in the .ino---///
-//--"Parent sub menu" refers to the submenu from which these functions (made only with functions) were called from
-//-Or the previous while(1) menu where these functions exist
-/*
-These all have the exact same layout:
-void [SubMenuOption]{
-	*Display 8 relay numbers (most likely)*
-	subMenuObj.[displaySubmenuOptionScreen]()
-	*subMenuObj.[SubMenuOptionScreenStatus]()	//(most likely called, to print the statuses)
-	subMenuObj.[SubMenuClassMemberFunction])()	//This goes to the while(1) loop, waiting to receive an input
-	subMenuObj.[displayParentSubMenu]();
-}
-
-
-*/
 //Main Menu -> C -> 1. Menu where manualOverrideFlag is flipped for each relay
 void enableDisableRelay() {
 	subMenuObj.displayEightRelayNumbers();

@@ -11,8 +11,6 @@ void Relay::setTimeOff(int hr, int min) {
 	schedules.minuteOff = min;
 }
 
-//scheduleSetFlag should ALWAYS BE FALSE when the manualOverrideFlag is TRUE, so this does not check scheduleSetFlag
-//As a precaution, this is only meant to be called
 //powered CAN ONLY BE CHANGED IF THE OVERRIDE FLAG IS TRUE (which should only be true if scheduleSetFlag is FALSE)
 void Relay::flipPowerState(void) {
 	bool power;

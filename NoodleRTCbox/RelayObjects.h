@@ -50,6 +50,22 @@
 #define DIGITAL_PIN_48 (1<<1)	//Pin 48, PL1
 #define DIGITAL_PIN_49 (1<<0)	//Pin 49, PL0
 
+/*
+PIN LAYOUT FOR THE 4x4 NUMBER PAD:
+pins 1-4: ROW
+pins 5-8: COLUMN (5 is column 1, 6 is column 2, ...)
+ex: pin 2 + pin 7 = row 2 column 3 -> button [6]
+Set ROW as INPUT_PULLUP and COLUMN as OUTPUT -> LOW, then switch when ROW is detected
+PC0 (pin 37) - Pin 1 on number pad
+PC1 (pin 36) - Pin 2 on number pad
+PC2 (pin 35) - Pin 3 on number pad
+PC3 (pin 34) - Pin 4 on number pad
+PC4 (pin 33) - Pin 5 on number pad
+PC5 (pin 32) - Pin 6 on number pad
+PC6 (pin 31) - Pin 7 on number pad
+PC7 (pin 30) - Pin 8 on number pad
+*/
+
 class Relay {
 public:
 	friend class SubMenu;
