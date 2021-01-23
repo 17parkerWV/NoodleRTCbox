@@ -306,21 +306,21 @@ void SubMenu::scheduleSetStatusWhileLoop() {
 		if ((buttonByte & COL_BITS) == COL_1) {
 			if (buttonByte == NUM_PAD_1) {
 				if (powerArray[0].getScheduleSetFlagStatus() == true) {
-					subMenuDisplayObject.displaySingleObjectScheduleStatus(powerArray[0].schedules.hourOn, powerArray[0].schedules.minuteOn, powerArray[0].schedules.hourOff, powerArray[0].schedules.minuteOff);
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(0, powerArray[0].schedules.hourOn, powerArray[0].schedules.minuteOn, powerArray[0].schedules.hourOff, powerArray[0].schedules.minuteOff);
 					waitForAnyLetterPress();
 					return;
 				}
 			}
 			if (buttonByte == NUM_PAD_4) {
 				if (powerArray[3].getScheduleSetFlagStatus() == true) {
-					subMenuDisplayObject.displaySingleObjectScheduleStatus(powerArray[3].schedules.hourOn, powerArray[3].schedules.minuteOn, powerArray[3].schedules.hourOff, powerArray[3].schedules.minuteOff);
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(3,powerArray[3].schedules.hourOn, powerArray[3].schedules.minuteOn, powerArray[3].schedules.hourOff, powerArray[3].schedules.minuteOff);
 					waitForAnyLetterPress();
 					return;
 				}
 			}
 			if (buttonByte == NUM_PAD_7) {
 				if (powerArray[6].getScheduleSetFlagStatus() == true) {
-					subMenuDisplayObject.displaySingleObjectScheduleStatus(powerArray[6].schedules.hourOn, powerArray[6].schedules.minuteOn, powerArray[6].schedules.hourOff, powerArray[6].schedules.minuteOff);
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(6,powerArray[6].schedules.hourOn, powerArray[6].schedules.minuteOn, powerArray[6].schedules.hourOff, powerArray[6].schedules.minuteOff);
 					waitForAnyLetterPress();
 					return;
 				}
@@ -331,21 +331,21 @@ void SubMenu::scheduleSetStatusWhileLoop() {
 		if ((buttonByte & COL_BITS) == COL_2) {
 			if (buttonByte == NUM_PAD_2) {
 				if (powerArray[1].getScheduleSetFlagStatus() == true) {
-					subMenuDisplayObject.displaySingleObjectScheduleStatus(powerArray[1].schedules.hourOn, powerArray[1].schedules.minuteOn, powerArray[1].schedules.hourOff, powerArray[1].schedules.minuteOff);
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(1,powerArray[1].schedules.hourOn, powerArray[1].schedules.minuteOn, powerArray[1].schedules.hourOff, powerArray[1].schedules.minuteOff);
 					waitForAnyLetterPress();
 					return;
 				}
 			}
 			if (buttonByte == NUM_PAD_5) {
 				if (powerArray[4].getScheduleSetFlagStatus() == true) {
-					subMenuDisplayObject.displaySingleObjectScheduleStatus(powerArray[4].schedules.hourOn, powerArray[4].schedules.minuteOn, powerArray[4].schedules.hourOff, powerArray[4].schedules.minuteOff);
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(4,powerArray[4].schedules.hourOn, powerArray[4].schedules.minuteOn, powerArray[4].schedules.hourOff, powerArray[4].schedules.minuteOff);
 					waitForAnyLetterPress();
 					return;
 				}
 			}
 			if (buttonByte == NUM_PAD_8) {
 				if (powerArray[7].getScheduleSetFlagStatus() == true) {
-					subMenuDisplayObject.displaySingleObjectScheduleStatus(powerArray[7].schedules.hourOn, powerArray[7].schedules.minuteOn, powerArray[7].schedules.hourOff, powerArray[7].schedules.minuteOff);
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(7,powerArray[7].schedules.hourOn, powerArray[7].schedules.minuteOn, powerArray[7].schedules.hourOff, powerArray[7].schedules.minuteOff);
 					waitForAnyLetterPress();
 					return;
 				}
@@ -354,14 +354,14 @@ void SubMenu::scheduleSetStatusWhileLoop() {
 		if ((buttonByte & COL_BITS) == COL_3) {
 			if (buttonByte == NUM_PAD_3) {
 				if (powerArray[2].getScheduleSetFlagStatus() == true) {
-					subMenuDisplayObject.displaySingleObjectScheduleStatus(powerArray[2].schedules.hourOn, powerArray[2].schedules.minuteOn, powerArray[2].schedules.hourOff, powerArray[2].schedules.minuteOff);
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(2,powerArray[2].schedules.hourOn, powerArray[2].schedules.minuteOn, powerArray[2].schedules.hourOff, powerArray[2].schedules.minuteOff);
 					waitForAnyLetterPress();
 					return;
 				}
 			}
 			if (buttonByte == NUM_PAD_6) {
 				if (powerArray[5].getScheduleSetFlagStatus() == true) {
-					subMenuDisplayObject.displaySingleObjectScheduleStatus(powerArray[5].schedules.hourOn, powerArray[5].schedules.minuteOn, powerArray[5].schedules.hourOff, powerArray[5].schedules.minuteOff);
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(5,powerArray[5].schedules.hourOn, powerArray[5].schedules.minuteOn, powerArray[5].schedules.hourOff, powerArray[5].schedules.minuteOff);
 					waitForAnyLetterPress();
 					return;
 				}

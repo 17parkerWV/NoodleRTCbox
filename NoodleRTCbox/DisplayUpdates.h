@@ -57,7 +57,7 @@ public:
 	void displaySingleObjectTempOverrideStatus(int, int, int, byte);
 
 	//SCHEDULE SET - VIEW STATUS
-	void displaySingleObjectScheduleStatus(int, int, int, int);
+	void displaySingleObjectScheduleStatus(int, int, int, int, int);
 
 	//This is to print the time as you type it, just kinda nice looking
 	void printTime(int, int);

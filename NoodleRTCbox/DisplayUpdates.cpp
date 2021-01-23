@@ -250,7 +250,49 @@ void DisplayClass::displaySingleObjectTempOverrideStatus(int hour, int minute, i
 //END TEMPORARY OVERRIDE MENU
 
 //SCHEDULES DISPLAYS
-void DisplayClass::displaySingleObjectScheduleStatus(int hourOn, int minOn, int hourOff, int minOff) {
-
+void DisplayClass::displaySingleObjectScheduleStatus(int relay, int hourOn, int minOn, int hourOff, int minOff) {
+	OLED.clearDisplay();
+	OLED.display();
+	OLED.setCursor(0, 0);
+	OLED.setTextSize(1);
+	OLED.print(F("Selected outlet: "));
+	OLED.setTextSize(2);
+	OLED.print(relay+1);
+	OLED.setTextSize(1);
+	OLED.setCursor(0, 21);
+	OLED.print(F("Turns ON:  "));
+	if (hourOn > 12)
+		OLED.print(hourOn - 12);
+	else
+		OLED.print(hourOn);
+	OLED.print(F(":"));
+	if (minOn < 10)
+		OLED.print(0);
+	OLED.print(minOn);
+	if (hourOn < 12 && hourOn >= 0) {
+		OLED.print(F(" AM"));
+	}
+	if (hourOn >= 12) {
+		OLED.print(F(" PM"));
+	}
+	OLED.setCursor(0, 39);
+	OLED.print(F("Turns OFF:  "));
+	if (hourOff > 12)
+		OLED.print(hourOff - 12);
+	else
+		OLED.print(hourOff);
+	OLED.print(F(":"));
+	if (minOff < 10)
+		OLED.print(0);
+	OLED.print(minOff);
+	if (hourOff < 12 && hourOff >= 0) {
+		OLED.print(F(" AM"));
+	}
+	if (hourOff >= 12) {
+		OLED.print(F(" PM"));
+	}
+	OLED.setCursor(0, 56);
+	OLED.print(F("press A-D to go back"));
+	OLED.display();
 }
 //END SCHEDULES DISPLAYS
