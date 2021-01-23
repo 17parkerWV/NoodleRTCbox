@@ -59,8 +59,8 @@ void Relay::off(void) {
 	clearPoweredState();
 	clearScheduleSetFlag();
 	clearTempOverrideFlag();
-	setManualOverrideFlag();
 	clearTempOverrideStarted();
+	setManualOverrideFlag();
 }
 
 bool Relay::getScheduleSetFlagStatus() {
