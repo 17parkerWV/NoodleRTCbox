@@ -75,6 +75,7 @@ void SubMenu::timeControl(int currentDay, int currentHour, int currentMinute) {
 		if (powerArray[relay].getTempOverrideStatus() == false && powerArray[relay].getScheduleSetFlagStatus() == false)
 			continue;
 		if (powerArray[relay].getTempOverrideStatus() == true) {
+			byte tempState = powerArray[relay].getTempOverrideState();
 			if ((powerArray[relay].schedules.tempOverrideHour <= currentHour) && (powerArray[relay].schedules.tempOverrideMinute <= currentMinute) && (powerArray[relay].schedules.tempOverrideOffHour >= currentHour) && (powerArray[relay].schedules.tempOverrideOffMinute > currentMinute)) {
 				powerArray[relay].setTempOverrideStarted();
 				powerArray[relay].clearPoweredState();
@@ -90,13 +91,14 @@ void SubMenu::timeControl(int currentDay, int currentHour, int currentMinute) {
 			}
 		}
 		if (powerArray[relay].getScheduleSetFlagStatus() == true) {
+			byte schedState = powerArray[relay].getScheduleState();
 			if ((powerArray[relay].schedules.hourOn <= currentHour) && (powerArray[relay].schedules.minuteOn <= currentMinute) && (powerArray[relay].schedules.hourOff >= currentHour) && (powerArray[relay].schedules.minuteOff > currentMinute)) {
 				powerArray[relay].setPoweredState();
-				digitalWrite(powerArray[relay].schedules.relayPin, powerArray[relay].getScheduleState());
+				digitalWrite(powerArray[relay].schedules.relayPin, schedState);
 			}
 			if ((powerArray[relay].schedules.hourOff <= currentHour) && (powerArray[relay].schedules.minuteOff <= currentMinute)) {
 				powerArray[relay].clearPoweredState();
-				digitalWrite(powerArray[relay].schedules.relayPin, !(powerArray[relay].getScheduleState()));
+				digitalWrite(powerArray[relay].schedules.relayPin, !schedState);
 			}
 		}
 	}
@@ -988,10 +990,10 @@ void SubMenu::promptScheduleTime(int object) {
 		subMenuDisplayObject.displayError(F("Invalid Input"));
 		return;
 	}
-	bool powerState = false;
+	byte powerState = 0;
 	//Set the flag and switch the times
 	if (((startHour > stopHour) || ((startHour >= stopHour) && (startMinute > stopMinute)))) {
-		powerState = true;
+		powerState = 1;
 		int tempHour = startHour;
 		startHour = stopHour;
 		stopHour = tempHour;

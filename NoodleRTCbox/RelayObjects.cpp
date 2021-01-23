@@ -91,11 +91,11 @@ void Relay::setTempOverrideFlag() {
 	schedules.tempOverrideFlag = true;
 }
 
-bool Relay::getTempOverrideState() {
+byte Relay::getTempOverrideState() {
 	return schedules.tempOverrideState;
 }
 
-bool Relay::getScheduleState() {
+byte Relay::getScheduleState() {
 	return schedules.scheduleState;
 }
 

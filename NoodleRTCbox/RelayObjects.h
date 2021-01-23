@@ -116,9 +116,9 @@ public:
 	//return the status of the tempoverride flag
 	bool getTempOverrideStatus();
 	//return the state the override is in
-	bool getTempOverrideState();
+	byte getTempOverrideState();
 	//return the state the schedule should be in (basically is it flipped)
-	bool getScheduleState();
+	byte getScheduleState();
 
 	//set the status of the tempOverrideStarted flag
 	void setTempOverrideStarted();
@@ -157,8 +157,8 @@ private:
 		//how long the temp override should last
 		int tempOverrideDuration = 0;
 		//Whether the temporary override is ON (0) or OFF (1)	IT IS LIKE THIS BECAUSE THE RELAYS ARE "ACTIVE LOW"
-		volatile bool tempOverrideState = false;
-		volatile bool scheduleState = false;
+		volatile byte tempOverrideState = 0;
+		volatile byte scheduleState = 0;
 		//number of the physical pin the corresponding relay is connected to
 		int relayPin;
 	} schedules;
