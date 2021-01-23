@@ -117,15 +117,15 @@ private:
 		int hourOff = 0;
 		int minuteOff = 0;
 		//Whether or not it is being overridden, flag for other parts of the program
-		bool manualOverrideFlag = true;
+		volatile bool manualOverrideFlag = true;
 		//Whether or not it is on or off (for manual override) power state of the relay must be in sync with this flag!!
-		bool powered = false;
+		volatile bool powered = false;
 		//Override flag and powered are more or less local to the override menu, this flag will communicate if a schedule is set
 		//Specifically, if the relay is overriden, it is tripped and can only be reset by setting a schedule again
 		//Rule 1: If the schedule flag is set, it cannot be manually controlled
 		//Rule 2: To set the flag, a schedule must be set
 		//Rule 3: The schedule flag can only be cleared in the schedules menu
-		bool scheduleSetFlag = false;
+		volatile bool scheduleSetFlag = false;
 		//These three store the hour and minute of the start of the temporary override, and the end time
 		int tempOverrideHour = 0;
 		int tempOverrideMinute = 0;
@@ -133,13 +133,13 @@ private:
 		int tempOverrideOffHour = 0;
 		int tempOverrideOffMinute = 0;
 		//Whether there is a temporary override in place
-		bool tempOverrideFlag = false;
+		volatile bool tempOverrideFlag = false;
 		//There are a lot of little issues that can come up and these flags will keep track if override has started/in progress
-		bool tempOverrideStarted = false;
+		volatile bool tempOverrideStarted = false;
 		//how long the temp override should last
 		int tempOverrideDuration = 0;
 		//Whether the temporary override is ON (0) or OFF (1)	IT IS LIKE THIS BECAUSE THE RELAYS ARE "ACTIVE LOW"
-		byte tempOverrideState = 0b00000000;
+		volatile byte tempOverrideState = 0b00000000;
 		//number of the physical pin the corresponding relay is connected to
 		int relayPin;
 	} schedules;

@@ -85,7 +85,9 @@ void temporaryOverrideStatus();
 
 
 ISR(INT4_vect) {
+	sei();
 	EIMSK = 0b00000000;
+	EIFR |= DIGITAL_PIN_2;
 	if (counter >= 2) {
 		PORTB ^= BUILT_IN_LED;
 		updateClockObj();
@@ -95,7 +97,7 @@ ISR(INT4_vect) {
 	else {
 		counter++;
 	}
-	EIMSK = (1 << 4);
+	EIMSK |= DIGITAL_PIN_2;
 }
 
 void setup() {
@@ -118,9 +120,7 @@ void setup() {
 	EIMSK = 0b00000000;	//All interrupts are masked out (recommended in the datasheet)
 	MCUCR |= (0 << 4);		//Set the pullup disable bit LOW
 	PORTE |= DIGITAL_PIN_2;		//Bit 4 has pullup resistor enabled
-	EICRB = 0b00000010;			//Falling edge interrupt enabled on INT4 (pin 2)
-	EIMSK |= DIGITAL_PIN_2;		//Bit 4 (INT4) interrupt mask bit to 1
-	sei();
+	EICRB = 0b00000011;			//Rising edge interrupt enabled on INT4 (pin 2)
 
 	clockSecondObj = clockObj.now();
 
@@ -133,6 +133,8 @@ void setup() {
 	//Maybe function to set the clock?
 	//Function to notify that all schedules were wiped out
 	subMenuObj.displayMainMenu();
+
+	EIMSK |= DIGITAL_PIN_2;		//Bit 4 (INT4) interrupt mask bit to 1, enable the interrupt
 }
 //MAIN MENU***
 void loop() {
