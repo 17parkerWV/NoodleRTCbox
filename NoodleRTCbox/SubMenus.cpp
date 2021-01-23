@@ -75,12 +75,12 @@ void SubMenu::timeControl(int currentDay, int currentHour, int currentMinute) {
 		if (powerArray[relay].getTempOverrideStatus() == false && powerArray[relay].getScheduleSetFlagStatus() == false)
 			continue;
 		if (powerArray[relay].getTempOverrideStatus() == true) {
-			if ((powerArray[relay].getTempOverrideStartedStatus() == false) && (powerArray[relay].schedules.tempOverrideHour <= currentHour) && (powerArray[relay].schedules.tempOverrideMinute <= currentMinute)) {
+			if ((powerArray[relay].schedules.tempOverrideHour <= currentHour) && (powerArray[relay].schedules.tempOverrideMinute <= currentMinute)) {
 				powerArray[relay].setTempOverrideStarted();
 				powerArray[relay].clearPoweredState();
 				digitalWrite(powerArray[relay].schedules.relayPin, powerArray[relay].getTempOverrideState());
 			}
-			else if ((powerArray[relay].getTempOverrideStartedStatus() == true) && (powerArray[relay].schedules.tempOverrideOffHour <= currentHour) && (powerArray[relay].schedules.tempOverrideOffMinute <= currentMinute)) {
+			if ((powerArray[relay].schedules.tempOverrideOffHour <= currentHour) && (powerArray[relay].schedules.tempOverrideOffMinute <= currentMinute)) {
 				powerArray[relay].clearTempOverrideFlag();
 				powerArray[relay].clearTempOverrideStarted();
 				if (powerArray[relay].getScheduleSetFlagStatus() == false) {
@@ -89,13 +89,15 @@ void SubMenu::timeControl(int currentDay, int currentHour, int currentMinute) {
 				}
 			}
 		}
-		if ((powerArray[relay].schedules.powered == false) && (powerArray[relay].schedules.hourOn <= currentHour)  && (powerArray[relay].schedules.minuteOn <= currentMinute)) {
-			powerArray[relay].setPoweredState();
-			digitalWrite(powerArray[relay].schedules.relayPin, LOW);
-		}
-		else if ((powerArray[relay].schedules.powered == true) && (powerArray[relay].schedules.hourOff <= currentHour) && (powerArray[relay].schedules.minuteOff <= currentMinute)) {
-			powerArray[relay].clearPoweredState();
-			digitalWrite(powerArray[relay].schedules.relayPin, HIGH);
+		if (powerArray[relay].getScheduleSetFlagStatus() == true) {
+			if ((powerArray[relay].schedules.hourOn <= currentHour) && (powerArray[relay].schedules.minuteOn <= currentMinute)) {
+				powerArray[relay].setPoweredState();
+				digitalWrite(powerArray[relay].schedules.relayPin, powerArray[relay].getScheduleState());
+			}
+			if ((powerArray[relay].schedules.hourOff <= currentHour) && (powerArray[relay].schedules.minuteOff <= currentMinute)) {
+				powerArray[relay].clearPoweredState();
+				digitalWrite(powerArray[relay].schedules.relayPin, !(powerArray[relay].getScheduleState()));
+			}
 		}
 	}
 }
@@ -313,14 +315,14 @@ void SubMenu::scheduleSetStatusWhileLoop() {
 			}
 			if (buttonByte == NUM_PAD_4) {
 				if (powerArray[3].getScheduleSetFlagStatus() == true) {
-					subMenuDisplayObject.displaySingleObjectScheduleStatus(3,powerArray[3].schedules.hourOn, powerArray[3].schedules.minuteOn, powerArray[3].schedules.hourOff, powerArray[3].schedules.minuteOff);
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(3, powerArray[3].schedules.hourOn, powerArray[3].schedules.minuteOn, powerArray[3].schedules.hourOff, powerArray[3].schedules.minuteOff);
 					waitForAnyLetterPress();
 					return;
 				}
 			}
 			if (buttonByte == NUM_PAD_7) {
 				if (powerArray[6].getScheduleSetFlagStatus() == true) {
-					subMenuDisplayObject.displaySingleObjectScheduleStatus(6,powerArray[6].schedules.hourOn, powerArray[6].schedules.minuteOn, powerArray[6].schedules.hourOff, powerArray[6].schedules.minuteOff);
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(6, powerArray[6].schedules.hourOn, powerArray[6].schedules.minuteOn, powerArray[6].schedules.hourOff, powerArray[6].schedules.minuteOff);
 					waitForAnyLetterPress();
 					return;
 				}
@@ -331,21 +333,21 @@ void SubMenu::scheduleSetStatusWhileLoop() {
 		if ((buttonByte & COL_BITS) == COL_2) {
 			if (buttonByte == NUM_PAD_2) {
 				if (powerArray[1].getScheduleSetFlagStatus() == true) {
-					subMenuDisplayObject.displaySingleObjectScheduleStatus(1,powerArray[1].schedules.hourOn, powerArray[1].schedules.minuteOn, powerArray[1].schedules.hourOff, powerArray[1].schedules.minuteOff);
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(1, powerArray[1].schedules.hourOn, powerArray[1].schedules.minuteOn, powerArray[1].schedules.hourOff, powerArray[1].schedules.minuteOff);
 					waitForAnyLetterPress();
 					return;
 				}
 			}
 			if (buttonByte == NUM_PAD_5) {
 				if (powerArray[4].getScheduleSetFlagStatus() == true) {
-					subMenuDisplayObject.displaySingleObjectScheduleStatus(4,powerArray[4].schedules.hourOn, powerArray[4].schedules.minuteOn, powerArray[4].schedules.hourOff, powerArray[4].schedules.minuteOff);
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(4, powerArray[4].schedules.hourOn, powerArray[4].schedules.minuteOn, powerArray[4].schedules.hourOff, powerArray[4].schedules.minuteOff);
 					waitForAnyLetterPress();
 					return;
 				}
 			}
 			if (buttonByte == NUM_PAD_8) {
 				if (powerArray[7].getScheduleSetFlagStatus() == true) {
-					subMenuDisplayObject.displaySingleObjectScheduleStatus(7,powerArray[7].schedules.hourOn, powerArray[7].schedules.minuteOn, powerArray[7].schedules.hourOff, powerArray[7].schedules.minuteOff);
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(7, powerArray[7].schedules.hourOn, powerArray[7].schedules.minuteOn, powerArray[7].schedules.hourOff, powerArray[7].schedules.minuteOff);
 					waitForAnyLetterPress();
 					return;
 				}
@@ -354,14 +356,14 @@ void SubMenu::scheduleSetStatusWhileLoop() {
 		if ((buttonByte & COL_BITS) == COL_3) {
 			if (buttonByte == NUM_PAD_3) {
 				if (powerArray[2].getScheduleSetFlagStatus() == true) {
-					subMenuDisplayObject.displaySingleObjectScheduleStatus(2,powerArray[2].schedules.hourOn, powerArray[2].schedules.minuteOn, powerArray[2].schedules.hourOff, powerArray[2].schedules.minuteOff);
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(2, powerArray[2].schedules.hourOn, powerArray[2].schedules.minuteOn, powerArray[2].schedules.hourOff, powerArray[2].schedules.minuteOff);
 					waitForAnyLetterPress();
 					return;
 				}
 			}
 			if (buttonByte == NUM_PAD_6) {
 				if (powerArray[5].getScheduleSetFlagStatus() == true) {
-					subMenuDisplayObject.displaySingleObjectScheduleStatus(5,powerArray[5].schedules.hourOn, powerArray[5].schedules.minuteOn, powerArray[5].schedules.hourOff, powerArray[5].schedules.minuteOff);
+					subMenuDisplayObject.displaySingleObjectScheduleStatus(5, powerArray[5].schedules.hourOn, powerArray[5].schedules.minuteOn, powerArray[5].schedules.hourOff, powerArray[5].schedules.minuteOff);
 					waitForAnyLetterPress();
 					return;
 				}
@@ -855,33 +857,30 @@ void SubMenu::promptTempOverrideTime(int object) {
 	powerArray[object].schedules.tempOverrideMinute = 0;
 	powerArray[object].schedules.tempOverrideDuration = 0;
 	subMenuDisplayObject.enterTime((F("Enter starting hour  using 24 hour format Press STAR to cancel Press D when done")), (F("24 HOUR FORMAT ONLY")));
-	int hours = inputTime();
-	if (hours == -1) {
+	int hour = inputTime();
+	if (hour == -1) {
 		subMenuDisplayObject.displayError(F("Canceled"));
 		delayWithoutDelay(1500);
 		return;
 	}
-	hours = verifyHour(hours);
-	if (hours == -1) {
+	hour = verifyHour(hour);
+	if (hour == -1) {
 		subMenuDisplayObject.displayError(F("Invalid\nhour"));
 		delayWithoutDelay(1500);
 		return;
 	}
-	powerArray[object].schedules.tempOverrideHour = hours;
 	//Get the starting MINUTE//
 	subMenuDisplayObject.enterTime((F("Enter starting\nminutes   * - back\nPress D when done")), F(""));
-	powerArray[object].schedules.tempOverrideHour = hours;
-	int minutes = inputTime();
-	if (minutes == -1) {
+	int minute = inputTime();
+	if (minute == -1) {
 		subMenuDisplayObject.displayError(F("Canceled"));
 		return;
 	}
-	minutes = verifyMinute(minutes);
-	if (minutes == -1) {
+	minute = verifyMinute(minute);
+	if (minute == -1) {
 		subMenuDisplayObject.displayError(F("Invalid\nminutes"));
 		return;
 	}
-	powerArray[object].schedules.tempOverrideMinute = minutes;
 	//Get the DURATION of the override//
 	subMenuDisplayObject.enterDuration();
 	int duration = inputDuration();
@@ -894,20 +893,40 @@ void SubMenu::promptTempOverrideTime(int object) {
 		subMenuDisplayObject.displayError(F("Invalid\nDuration"));
 		return;
 	}
-	powerArray[object].schedules.tempOverrideOffMinute = (duration + powerArray[object].schedules.tempOverrideMinute) % 60;	//stores the minute it will turn OFF
+
+	int minuteOff = (duration + minute) % 60;	//stores the minute it will turn OFF;
 	int tempHourVar = (duration / 60);
-	if (((duration % 60) + powerArray[object].schedules.tempOverrideMinute) > 59)
+	if (((duration % 60) + minute) > 59)
 		tempHourVar++;		//Add one hour if the minutes overflow
-	powerArray[object].schedules.tempOverrideOffHour = (powerArray[object].schedules.tempOverrideHour + tempHourVar) % 24;
-	powerArray[object].schedules.tempOverrideOffDayOffset = (powerArray[object].schedules.tempOverrideHour + tempHourVar) / 24;	//whether or not there is a day overflow
-	powerArray[object].schedules.tempOverrideDuration = duration;
+	int hourOff = (hour + tempHourVar) % 24;
 	//Get the POWER STATE//
 	subMenuDisplayObject.enterPowerState();
 	byte powerState = inputPowerState();
 	if (powerState == -1) {
+		subMenuDisplayObject.displayError(F("Canceled"));
 		return;
 	}
+	//FINAL INPUT CHECKS
+	if ((hour == hourOff) && (minute == minuteOff)) {
+		subMenuDisplayObject.displayError(F("Invalid Input"));
+		return;
+	}
+	//Set the flag and swap the times
+	if ((hour > hourOff) || ((hour >= hourOff) && (minute > minuteOff))) {
+		powerState =true;
+		int tempMinute = minute;
+		minute = minuteOff;
+		minuteOff = tempMinute;
+		int tempHour = hour;
+		hour = hourOff;
+		hourOff = tempHour;
+	}
+	powerArray[object].schedules.tempOverrideDuration = duration;
 	powerArray[object].schedules.tempOverrideState = powerState;
+	powerArray[object].schedules.tempOverrideOffMinute = minuteOff;
+	powerArray[object].schedules.tempOverrideOffHour = hourOff;
+	powerArray[object].schedules.tempOverrideHour = hour;
+	powerArray[object].schedules.tempOverrideMinute = minute;
 	//FINALIZE - set the flag
 	subMenuDisplayObject.displayError(F("Set"));
 	powerArray[object].setTempOverrideFlag();
@@ -931,7 +950,6 @@ void SubMenu::promptScheduleTime(int object) {
 		subMenuDisplayObject.displayError(F("Invalid\nhour"));
 		return;
 	}
-	powerArray[object].schedules.hourOn = startHour;
 	subMenuDisplayObject.enterTime((F("Enter minute to TURN ON   * - back\nPress D when done")), F(""));
 	int startMinute = inputTime();
 	if (startMinute == -1) {
@@ -943,7 +961,6 @@ void SubMenu::promptScheduleTime(int object) {
 		subMenuDisplayObject.displayError(F("Invalid\nminute"));
 		return;
 	}
-	powerArray[object].schedules.minuteOn = startMinute;
 	subMenuDisplayObject.enterTime((F("What hour should it  turn off? Press STAR to cancel Press D    when done")), (F("24 HOUR FORMAT ONLY")));	//I think this is too long but we'll see
 	int stopHour = inputTime();
 	if (stopHour == -1) {
@@ -955,7 +972,6 @@ void SubMenu::promptScheduleTime(int object) {
 		subMenuDisplayObject.displayError(F("Invalid\nhour"));
 		return;
 	}
-	powerArray[object].schedules.hourOff = stopHour;
 	subMenuDisplayObject.enterTime((F("Enter minute to TURN OFF   * - back\nPress D when done")), F(""));
 	int stopMinute = inputTime();
 	if (stopMinute == -1) {
@@ -967,8 +983,28 @@ void SubMenu::promptScheduleTime(int object) {
 		subMenuDisplayObject.displayError(F("Invalid\nminute"));
 		return;
 	}
-	powerArray[object].schedules.minuteOff = stopMinute;
+	//FINAL INPUT CHECKS
+	if ((startHour == stopHour) && (startMinute == stopMinute)) {
+		subMenuDisplayObject.displayError(F("Invalid Input"));
+		return;
+	}
+	bool powerState = false;
+	//Set the flag and switch the times
+	if (((startHour > stopHour) || ((startHour >= stopHour) && (startMinute > stopMinute)))) {
+		powerState != powerState;
+		int tempHour = startHour;
+		startHour = stopHour;
+		stopHour = tempHour;
+		int tempMinute = startMinute;
+		startMinute = stopMinute;
+		stopMinute = tempMinute;
+	}
 	//FINALIZE - set the flag
+	powerArray[object].schedules.scheduleState = powerState;
+	powerArray[object].schedules.minuteOff = stopMinute;
+	powerArray[object].schedules.hourOn = startHour;
+	powerArray[object].schedules.hourOff = stopHour;
+	powerArray[object].schedules.minuteOn = startMinute;
 	subMenuDisplayObject.displayError(F("Set"));
 	powerArray[object].setScheduleSetFlag();
 	return;

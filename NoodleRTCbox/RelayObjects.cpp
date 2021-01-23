@@ -26,12 +26,10 @@ bool Relay::getPowerStatus() {
 
 void Relay::setPoweredState() {
 	schedules.powered = true;
-	digitalWrite(schedules.relayPin, LOW);
 }
 
 void Relay::clearPoweredState() {
 	schedules.powered = false;
-	digitalWrite(schedules.relayPin, HIGH);
 }
 
 //schedules.scheduleSetFlag MUST BE FALSE GOING INTO THIS TO PREVENT SOME OBSCURE BUG FROM GIBING ME YEARS OF PAIN
@@ -93,8 +91,12 @@ void Relay::setTempOverrideFlag() {
 	schedules.tempOverrideFlag = true;
 }
 
-byte Relay::getTempOverrideState() {
+bool Relay::getTempOverrideState() {
 	return schedules.tempOverrideState;
+}
+
+bool Relay::getScheduleState() {
+	return schedules.scheduleState;
 }
 
 bool Relay::getTempOverrideStatus() {

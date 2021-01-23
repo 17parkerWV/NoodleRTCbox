@@ -116,7 +116,9 @@ public:
 	//return the status of the tempoverride flag
 	bool getTempOverrideStatus();
 	//return the state the override is in
-	byte getTempOverrideState();
+	bool getTempOverrideState();
+	//return the state the schedule should be in (basically is it flipped)
+	bool getScheduleState();
 
 	//set the status of the tempOverrideStarted flag
 	void setTempOverrideStarted();
@@ -124,6 +126,7 @@ public:
 	void clearTempOverrideStarted();
 	//return the status of the tempOverrideStarted flag
 	bool getTempOverrideStartedStatus();
+
 
 private:
 	//This struct is going to hold the scheduled times, mostly initialized because none of this needs to be initailized differently
@@ -145,7 +148,6 @@ private:
 		//These three store the hour and minute of the start of the temporary override, and the end time
 		int tempOverrideHour = 0;
 		int tempOverrideMinute = 0;
-		int tempOverrideOffDayOffset = 0;	//NOT SURE if I'll need this one, it would be used to help with hour/day overflow
 		int tempOverrideOffHour = 0;
 		int tempOverrideOffMinute = 0;
 		//Whether there is a temporary override in place
@@ -155,7 +157,8 @@ private:
 		//how long the temp override should last
 		int tempOverrideDuration = 0;
 		//Whether the temporary override is ON (0) or OFF (1)	IT IS LIKE THIS BECAUSE THE RELAYS ARE "ACTIVE LOW"
-		volatile byte tempOverrideState = 0b00000000;
+		volatile bool tempOverrideState = false;
+		volatile bool scheduleState = false;
 		//number of the physical pin the corresponding relay is connected to
 		int relayPin;
 	} schedules;
