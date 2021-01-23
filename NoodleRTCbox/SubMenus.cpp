@@ -101,7 +101,7 @@ void SubMenu::timeControl(int currentDay, int currentHour, int currentMinute) {
 			powerArray[relay].setPoweredState();
 			digitalWrite(powerArray[relay].schedules.relayPin, LOW);
 		}
-		else if ((powerArray[relay].schedules.hourOn >= currentHour) && (powerArray[relay].schedules.hourOff <= currentHour) && (powerArray[relay].schedules.minuteOn >= currentMinute) && (powerArray[relay].schedules.minuteOff <= currentMinute)) {
+		else if ((powerArray[relay].schedules.powered == true) && (powerArray[relay].schedules.hourOff <= currentHour) && (powerArray[relay].schedules.minuteOff <= currentMinute)) {
 			powerArray[relay].clearPoweredState();
 			digitalWrite(powerArray[relay].schedules.relayPin, HIGH);
 		}
