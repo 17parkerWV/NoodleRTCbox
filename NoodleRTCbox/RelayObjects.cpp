@@ -28,9 +28,7 @@ void Relay::setPoweredState() {
 	schedules.powered = true;
 }
 
-void Relay::clearPoweredState() {
-	schedules.powered = false;
-}
+
 
 //schedules.scheduleSetFlag MUST BE FALSE GOING INTO THIS TO PREVENT SOME OBSCURE BUG FROM GIBING ME YEARS OF PAIN
 void Relay::flipManualOverrideFlag(void) {
@@ -53,8 +51,7 @@ bool Relay::getManualOverrideFlagStatus() {
 }
 
 void Relay::off(void) {
-	digitalWrite(schedules.relayPin, HIGH);
-	clearPoweredState();
+	
 	clearScheduleSetFlag();
 	clearTempOverrideFlag();
 	clearTempOverrideStarted();

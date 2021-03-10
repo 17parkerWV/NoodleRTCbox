@@ -84,8 +84,7 @@ public:
 	void flipPowerState(void);
 	//Return the powered status of the object
 	bool getPowerStatus();
-	//clear the powered status
-	void clearPoweredState();
+
 	//set powered state
 	void setPoweredState();
 

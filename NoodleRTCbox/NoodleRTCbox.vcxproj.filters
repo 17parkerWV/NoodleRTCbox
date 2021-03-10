@@ -15,34 +15,20 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="NoodleRTCbox.ino" />
+    <None Include="Noodlebox.ino" />
     <None Include="src\arduino folders read me.txt">
       <Filter>Misc Files</Filter>
+    </None>
+    <None Include="DisplayFuncs.ino" />
+    <None Include="RelayFuncs.ino" />
+    <None Include="ClockFuncs.ino" />
+    <None Include="SubMenus.ino">
+      <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="__vm\.NoodleRTCbox.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RelayObjects.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DisplayUpdates.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SubMenus.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="RelayObjects.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DisplayUpdates.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SubMenus.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
