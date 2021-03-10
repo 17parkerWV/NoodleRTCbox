@@ -97,9 +97,9 @@ public:
 	//The state is the powered status of the relay if it is within the range of an override or schedule
 	//Example: schedule is set from 1pm to 7pm, override is at 2pm for 30 min, set to OFF (1 - active LOW)
 	//Example 2: sched is set from 1pm to 7pm, override is set at 8pm ON (0 - active LOW)
-	//The sched state flag is useful when schedule is set from 9pm to 8am, for example
-	//instead of ON from 9pm to 8am, turn it off from 8am to 9pm
-	volatile bool overrideState = 0;
+	//NOTE: OverrideState is ON when 0 (LOW) and OFF when 1 (HIGH)
+	//SchedState is initialized ON (0), flip to 1 to make overnight schedules easier
+	volatile bool overrideState = 1;
 	volatile bool schedState = 0;
 	//number of the physical pin the corresponding relay is connected to
 	int relayPin;
@@ -117,6 +117,7 @@ public:
 	void clearManualPoweredStatus() { manualPoweredStatus = false; }
 	void flipManualOverrideFlag(void) { manualOverrideEnabled = (!manualOverrideEnabled); }
 	void flipManualPoweredStatus() {
+		manualOverrideEnabled = true;
 		digitalWrite(relayPin, manualPoweredStatus); //relay is ON (0) when status is TRUE (1) -> set relay to (1)...
 		manualPoweredStatus = !manualPoweredStatus;
 	}
@@ -179,7 +180,7 @@ void dispManualOverrideMenu();
 void clearRelayUpdate();
 void dispConfirmation();
 void dispSingleSchedStatus(int relayNum);
-void dispSingleOverrideStatus(int relayNum); 
+void dispSingleOverrideStatus(int relayNum);
 
 //***Relay Function Prototypes
 void allOff();
@@ -193,6 +194,7 @@ void promptSchedTime(outlets& obj);
 void promptOverrideTime(outlets& obj);
 
 //***Clock Object functions
+void timeControl();
 void updateClock();
 void updateCurrentTime();
 void dispCurrentTime(int hour, int min);
@@ -204,9 +206,9 @@ void waitForAnyLetterPress();
 int inputTime();
 int inputDuration();
 byte inputPowerState();
-int verifyHour(int hour);
-int verifyMinute(int min);
-int verifyDuration(int dur);
+int verifyHour(int& hour);
+int verifyMinute(int& min);
+int verifyDuration(int& dur);
 
 void schedulesMenu();
 void setScheduleSubMenu();
@@ -224,9 +226,6 @@ void manualOnOffSubMenu();
 void manualOnOffLoop();
 void enableDisableRelaySubMenu();
 void enableDisableRelayLoop();
-
-
-
 
 void outlets::off() {
 	clearManualOverrideEnabled();
@@ -250,12 +249,11 @@ ISR(INT4_vect) {
 	if (counter >= 2) {
 		PORTB ^= BUILT_IN_LED;
 		updateClock();
-		//timeControl(clockSecondObj.day(), clockSecondObj.hour(), clockSecondObj.minute());
+		timeControl();
 		counter = 0;
 	}
-	else {
-		counter++;
-	}
+	else
+		++counter;
 	EIMSK |= DIGITAL_PIN_2;
 }
 

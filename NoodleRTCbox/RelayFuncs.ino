@@ -1,17 +1,15 @@
 void initializeObjs() {
-	if (disp.begin(SSD1306_SWITCHCAPVCC, 0x3C))
+	if (!disp.begin(SSD1306_SWITCHCAPVCC, 0x3C))
 		while (1);
-	if (!clockObj.begin() || clockObj.lostPower()) {
+	if (!clockObj.begin() || clockObj.lostPower()) 
 		while (1);
-	}
 	clockSecondObj = clockObj.now();
 	clockObj.writeSqwPinMode(DS3231_SquareWave1Hz);	//Enable the 1Hz squarewave clock
-	disp.display();
 	disp.clearDisplay();
 	disp.display();
 	disp.setCursor(0, 0);
 	disp.setTextColor(WHITE);
-	for (int i = 0; i <= 7; i++) {
+	for (int i = 0; i <= 7; ++i) {
 		pinMode(relayArrayPins[i], OUTPUT);
 		relay[i].relayPin = relayArrayPins[i];
 		relay[i].off();
@@ -61,6 +59,7 @@ int chooseRelay(int func) {
 				confirmClear(relay[0], clearFunc);
 				return 0;
 			}
+			promptFunc(relay[0]);
 			return 0;
 		}
 		if (buttonByte == NUM_PAD_2) {
@@ -68,6 +67,7 @@ int chooseRelay(int func) {
 				confirmClear(relay[1], clearFunc);
 				return 0;
 			}
+			promptFunc(relay[1]);
 			return 0;
 		}
 		if (buttonByte == NUM_PAD_3) {
@@ -75,6 +75,7 @@ int chooseRelay(int func) {
 				confirmClear(relay[2], clearFunc);
 				return 0;
 			}
+			promptFunc(relay[2]);
 			return 0;
 		}
 		if (buttonByte == NUM_PAD_4) {
@@ -82,6 +83,7 @@ int chooseRelay(int func) {
 				confirmClear(relay[3], clearFunc);
 				return 0;
 			}
+			promptFunc(relay[3]);
 			return 0;
 		}
 		if (buttonByte == NUM_PAD_5) {
@@ -89,6 +91,7 @@ int chooseRelay(int func) {
 				confirmClear(relay[4], clearFunc);
 				return 0;
 			}
+			promptFunc(relay[4]);
 			return 0;
 		}
 		if (buttonByte == NUM_PAD_6) {
@@ -96,6 +99,7 @@ int chooseRelay(int func) {
 				confirmClear(relay[5], clearFunc);
 				return 0;
 			}
+			promptFunc(relay[5]);
 			return 0;
 		}
 		if (buttonByte == NUM_PAD_7) {
@@ -103,6 +107,7 @@ int chooseRelay(int func) {
 				confirmClear(relay[6], clearFunc);
 				return 0;
 			}
+			promptFunc(relay[6]);
 			return 0;
 		}
 		if (buttonByte == NUM_PAD_8) {
@@ -110,6 +115,7 @@ int chooseRelay(int func) {
 				confirmClear(relay[7], clearFunc);
 				return 0;
 			}
+			promptFunc(relay[7]);
 			return 0;
 		}
 		if (buttonByte == NUM_PAD_STAR)
@@ -232,8 +238,7 @@ void promptSchedTime(outlets& obj) {
 		dispError(F("Canceled"));
 		return;
 	}
-	startHour = verifyHour(startHour);
-	if (startHour == -1) {
+	if (verifyHour(startHour) == -1) {
 		dispError(F("Invalid\nhour"));
 		return;
 	}
@@ -243,8 +248,7 @@ void promptSchedTime(outlets& obj) {
 		dispError(F("Canceled"));
 		return;
 	}
-	startMinute = verifyMinute(startMinute);
-	if (startMinute == -1) {
+	if (verifyMinute(startMinute) == -1) {
 		dispError(F("Invalid\nminute"));
 		return;
 	}
@@ -254,8 +258,7 @@ void promptSchedTime(outlets& obj) {
 		dispError(F("Canceled"));
 		return;
 	}
-	stopHour = verifyHour(stopHour);
-	if (stopHour == -1) {
+	if (verifyHour(stopHour) == -1) {
 		dispError(F("Invalid\nhour"));
 		return;
 	}
@@ -265,8 +268,7 @@ void promptSchedTime(outlets& obj) {
 		dispError(F("Canceled"));
 		return;
 	}
-	stopMinute = verifyMinute(stopMinute);
-	if (stopMinute == -1) {
+	if (verifyMinute(stopMinute) == -1) {
 		dispError(F("Invalid\nminute"));
 		return;
 	}
@@ -309,8 +311,7 @@ void promptOverrideTime(outlets& obj) {
 		delayWithoutDelay(1500);
 		return;
 	}
-	hour = verifyHour(hour);
-	if (hour == -1) {
+	if (verifyHour(hour) == -1) {
 		dispError(F("Invalid\nhour"));
 		delayWithoutDelay(1500);
 		return;
@@ -322,8 +323,7 @@ void promptOverrideTime(outlets& obj) {
 		dispError(F("Canceled"));
 		return;
 	}
-	minute = verifyMinute(minute);
-	if (minute == -1) {
+	if (verifyMinute(minute) == -1) {
 		dispError(F("Invalid\nminutes"));
 		return;
 	}
@@ -334,16 +334,14 @@ void promptOverrideTime(outlets& obj) {
 		dispError(F("Canceled"));
 		return;
 	}
-	duration = verifyDuration(duration);
-	if (duration == -1) {
+	if (verifyDuration(duration) == -1) {
 		dispError(F("Invalid\nDuration"));
 		return;
 	}
-
 	int minuteOff = (duration + minute) % 60;	//stores the minute it will turn OFF;
 	int tempHourVar = (duration / 60);
-	if (((duration % 60) + minute) > 59)
-		tempHourVar++;		//Add one hour if the minutes overflow
+	if ((duration % 60 + minute) > 59)
+		++tempHourVar;		//Add one hour if the minutes overflow
 	int hourOff = (hour + tempHourVar) % 24;
 	//Get the POWER STATE//
 	dispEnterPowerState();
@@ -353,12 +351,12 @@ void promptOverrideTime(outlets& obj) {
 		return;
 	}
 	//FINAL INPUT CHECKS
-	if ((hour == hourOff) && (minute == minuteOff)) {
+	if (hour == hourOff && minute == minuteOff) {
 		dispError(F("Invalid Input"));
 		return;
 	}
 	//Set the flag and swap the times
-	if ((hour > hourOff) || ((hour >= hourOff) && (minute > minuteOff))) {
+	if ((hour > hourOff) || (hour >= hourOff && minute > minuteOff)) {
 		powerState = true;
 		int tempMinute = minute;
 		minute = minuteOff;

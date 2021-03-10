@@ -1,7 +1,6 @@
 ﻿void delayWithoutDelay(unsigned int time) {
 	unsigned long delayTime = millis();
-	while ((millis() - time) < delayTime) {
-	}
+	while ((millis() - time) < delayTime) {}
 	return;
 }
 byte buttonPoll() {
@@ -313,52 +312,52 @@ int inputTime() {
 		while (1) {
 			byte buttonByte = buttonPoll();
 			if (buttonByte == NUM_PAD_1) {
-				NumberOfInputs--;
+				--NumberOfInputs;
 				timeInput += (1 * (pow(10, NumberOfInputs)));
 				break;
 			}
 			if (buttonByte == NUM_PAD_2) {
-				NumberOfInputs--;
+				--NumberOfInputs;
 				timeInput += (2 * (pow(10, NumberOfInputs)));
 				break;
 			}
 			if (buttonByte == NUM_PAD_3) {
-				NumberOfInputs--;
+				--NumberOfInputs;
 				timeInput += (3 * (pow(10, NumberOfInputs)));
 				break;
 			}
 			if (buttonByte == NUM_PAD_4) {
-				NumberOfInputs--;
+				--NumberOfInputs;
 				timeInput += (4 * (pow(10, NumberOfInputs)));
 				break;
 			}
 			if (buttonByte == NUM_PAD_5) {
-				NumberOfInputs--;
+				--NumberOfInputs;
 				timeInput += (5 * (pow(10, NumberOfInputs)));
 				break;
 			}
 			if (buttonByte == NUM_PAD_6) {
-				NumberOfInputs--;
+				--NumberOfInputs;
 				timeInput += (6 * (pow(10, NumberOfInputs)));
 				break;
 			}
 			if (buttonByte == NUM_PAD_7) {
-				NumberOfInputs--;
+				--NumberOfInputs;
 				timeInput += (7 * (pow(10, NumberOfInputs)));
 				break;
 			}
 			if (buttonByte == NUM_PAD_8) {
-				NumberOfInputs--;
+				--NumberOfInputs;
 				timeInput += (8 * (pow(10, NumberOfInputs)));
 				break;
 			}
 			if (buttonByte == NUM_PAD_9) {
-				NumberOfInputs--;
+				--NumberOfInputs;
 				timeInput += (9 * (pow(10, NumberOfInputs)));
 				break;
 			}
 			if (buttonByte == NUM_PAD_0) {
-				NumberOfInputs--;
+				--NumberOfInputs;
 				timeInput += 0;
 				break;
 			}
@@ -504,7 +503,7 @@ byte inputPowerState() {
 	return -1;
 }
 
-int verifyHour(int hour) {
+int verifyHour(int& hour) {
 	if (hour == 24)
 		hour = 0;
 	if (hour < 0 || hour > 24)
@@ -512,13 +511,13 @@ int verifyHour(int hour) {
 	return hour;
 }
 
-int verifyMinute(int min) {
+int verifyMinute(int& min) {
 	if (min > 59 || min < 0)
 		return -1;
 	return min;
 }
 
-int verifyDuration(int dur) {
+int verifyDuration(int& dur) {
 	if (dur <= 0 || dur > 1440)
 		return -1;
 	return dur;
