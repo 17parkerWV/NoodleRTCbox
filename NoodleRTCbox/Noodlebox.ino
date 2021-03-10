@@ -1,5 +1,5 @@
-//excluding these 2 lines, this program is 1,678 lines long (total including spaces + comments)
-//There are 56 functions (79 if you include all of the inline ones, too)
+//excluding these 2 lines, this program is 1,677 lines long (total including spaces + comments)
+//There are 56 functions (78 if you include all of the inline ones, too)
 #include <Adafruit_SPIDevice.h>
 #include <Adafruit_I2CRegister.h>
 #include <Adafruit_I2CDevice.h>
@@ -125,7 +125,6 @@ public:
 	bool getSchedSetFlag() { return schedSetFlag; }
 	bool getSchedState() { return schedState; }
 	void setSchedFlag() { schedSetFlag = true, manualOverrideEnabled = false; } //PRECONDITION: relay is not powered on manually
-	void setSchedState() { schedState = true; }	//most likely unnecessary
 	void clearSchedSetFlag() { schedSetFlag = false, digitalWrite(relayPin, HIGH); }
 	void clearSchedState() { schedState = false; }
 	//for the override stuff
@@ -180,7 +179,7 @@ void dispManualOverrideMenu();
 void clearRelayUpdate();
 void dispConfirmation();
 void dispSingleSchedStatus(int relayNum);
-void dispSingleOverrideStatus(int relayNum); //I have prototypes for functions up to here
+void dispSingleOverrideStatus(int relayNum); 
 
 //***Relay Function Prototypes
 void allOff();
