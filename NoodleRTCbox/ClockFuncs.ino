@@ -137,9 +137,9 @@ bool validateDay(uint8_t month, uint8_t day) {
 			return true;
 			break;
 		}
-		return true;
+		return false;
 	}
-	return true;
+	return false;
 }
 
 void updateCurrentTime() {
