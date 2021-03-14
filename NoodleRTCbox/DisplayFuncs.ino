@@ -1,11 +1,18 @@
 // //Main Menu --> A. Goes into options regarding set schedules
-void dispEightRelays(int mode, String message = "", bool header = false) {
-	if (header == true) {
+void prepDisp(int fontSize = 1, int x = 0, int y = 0, bool clear = true) {
+	if (clear) {
 		disp.clearDisplay();
 		disp.display();
-		disp.setTextSize(1);
-		disp.setCursor(0, 16);		//1
-		disp.print(F("1: "));
+	}
+	disp.setTextSize(fontSize);
+	disp.setCursor(x, y);
+	return;
+}
+
+void dispEightRelays(int mode, String message = "", bool header = false) {
+	if (header == true) {
+		prepDisp(1, 0, 16);
+		disp.print(F("1: "));		//1
 		disp.setCursor(0, 28);		//2
 		disp.print(F("2: "));
 		disp.setCursor(0, 40);		//3
@@ -63,68 +70,67 @@ void dispEightRelays(int mode, String message = "", bool header = false) {
 	disp.display();
 	return;
 }
-void dispConfirmation() {
-	disp.clearDisplay();
-	disp.display();
-	disp.setCursor(0, 0);
-	disp.setTextSize(2);
-	disp.print(F("Are you   sure?"));
-	disp.setTextSize(1);
-	disp.setCursor(0, 42);
+bool dispConfirmation() {
+	prepDisp(1, 0, 42, false);
 	disp.print(F("A: Yes        B: No"));
 	disp.display();
-	return;
+	byte button;
+	while (1) {
+		button = buttonPoll();
+		if (button == NUM_PAD_A)
+			return true;
+		if (button == NUM_PAD_B)
+			return false;
+	}
+	return false;
 }
-void printHeader(String message) {
-	disp.setTextSize(1);
-	disp.setCursor(0, 0);
+void printHeader(String message, int fontSize = 1, bool clear = false) {
+	prepDisp(fontSize, 0, 0, clear);
 	disp.print(message);
 	disp.display();
 	return;
 }
 void dispEnterDuration() {
-	disp.clearDisplay();
-	disp.display();
-	disp.setTextSize(1);
-	disp.setCursor(0, 0);
+	prepDisp(1, 0, 0);
 	disp.print(F("Enter duration of\noverride in minutes\npress * to cancel\nPress 'D' when done"));
 	disp.fillRect(0, 40, 128, 48, BLACK);
 	disp.display();
 	return;
 }
 
-
 void printTime(int time, int loopCount = 0) {
 	disp.setTextSize(2);
-	int x;
+	int xRect;
+	int xPrint = 32;
 	switch (loopCount) {
 	case 1000:
-		x = 42;
+		xRect = 42;
 		break;
 	case 100:
-		x = 53;
+		xRect = 53;
 		break;
 	case 10:
-		x = 65;
+		xRect = 65;
 		break;
 	case 1:
-		x = 77;
+		xRect = 77;
+		break;
+	case 0:
+		xPrint = 43;
+		xRect = 53;
 		break;
 	default:
-		x = 52;
+		xRect = 52;
 		break;
 	}
-	disp.setCursor(32, 35);
+	disp.setCursor(xPrint, 35);
 	disp.print(time);
-	disp.fillRect(x, 32, 140 - x, 20, BLACK);
+	disp.fillRect(xRect, 32, 108 - xRect + xPrint, 20, BLACK);
 	disp.display();
 	return;
 }
 void dispEnterTime(String top, String bottom) {
-	disp.clearDisplay();
-	disp.display();
-	disp.setTextSize(1);
-	disp.setCursor(0, 0);
+	prepDisp(1, 0, 0);
 	disp.print(top);
 	disp.fillRect(0, 32, 128, 48, BLACK);
 	disp.setCursor(0, 52);
@@ -133,32 +139,21 @@ void dispEnterTime(String top, String bottom) {
 	return;
 }
 void dispEnterPowerState() {
-	disp.clearDisplay();
-	disp.display();
-	disp.setTextSize(1);
-	disp.setCursor(0, 0);
+	prepDisp(1, 0, 0);
 	disp.print(F("Should it be forced\nON or OFF?\n1 means ON\n0 means OFF"));
 	disp.display();
 	return;
 }
 void dispConfirmClearFlag() {
-	disp.clearDisplay();
-	disp.display();
-	disp.setCursor(0, 0);
-	disp.setTextSize(1);
+	prepDisp(1, 0, 0);
 	disp.print(F("Something is already set, would you like  to clear it?\nPress A to clear\nPress B to cancel "));
 	disp.display();
 	return;
 }
 void dispError(String error) {
-	disp.clearDisplay();
-	disp.display();
-	disp.setCursor(0, 0);
-	disp.setTextSize(2);
+	prepDisp(2, 0, 0);
 	disp.print(error);
-	disp.setCursor(0, 17);
-	disp.setTextSize(1);
-	disp.setCursor(32, 38);
+	prepDisp(1, 32, 38, false);
 	disp.print(F("returning..."));
 	disp.display();
 	delayWithoutDelay(1200);
@@ -166,10 +161,7 @@ void dispError(String error) {
 }
 
 void dispOverrideMenu() {
-	disp.clearDisplay();
-	disp.display();
-	disp.setCursor(0, 0);
-	disp.setTextSize(1);
+	prepDisp(1, 0, 0);
 	disp.println(F("Temporarily override any set schedule!"));
 	disp.print(F("Press # to go back"));
 	disp.setCursor(0, 32);
@@ -180,10 +172,7 @@ void dispOverrideMenu() {
 	return;
 }
 void dispSchedulesMenu() {
-	disp.clearDisplay();
-	disp.display();
-	disp.setTextSize(1);
-	disp.setCursor(80, 8);
+	prepDisp(1, 80, 8);
 	disp.print(F("# - Back"));
 	disp.setCursor(0, 16);
 	disp.print(F("1: Set/Clear Schedule"));
@@ -197,20 +186,16 @@ void dispSchedulesMenu() {
 	return;
 }
 void dispMainMenu() {
-	disp.clearDisplay();
-	disp.display();
-	disp.setTextSize(2);
-	disp.setCursor(10, 0);
+	prepDisp(2, 10, 0);
 	disp.print(F("Main Menu"));
-	disp.setTextSize(1);
-	disp.setCursor(0, 16);
+	prepDisp(1, 0, 16, false);
 	disp.print("A: Adjust Schedule");
 	disp.setCursor(0, 27);
 	disp.print(F("B: Temporary Override"));
 	disp.setCursor(0, 38);
 	disp.print(F("C: Manual Override\n   Menu"));
 	disp.setCursor(0, 56);
-	disp.print(F("D: More options"));
+	disp.print(F("D: Set date and time"));
 	disp.display();
 	return;
 }
@@ -235,13 +220,9 @@ void clearRelayUpdate() {
 }
 
 void dispSingleOverrideStatus(int relayNum) {
-	disp.clearDisplay();
-	disp.display();
-	disp.setCursor(0, 0);
-	disp.setTextSize(1);
+	prepDisp(1, 0, 0);
 	disp.print(F("Current Override"));
-	disp.setTextSize(2);
-	disp.setCursor(0, 16);
+	prepDisp(2, 0, 16, false);
 	if (relay[relayNum].overrideHour > 12)
 		disp.print(relay[relayNum].overrideHour - 12);
 	else
@@ -268,15 +249,11 @@ void dispSingleOverrideStatus(int relayNum) {
 }
 
 void dispSingleSchedStatus(int relayNum) {
-	disp.clearDisplay();
-	disp.display();
-	disp.setCursor(0, 0);
-	disp.setTextSize(1);
+	prepDisp(1, 0, 0);
 	disp.print(F("Selected outlet: "));
 	disp.setTextSize(2);
 	disp.print(relayNum + 1);
-	disp.setTextSize(1);
-	disp.setCursor(0, 21);
+	prepDisp(1, 0, 21, false);
 	disp.print(F("Turns ON:  "));
 	if (relay[relayNum].hourOn > 12)
 		disp.print(relay[relayNum].hourOn - 12);

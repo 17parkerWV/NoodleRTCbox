@@ -237,50 +237,49 @@ void overrideStatusLoop() {
 int inputTime() {
 	int NumberOfInputs = 100;
 	int timeInput = 0;
+	byte leadingZero = 0;
 	while (NumberOfInputs > 0) {
 		while (1) {
 			byte buttonByte = buttonPoll();
 			if (buttonByte == NUM_PAD_1) {
-				timeInput += (1 * NumberOfInputs);
+				timeInput += (1 * NumberOfInputs/10);
 				break;
 			}
 			if (buttonByte == NUM_PAD_2) {
-				timeInput += (2 * NumberOfInputs);
+				timeInput += (2 * NumberOfInputs/10);
 				break;
 			}
 			if (buttonByte == NUM_PAD_3) {
-				timeInput += (3 * NumberOfInputs);
+				timeInput += (3 * NumberOfInputs/10);
 				break;
 			}
 			if (buttonByte == NUM_PAD_4) {
-				timeInput += (4 * NumberOfInputs);
+				timeInput += (4 * NumberOfInputs / 10);
 				break;
 			}
 			if (buttonByte == NUM_PAD_5) {
-				timeInput += (5 * NumberOfInputs);
+				timeInput += (5 * NumberOfInputs / 10);
 				break;
 			}
 			if (buttonByte == NUM_PAD_6) {
-				timeInput += (6 * NumberOfInputs);
+				timeInput += (6 * NumberOfInputs / 10);
 				break;
 			}
 			if (buttonByte == NUM_PAD_7) {
-				timeInput += (7 * NumberOfInputs);
+				timeInput += (7 * NumberOfInputs / 10);
 				NumberOfInputs -= 9;
 				break;
 			}
 			if (buttonByte == NUM_PAD_8) {
-				timeInput += (8 * NumberOfInputs);
+				timeInput += (8 * NumberOfInputs / 10);
 				break;
 			}
 			if (buttonByte == NUM_PAD_9) {
-				timeInput += (9 * NumberOfInputs);
+				timeInput += (9 * NumberOfInputs / 10);
 				break;
 			}
 			if (buttonByte == NUM_PAD_0) {
-				timeInput += 0;
-				printTime(timeInput, NumberOfInputs);
-				NumberOfInputs /= 10;
+				++leadingZero;
 				break;
 			}
 			if (buttonByte == NUM_PAD_D) {
@@ -292,8 +291,9 @@ int inputTime() {
 			if (buttonByte == NUM_PAD_STAR)
 				return -1;
 		}
-		printTime(timeInput, NumberOfInputs);
-		NumberOfInputs /= 10;
+		printTime(timeInput, leadingZero == 2 ? 0 : NumberOfInputs * 10);
+		NumberOfInputs -= 90;
+		++leadingZero;
 		delayWithoutDelay(225);
 	}
 	return timeInput;
@@ -301,7 +301,7 @@ int inputTime() {
 
 int inputDuration() {
 	int durationInput = 0;
-	int loopCount = 10000;
+	int loopCount = 1000;
 	while (loopCount >= 10) {
 		//When loopCount = 1000 to start, the condiiton was (loopCount >= 1) and relied on integer math to set it to zero, which I didn't like
 		while (1) {
@@ -353,7 +353,7 @@ int inputDuration() {
 				return -1;
 		}
 		loopCount /= 10;
-		printTime(durationInput, loopCount);
+		printTime(durationInput, loopCount*10);
 		delayWithoutDelay(175);
 	}
 	return durationInput;

@@ -1,5 +1,5 @@
-//excluding these 2 lines, this program is 1,677 lines long (total including spaces + comments)
-//There are 56 functions (78 if you include all of the inline ones, too)
+//I HAD TO MODIFY THE RTC LIBRARY FOR THIS PROGRAM
+//BE CAREFUL USING IT SOMEWHERE ELSE
 #include <Adafruit_SPIDevice.h>
 #include <Adafruit_I2CRegister.h>
 #include <Adafruit_I2CDevice.h>
@@ -12,7 +12,7 @@
 #include <Adafruit_SSD1306.h>
 #include <SPI.h>
 #include <Wire.h>
-#include <RTClib.h>
+#include "RTClib.h"
 
 //BUTTONS ON THE NUMBERPAD IN BINARY
 #define NUM_PAD_1 0b11101110
@@ -54,6 +54,9 @@
 #define DIGITAL_PIN_47 (1<<2)	//Pin 47, PL2
 #define DIGITAL_PIN_48 (1<<1)	//Pin 48, PL1
 #define DIGITAL_PIN_49 (1<<0)	//Pin 49, PL0
+
+const uint8_t daysInMonth[] PROGMEM = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30 };
+
 /*
 PIN LAYOUT FOR THE 4x4 NUMBER PAD:
 pins 1-4: ROW
@@ -163,11 +166,12 @@ void dispMainMenu();
 void dispCurrentTime(int hour, int min);
 void clearCurrentTime();
 void dispEightRelays(int mode, String message = "", bool header = false);
-void printHeader(String message);
+void printHeader(String message, int fontSize = 1, bool clear = false);
 void clearRelayUpdate();
-void dispConfirmation();
+bool dispConfirmation();
 void dispSingleSchedStatus(int relayNum);
 void dispSingleOverrideStatus(int relayNum);
+void prepDisp(int fontSize = 1, int x = 0, int y = 0, bool clear = true);
 
 //***Relay Function Prototypes
 void allOff();
@@ -185,6 +189,9 @@ void timeControl();
 void updateClock();
 void updateCurrentTime();
 void dispCurrentTime(int hour, int min);
+void setTime();
+bool validateDay(uint8_t month, uint8_t day);
+void POWERLOSS();
 
 //***Sub Menu functions
 void delayWithoutDelay(unsigned int time);
@@ -208,8 +215,10 @@ void overrideSubMenu();
 void overrideStatusSubMenu();
 void overrideStatusLoop();
 
-void manualOnOffSubMenu();
+void manualOnOffMenu();
 void manualOnOffLoop();
+
+void setTimeMenu();
 
 void outlets::off() {
 	clearSchedSetFlag();
@@ -242,6 +251,8 @@ ISR(INT4_vect) {
 
 void setup() {
 	initializeObjs();
+	POWERLOSS();
+	delayWithoutDelay(500);
 	//FOR THE INTERRUPTS
 	DDRB |= BUILT_IN_LED;		//set PB7 (digital pin 13) as output
 	PORTB = 0b00000000;			//write digital pin 13 LOW and the other pins are INPUTS without the PULLUP
@@ -275,10 +286,11 @@ void loop() {
 			dispMainMenu();
 		}
 		if (buttonData == NUM_PAD_C) {				//C: Manual on/off
-			manualOnOffSubMenu();
+			manualOnOffMenu();
 			dispMainMenu();
 		}
 		if (buttonData == NUM_PAD_D) {			//D: More Options menu, incomplete
+			setTimeMenu();
 			dispMainMenu();
 		}
 		delayWithoutDelay(100);
@@ -286,6 +298,11 @@ void loop() {
 	delayWithoutDelay(80);
 }
 
+void POWERLOSS() {
+	printHeader(F("POWER HAS BEEN LOST\n\nSchedules have been\nreset\n\n\nPress A-D to continue"), 1, true);
+	waitForAnyLetterPress();
+	return;
+}
 
 //Main Manu --> B. Set/clear/view temporary override configs
 void overrideMenu() {
@@ -332,7 +349,7 @@ void schedulesMenu() {
 
 ////------SUB MENU SELECTED OPTION SUB MENU------////
 //MainMenu -> C -> 2. Menu where power state of relay is flipped, if manualOverrideFlag == false
-void manualOnOffSubMenu() {
+void manualOnOffMenu() {
 	dispEightRelays(2, "ON means ON OFF meansOFF, easy   * - back", true);
 	manualOnOffLoop();
 	return;
@@ -376,5 +393,12 @@ void completeOffSubMenu() {
 	delayWithoutDelay(1200);
 	dispSchedulesMenu();
 	updateCurrentTime();
+	return;
+}
+
+void setTimeMenu() {
+	printHeader(F("Do you want to set\nthe time?"), 1, true);
+	if (dispConfirmation())
+		setTime();
 	return;
 }
