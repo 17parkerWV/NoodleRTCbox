@@ -46,6 +46,7 @@ void setTime() {
 		++days;
 	days = days + 365 * year + (year + 3) / 4 - 1;
 	clockObj.adjust(year, month, day, hour, minute, second, (uint8_t)days);
+	dispError(F("Set"));
 	return;
 }
 
@@ -54,84 +55,84 @@ bool validateDay(uint8_t month, uint8_t day) {
 		switch (month) {
 		case 1:
 			if (day > 31) {
-				dispError("Invalid day");
+				dispError(F("Invalid day"));
 				return false;
 			}
 			return true;
 			break;
 		case 2:
 			if (day > 28) {
-				dispError("Invalid day");
+				dispError(F("Invalid day"));
 				return false;
 			}
 			return true;
 			break;
 		case 3:
 			if (day > 31) {
-				dispError("Invalid day");
+				dispError(F("Invalid day"));
 				return false;
 			}
 			return true;
 			break;
 		case 4:
 			if (day > 30) {
-				dispError("Invalid day");
+				dispError(F("Invalid day"));
 				return false;
 			}
 			return true;
 			break;
 		case 5:
 			if (day > 31) {
-				dispError("Invalid day");
+				dispError(F("Invalid day"));
 				return false;
 			}
 			return true;
 			break;
 		case 6:
 			if (day > 30) {
-				dispError("Invalid day");
+				dispError(F("Invalid day"));
 				return false;
 			}
 			return true;
 			break;
 		case 7:
 			if (day > 31) {
-				dispError("Invalid day");
+				dispError(F("Invalid day"));
 				return false;
 			}
 			return true;
 			break;
 		case 8:
 			if (day > 31) {
-				dispError("Invalid day");
+				dispError(F("Invalid day"));
 				return false;
 			}
 			return true;
 			break;
 		case 9:
 			if (day > 30) {
-				dispError("Invalid day");
+				dispError(F("Invalid day"));
 				return false;
 			}
 			return true;
 			break;
 		case 10:
 			if (day > 31) {
-				dispError("Invalid day");
+				dispError(F("Invalid day"));
 				return false;
 			}
 			return true;
 			break;
 		case 11:
 			if (day > 30) {
-				dispError("Invalid day");
+				dispError(F("Invalid day"));
 				return false;
 			}
 			return true;
 			break;
 		case 12:
 			if (day > 31) {
-				dispError("Invalid day");
+				dispError(F("Invalid day"));
 				return false;
 			}
 			return true;

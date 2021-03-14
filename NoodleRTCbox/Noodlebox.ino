@@ -56,6 +56,7 @@
 #define DIGITAL_PIN_49 (1<<0)	//Pin 49, PL0
 
 const uint8_t daysInMonth[] PROGMEM = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30 };
+const String daysOfWeek[] = { "Sun","Mon","Tue","Wed","Thurs","Fri","Sat" };
 
 /*
 PIN LAYOUT FOR THE 4x4 NUMBER PAD:
@@ -172,6 +173,8 @@ bool dispConfirmation();
 void dispSingleSchedStatus(int relayNum);
 void dispSingleOverrideStatus(int relayNum);
 void prepDisp(int fontSize = 1, int x = 0, int y = 0, bool clear = true);
+void dispTime();
+void dispClockMenu();
 
 //***Relay Function Prototypes
 void allOff();
@@ -218,6 +221,7 @@ void overrideStatusLoop();
 void manualOnOffMenu();
 void manualOnOffLoop();
 
+void clockMenu();
 void setTimeMenu();
 
 void outlets::off() {
@@ -290,7 +294,8 @@ void loop() {
 			dispMainMenu();
 		}
 		if (buttonData == NUM_PAD_D) {			//D: More Options menu, incomplete
-			setTimeMenu();
+			dispClockMenu();
+			clockMenu();
 			dispMainMenu();
 		}
 		delayWithoutDelay(100);
@@ -345,42 +350,57 @@ void schedulesMenu() {
 	}
 	return;
 }
-////------END SUB MENUS (A, B, C, D FROM THE MAIN MENU------////
 
-////------SUB MENU SELECTED OPTION SUB MENU------////
+void clockMenu() {
+	while (1) {
+		byte buttonPress = buttonPoll();
+		if (buttonPress == NUM_PAD_1)		//Button 1 goes to set/clear
+			setTimeMenu();
+		if (buttonPress == NUM_PAD_2) { 		//Button 2 goes to show current status
+			updateClock();
+			dispTime();
+			waitForAnyLetterPress();
+			dispClockMenu();
+		}
+		if (buttonPress == NUM_PAD_SHARP) 	//# sign to go back
+			break;
+	}
+	return;
+}
+
 //MainMenu -> C -> 2. Menu where power state of relay is flipped, if manualOverrideFlag == false
 void manualOnOffMenu() {
-	dispEightRelays(2, "ON means ON OFF meansOFF, easy   * - back", true);
+	dispEightRelays(2, F("ON means ON OFF meansOFF, easy   * - back"), true);
 	manualOnOffLoop();
 	return;
 }
 //Main Menu -> B -> 1. Menu where tempOverrideFlag is flipped
 void overrideSubMenu() {
-	dispEightRelays(3, "Select an outlet\n* - back", true);
+	dispEightRelays(3, F("Select an outlet\n* - back"), true);
 	if (chooseRelay(1) == -1)
-		dispError("failed to select relay");
+		dispError(F("failed to select relay"));
 	dispOverrideMenu();
 	return;
 }
 //Main Menu -> B -> 2. Menu where a relay is selected and its tempOverride status is shown
 void overrideStatusSubMenu() {
-	dispEightRelays(3, "Choose one to show\nstatus   * - back", true);
+	dispEightRelays(3, F("Choose one to show\nstatus   * - back"), true);
 	overrideStatusLoop();
 	dispOverrideMenu();
 	return;
 }
 //Main Manu -> A -> 1. Menu where schedule is set (or cleared if one exists)
 void setScheduleSubMenu() {
-	dispEightRelays(4, "Pick one to set \nschedule     * - back", true);
+	dispEightRelays(4, F("Pick one to set \nschedule     * - back"), true);
 	if (chooseRelay(2) == -1)
-		dispError("failed to select relay");
+		dispError(F("failed to select relay"));
 	dispSchedulesMenu();
 	updateCurrentTime();
 	return;
 }
 //Main Menu -> A -> 2. Menu where set schedule is viewed
 void scheduleSetStatusSubMenu() {
-	dispEightRelays(4, "Choose one to show\nstatus * -back", true);
+	dispEightRelays(4, F("Choose one to show\nstatus * -back"), true);
 	scheduleSetStatusLoop();
 	dispSchedulesMenu();
 	updateCurrentTime();
@@ -388,7 +408,7 @@ void scheduleSetStatusSubMenu() {
 }
 //Main Menu -> A -> 4.
 void completeOffSubMenu() {
-	dispEightRelays(9, "Select an outlet to  be reset    * - back", true);
+	dispEightRelays(9, F("Select an outlet to  be reset    * - back"), true);
 	completeOffLoop();
 	delayWithoutDelay(1200);
 	dispSchedulesMenu();
@@ -400,5 +420,6 @@ void setTimeMenu() {
 	printHeader(F("Do you want to set\nthe time?"), 1, true);
 	if (dispConfirmation())
 		setTime();
+	dispClockMenu();
 	return;
 }

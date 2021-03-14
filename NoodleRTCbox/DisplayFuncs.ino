@@ -9,6 +9,37 @@ void prepDisp(int fontSize = 1, int x = 0, int y = 0, bool clear = true) {
 	return;
 }
 
+void dispTime() {
+	prepDisp(1, 0, 0);
+	disp.print(F("day:\nmonth:\nyear:\nDotW:\nTime:"));
+	disp.setCursor(50, 0);
+	disp.print(clockSecondObj.day());
+	disp.setCursor(50, 8);
+	disp.print(clockSecondObj.month());
+	disp.setCursor(50, 16);
+	disp.print(clockSecondObj.year());
+	disp.setCursor(50, 24);
+	disp.print(daysOfWeek[clockSecondObj.dayOfTheWeek()]);
+	disp.setCursor(50, 32);
+	disp.print(clockSecondObj.hour());
+	disp.print(F(":"));
+	disp.print(clockSecondObj.minute());
+	disp.setCursor(0, 52);
+	disp.print(F("Press A-D to go back"));
+	disp.display();
+	return;
+}
+
+void dispClockMenu() {
+	printHeader(F("Press # to go back"), 1, true);
+	disp.setCursor(0, 24);
+	disp.print(F("1: Set Date/Time"));
+	disp.setCursor(0, 42);
+	disp.print(F("2: Show current time"));
+	disp.display();
+	return;
+}
+
 void dispEightRelays(int mode, String message = "", bool header = false) {
 	if (header == true) {
 		prepDisp(1, 0, 16);
@@ -161,8 +192,7 @@ void dispError(String error) {
 }
 
 void dispOverrideMenu() {
-	prepDisp(1, 0, 0);
-	disp.println(F("Temporarily override any set schedule!"));
+	printHeader(F("Temporarily override any set schedule!"), 1, true);
 	disp.print(F("Press # to go back"));
 	disp.setCursor(0, 32);
 	disp.print(F("1: Set/Clear\n   temp. override"));
