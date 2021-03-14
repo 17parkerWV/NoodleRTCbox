@@ -59,8 +59,10 @@ int chooseRelay(int func) {
 				confirmClear(relay[0], clearFunc);
 				return 0;
 			}
-			if (func == 1)
+			if (func == 1) {
 				promptFunc(relay[0]);
+				return;
+			}
 			if (func == 2 && !relay[0].getManualPoweredStatus()) {
 				promptFunc(relay[0]);
 				return 0;
@@ -71,8 +73,10 @@ int chooseRelay(int func) {
 				confirmClear(relay[1], clearFunc);
 				return 0;
 			}
-			if (func == 1)
+			if (func == 1){
 				promptFunc(relay[1]);
+				return;
+			}
 			if (func == 2 && !relay[1].getManualPoweredStatus()) {
 				promptFunc(relay[1]);
 				return 0;
@@ -83,8 +87,10 @@ int chooseRelay(int func) {
 				confirmClear(relay[2], clearFunc);
 				return 0;
 			}
-			if (func == 2)
-				promptFunc(relay[0]);
+			if (func == 1){
+				promptFunc(relay[2]);
+				return;
+			}
 			if (func == 2 && !relay[2].getManualPoweredStatus()) {
 				promptFunc(relay[2]);
 				return 0;
@@ -95,8 +101,10 @@ int chooseRelay(int func) {
 				confirmClear(relay[3], clearFunc);
 				return 0;
 			}
-			if (func == 1)
+			if (func == 1){
 				promptFunc(relay[3]);
+				return;
+			}
 			if (func == 2 && !relay[3].getManualPoweredStatus()) {
 				promptFunc(relay[3]);
 				return 0;
@@ -107,8 +115,10 @@ int chooseRelay(int func) {
 				confirmClear(relay[4], clearFunc);
 				return 0;
 			}
-			if (func == 1)
+			if (func == 1){
 				promptFunc(relay[4]);
+				return;
+			}
 			if (func == 2 && !relay[4].getManualPoweredStatus()) {
 				promptFunc(relay[4]);
 				return 0;
@@ -119,8 +129,10 @@ int chooseRelay(int func) {
 				confirmClear(relay[5], clearFunc);
 				return 0;
 			}
-			if (func == 1)
+			if (func == 1) {
 				promptFunc(relay[5]);
+				return;
+			}
 			if (func == 2 && !relay[5].getManualPoweredStatus()) {
 				promptFunc(relay[5]);
 				return 0;
@@ -131,8 +143,10 @@ int chooseRelay(int func) {
 				confirmClear(relay[6], clearFunc);
 				return 0;
 			}
-			if (func == 1)
+			if (func == 1){
 				promptFunc(relay[6]);
+				return;
+			}
 			if (func == 2 && !relay[6].getManualPoweredStatus()) {
 				promptFunc(relay[6]);
 				return 0;
@@ -143,8 +157,10 @@ int chooseRelay(int func) {
 				confirmClear(relay[7], clearFunc);
 				return 0;
 			}
-			if (func == 1)
+			if (func == 1){
 				promptFunc(relay[7]);
+				return;
+			}
 			if (func == 2 && !relay[7].getManualPoweredStatus()) {
 				promptFunc(relay[7]);
 				return 0;
@@ -306,7 +322,7 @@ void promptSchedTime(outlets& obj) {
 	}
 	//FINAL INPUT CHECKS
 	if ((startHour == stopHour) && (startMinute == stopMinute)) {
-		dispError(F("Invalid Input"));
+		dispError(F("Invalid\nInput"));
 		return;
 	}
 	byte powerState = 0;

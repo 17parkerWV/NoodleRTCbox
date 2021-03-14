@@ -96,26 +96,26 @@ void dispEnterDuration() {
 
 void printTime(int time, int loopCount = 0) {
 	disp.setTextSize(2);
-	disp.fillRect(0, 32, 128, 20, BLACK);
-	disp.display();
 	int x;
 	switch (loopCount) {
 	case 1000:
-		x = 32;
+		x = 42;
 		break;
 	case 100:
-		x = 48;
+		x = 52;
 		break;
 	case 10:
-		x = 60;
+		x = 62;
 		break;
+	case 1:
+		x = 72;
 	default:
-		x = 32;
+		x = 42;
 		break;
 	}
-	disp.setCursor(x, 35);
+	disp.setCursor(32, 35);
 	disp.print(time);
-	disp.fillRect(x + 10, 32, 16, 20, BLACK);
+	disp.fillRect(x, 32, 140 - x, 20, BLACK);
 	disp.display();
 	return;
 }

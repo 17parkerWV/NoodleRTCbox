@@ -308,9 +308,9 @@ int inputTime() {
 int inputDuration() {
 	int durationInput = 0;
 	int loopCount = 10000;
-	while (1) {
+	while (loopCount >= 10) {
 		//When loopCount = 1000 to start, the condiiton was (loopCount >= 1) and relied on integer math to set it to zero, which I didn't like
-		while (loopCount >= 10) {
+		while (1) {
 			byte buttonByte = buttonPoll();
 			if (buttonByte == NUM_PAD_1) {
 				durationInput += 1 * loopCount / 10;
@@ -371,7 +371,7 @@ int inputDuration() {
 		printTime(durationInput, loopCount);
 		delayWithoutDelay(175);
 	}
-	return -1;
+	return durationInput;
 }
 
 byte inputPowerState() {
