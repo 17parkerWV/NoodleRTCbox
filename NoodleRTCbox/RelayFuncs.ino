@@ -59,64 +59,96 @@ int chooseRelay(int func) {
 				confirmClear(relay[0], clearFunc);
 				return 0;
 			}
-			promptFunc(relay[0]);
-			return 0;
+			if (func == 1)
+				promptFunc(relay[0]);
+			if (func == 2 && !relay[0].getManualPoweredStatus()) {
+				promptFunc(relay[0]);
+				return 0;
+			}
 		}
 		if (buttonByte == NUM_PAD_2) {
 			if ((relay[1].*statusFunc)() == true) {
 				confirmClear(relay[1], clearFunc);
 				return 0;
 			}
-			promptFunc(relay[1]);
-			return 0;
+			if (func == 1)
+				promptFunc(relay[1]);
+			if (func == 2 && !relay[1].getManualPoweredStatus()) {
+				promptFunc(relay[1]);
+				return 0;
+			}
 		}
 		if (buttonByte == NUM_PAD_3) {
 			if ((relay[2].*statusFunc)() == true) {
 				confirmClear(relay[2], clearFunc);
 				return 0;
 			}
-			promptFunc(relay[2]);
-			return 0;
+			if (func == 2)
+				promptFunc(relay[0]);
+			if (func == 2 && !relay[2].getManualPoweredStatus()) {
+				promptFunc(relay[2]);
+				return 0;
+			}
 		}
 		if (buttonByte == NUM_PAD_4) {
 			if ((relay[3].*statusFunc)() == true) {
 				confirmClear(relay[3], clearFunc);
 				return 0;
 			}
-			promptFunc(relay[3]);
-			return 0;
+			if (func == 1)
+				promptFunc(relay[3]);
+			if (func == 2 && !relay[3].getManualPoweredStatus()) {
+				promptFunc(relay[3]);
+				return 0;
+			}
 		}
 		if (buttonByte == NUM_PAD_5) {
 			if ((relay[4].*statusFunc)() == true) {
 				confirmClear(relay[4], clearFunc);
 				return 0;
 			}
-			promptFunc(relay[4]);
-			return 0;
+			if (func == 1)
+				promptFunc(relay[4]);
+			if (func == 2 && !relay[4].getManualPoweredStatus()) {
+				promptFunc(relay[4]);
+				return 0;
+			}
 		}
 		if (buttonByte == NUM_PAD_6) {
 			if ((relay[5].*statusFunc)() == true) {
 				confirmClear(relay[5], clearFunc);
 				return 0;
 			}
-			promptFunc(relay[5]);
-			return 0;
+			if (func == 1)
+				promptFunc(relay[5]);
+			if (func == 2 && !relay[5].getManualPoweredStatus()) {
+				promptFunc(relay[5]);
+				return 0;
+			}
 		}
 		if (buttonByte == NUM_PAD_7) {
 			if ((relay[6].*statusFunc)() == true) {
 				confirmClear(relay[6], clearFunc);
 				return 0;
 			}
-			promptFunc(relay[6]);
-			return 0;
+			if (func == 1)
+				promptFunc(relay[6]);
+			if (func == 2 && !relay[6].getManualPoweredStatus()) {
+				promptFunc(relay[6]);
+				return 0;
+			}
 		}
 		if (buttonByte == NUM_PAD_8) {
 			if ((relay[7].*statusFunc)() == true) {
 				confirmClear(relay[7], clearFunc);
 				return 0;
 			}
-			promptFunc(relay[7]);
-			return 0;
+			if (func == 1)
+				promptFunc(relay[7]);
+			if (func == 2 && !relay[7].getManualPoweredStatus()) {
+				promptFunc(relay[7]);
+				return 0;
+			}
 		}
 		if (buttonByte == NUM_PAD_STAR)
 			return 0;

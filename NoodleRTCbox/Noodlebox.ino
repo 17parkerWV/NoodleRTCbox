@@ -79,8 +79,6 @@ public:
 	int minuteOn = 0;
 	int hourOff = 0;
 	int minuteOff = 0;
-	//Whether or not the user has manual control of the relay
-	volatile bool manualOverrideEnabled = true;
 	//Whether or not the relay is currently powered on manually
 	volatile bool manualPoweredStatus = false;
 	//Hours and minutes that the override turns on and off, converted from (start time + duration)
@@ -100,39 +98,30 @@ public:
 	//NOTE: OverrideState is ON when 0 (LOW) and OFF when 1 (HIGH)
 	//SchedState is initialized ON (0), flip to 1 to make overnight schedules easier
 	volatile bool overrideState = 1;
-	volatile bool schedState = 0;
+	volatile bool schedState = false;
 	//number of the physical pin the corresponding relay is connected to
 	int relayPin;
 
 	//For the manual override stuff
-	bool getManualOverrideEnabled() { return manualOverrideEnabled; }
 	bool getManualPoweredStatus() { return manualPoweredStatus; }
-	void setManualOverrideEnabled() { manualOverrideEnabled = true; }
 	void setManualPoweredStatus() { manualPoweredStatus = true; }
-	void clearManualOverrideEnabled() {
-		manualOverrideEnabled = false;
-		manualPoweredStatus = false;
-		digitalWrite(relayPin, HIGH);
-	}
-	void clearManualPoweredStatus() { manualPoweredStatus = false; }
-	void flipManualOverrideFlag(void) { manualOverrideEnabled = (!manualOverrideEnabled); }
+	void clearManualPoweredStatus() { manualPoweredStatus = false, digitalWrite(relayPin, HIGH); }
 	void flipManualPoweredStatus() {
-		manualOverrideEnabled = true;
-		digitalWrite(relayPin, manualPoweredStatus); //relay is ON (0) when status is TRUE (1) -> set relay to (1)...
-		manualPoweredStatus = !manualPoweredStatus;
+		manualPoweredStatus = !manualPoweredStatus;		//Flip the status of the flag
+		digitalWrite(relayPin, !manualPoweredStatus);   //status of flag is opposite of actual powered status
 	}
 	//For the schedule stuff
 	//bool withinSchedRange();  <--returns true if current time is within sched range
 	bool getSchedSetFlag() { return schedSetFlag; }
 	bool getSchedState() { return schedState; }
-	void setSchedFlag() { schedSetFlag = true, manualOverrideEnabled = false; } //PRECONDITION: relay is not powered on manually
+	void setSchedFlag() { schedSetFlag = true; } //PRECONDITION: relay is not powered on manually
 	void clearSchedSetFlag() { schedSetFlag = false, digitalWrite(relayPin, HIGH); }
 	void clearSchedState() { schedState = false; }
 	//for the override stuff
 	bool getOverrideSetFlag() { return overrideSetFlag; }
 	bool getOverrideStatus() { return overrideStatus; }
 	void setOverrideStatus() { overrideStatus = true; }
-	void setOverrideSetFlag() { overrideSetFlag = true, manualOverrideEnabled = false; } //PRECONDITION: relay is not powered on manually
+	void setOverrideSetFlag() { overrideSetFlag = true; }
 	void clearOverrideStatus() { overrideStatus = false; }
 	void clearOverrideSetFlag() {
 		overrideSetFlag = false;
@@ -163,8 +152,7 @@ DateTime clockSecondObj;
 //*****FUNCTION PROTOTYPES*****//
 //***OLED Display Prototypes
 void dispEnterDuration();
-void printTime(int duration);
-void printTime(int time, int loopCount);
+void printTime(int time, int loopCount = 0);
 void dispEnterTime(String top, String bottom);
 void dispEnterPowerState();
 void dispConfirmClearFlag();
@@ -176,7 +164,6 @@ void dispCurrentTime(int hour, int min);
 void clearCurrentTime();
 void dispEightRelays(int mode, String message = "", bool header = false);
 void printHeader(String message);
-void dispManualOverrideMenu();
 void clearRelayUpdate();
 void dispConfirmation();
 void dispSingleSchedStatus(int relayNum);
@@ -221,14 +208,10 @@ void overrideSubMenu();
 void overrideStatusSubMenu();
 void overrideStatusLoop();
 
-void manualOverrideMenu();
 void manualOnOffSubMenu();
 void manualOnOffLoop();
-void enableDisableRelaySubMenu();
-void enableDisableRelayLoop();
 
 void outlets::off() {
-	clearManualOverrideEnabled();
 	clearSchedSetFlag();
 	clearSchedState();
 	clearOverrideSetFlag();
@@ -279,21 +262,20 @@ void setup() {
 void loop() {
 	byte buttonData = buttonPoll();
 	if ((buttonData & COL_BITS) == (COL_4)) {
-		if (buttonData == NUM_PAD_A) {					//"A" on the num pad
+		if (buttonData == NUM_PAD_A) {				//A: Schedule menu
 			//This is the adjust schedule menu
 			dispSchedulesMenu();
 			schedulesMenu();
 			dispMainMenu();
 		}
-		if (buttonData == NUM_PAD_B) {					//"B" on the num pad
+		if (buttonData == NUM_PAD_B) {				//B: Override menu
 		   //This is the temporary override menu
 			dispOverrideMenu();
 			overrideMenu();
 			dispMainMenu();
 		}
-		if (buttonData == NUM_PAD_C) {					//C: on the num pad
-			dispManualOverrideMenu();
-			manualOverrideMenu();
+		if (buttonData == NUM_PAD_C) {				//C: Manual on/off
+			manualOnOffSubMenu();
 			dispMainMenu();
 		}
 		if (buttonData == NUM_PAD_D) {			//D: More Options menu, incomplete
@@ -304,20 +286,7 @@ void loop() {
 	delayWithoutDelay(80);
 }
 
-////------SUB MENUS (A, B, C, D FROM THE MAIN MENU------////
-//Main Menu --> C. Enable/disable manual control of relays and manually control their power states
-void manualOverrideMenu() {
-	while (1) {
-		byte buttonPress = buttonPoll();
-		if (buttonPress == NUM_PAD_1)
-			enableDisableRelaySubMenu();
-		if (buttonPress == NUM_PAD_2)
-			manualOnOffSubMenu();
-		if (buttonPress == NUM_PAD_SHARP)
-			return;
-	}
-	return;
-}
+
 //Main Manu --> B. Set/clear/view temporary override configs
 void overrideMenu() {
 	while (1) {
@@ -362,18 +331,10 @@ void schedulesMenu() {
 ////------END SUB MENUS (A, B, C, D FROM THE MAIN MENU------////
 
 ////------SUB MENU SELECTED OPTION SUB MENU------////
-//Main Menu -> C -> 1. Menu where manualOverrideFlag is flipped for each relay
-void enableDisableRelaySubMenu() {
-	dispEightRelays(1, "ON enables manual\ncontrol     * - back", true);
-	enableDisableRelayLoop();
-	dispManualOverrideMenu();
-	return;
-}
 //MainMenu -> C -> 2. Menu where power state of relay is flipped, if manualOverrideFlag == false
 void manualOnOffSubMenu() {
 	dispEightRelays(2, "ON means ON OFF meansOFF, easy   * - back", true);
 	manualOnOffLoop();
-	dispManualOverrideMenu();
 	return;
 }
 //Main Menu -> B -> 1. Menu where tempOverrideFlag is flipped
@@ -405,7 +366,7 @@ void scheduleSetStatusSubMenu() {
 	dispEightRelays(4, "Choose one to show\nstatus * -back", true);
 	scheduleSetStatusLoop();
 	dispSchedulesMenu();
-	updateCurrentTime();	//this needs updating
+	updateCurrentTime();
 	return;
 }
 //Main Menu -> A -> 4.

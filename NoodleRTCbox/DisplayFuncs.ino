@@ -25,16 +25,6 @@ void dispEightRelays(int mode, String message = "", bool header = false) {
 		disp.display();
 	}
 	switch (mode) {
-	case 1:
-		for (int spot = 0; spot <= 3; ++spot) {
-			disp.setCursor(22, 16 + (spot * 12));
-			disp.println(relay[spot].getManualOverrideEnabled() ? "ON" : "OFF");
-		}
-		for (int spot = 0; spot <= 3; ++spot) {
-			disp.setCursor(86, 16 + (spot * 12));
-			disp.println(relay[spot + 4].getManualOverrideEnabled() ? "ON" : "OFF");
-		}
-		break;
 	case 2:
 		for (int spot = 0; spot <= 3; ++spot) {
 			disp.setCursor(22, 16 + (spot * 12));
@@ -102,25 +92,30 @@ void dispEnterDuration() {
 	disp.display();
 	return;
 }
-void printTime(int duration) {
-	disp.setCursor(0, 0);
-	disp.fillRect(0, 32, 128, 48, BLACK);
-	disp.display();
+
+
+void printTime(int time, int loopCount = 0) {
 	disp.setTextSize(2);
-	disp.setCursor(32, 36);
-	disp.print(duration);
-	disp.display();
-	return;
-}
-void printTime(int time, int loopCount) {
-	disp.setCursor(0, 0);
 	disp.fillRect(0, 32, 128, 20, BLACK);
 	disp.display();
-	disp.setTextSize(2);
-	disp.setCursor(48, 35);
+	int x;
+	switch (loopCount) {
+	case 1000:
+		x = 32;
+		break;
+	case 100:
+		x = 48;
+		break;
+	case 10:
+		x = 60;
+		break;
+	default:
+		x = 32;
+		break;
+	}
+	disp.setCursor(x, 35);
 	disp.print(time);
-	if (loopCount == 1)
-		disp.fillRect(58, 32, 16, 20, BLACK);
+	disp.fillRect(x + 10, 32, 16, 20, BLACK);
 	disp.display();
 	return;
 }
@@ -168,19 +163,7 @@ void dispError(String error) {
 	delayWithoutDelay(1200);
 	return;
 }
-void dispManualOverrideMenu() {
-	disp.clearDisplay();
-	disp.setCursor(0, 0);
-	disp.setTextSize(1);
-	disp.println(F("Force an relay to\nstay ON or OFF"));
-	disp.print(F("Press # to go back"));
-	disp.setCursor(0, 32);
-	disp.print(F("1: Enable/disable\n   manual control"));
-	disp.setCursor(0, 50);
-	disp.print(F("2: Set relay ON/OFF"));
-	disp.display();
-	return;
-}
+
 void dispOverrideMenu() {
 	disp.clearDisplay();
 	disp.display();
@@ -240,11 +223,11 @@ void clearCurrentTime() {
 void clearRelayUpdate() {
 	int x = 22;
 	int y = 16;
-	for (int rect = 0; rect <= 3; ++rect) 
+	for (int rect = 0; rect <= 3; ++rect)
 		disp.fillRect(x, y + (rect * 12), 24, 16, BLACK);
 	x = 86;
 	y = 16;
-	for (int rect = 0; rect <= 3; ++rect) 
+	for (int rect = 0; rect <= 3; ++rect)
 		disp.fillRect(x, y + (rect * 12), 24, 16, BLACK);
 	disp.display();
 	return;
@@ -270,7 +253,7 @@ void dispSingleOverrideStatus(int relayNum) {
 	disp.println();
 	if (relay[relayNum].overrideHour < 12 && relay[relayNum].overrideHour >= 0)
 		disp.println(F("          AM"));
-	if (relay[relayNum].overrideHour >= 12) 
+	if (relay[relayNum].overrideHour >= 12)
 		disp.println(F("          PM"));
 	disp.print(F("Forced: "));
 	disp.println((relay[relayNum].overrideState == 0) ? "ON" : "OFF");
@@ -290,7 +273,7 @@ void dispSingleSchedStatus(int relayNum) {
 	disp.setTextSize(1);
 	disp.print(F("Selected outlet: "));
 	disp.setTextSize(2);
-	disp.print(relayNum +1);
+	disp.print(relayNum + 1);
 	disp.setTextSize(1);
 	disp.setCursor(0, 21);
 	disp.print(F("Turns ON:  "));

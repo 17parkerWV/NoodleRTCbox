@@ -26,98 +26,27 @@ void waitForAnyLetterPress() {
 	delayWithoutDelay(175);
 	return;
 }
-//Main Menu -> C -> 1. Waits for input. Selecting a relay will flip the manualOverrideFlag, if (powered == scheduleSetFlag == tempOverrideFlag == false)
-void enableDisableRelayLoop() {
-	while (1) {
-		byte buttonByte = buttonPoll();
-		if ((buttonByte & COL_BITS) == COL_1) {
-			if (buttonByte == NUM_PAD_1) {
-				if (relay[0].getManualPoweredStatus() == false && relay[0].getSchedSetFlag() == false && relay[0].getOverrideSetFlag() == false) {
-					relay[0].flipManualOverrideFlag();
-					clearRelayUpdate();
-					dispEightRelays(1);
-				}
-			}
-			if (buttonByte == NUM_PAD_4) {
-				if (relay[3].getManualPoweredStatus() == false && relay[3].getSchedSetFlag() == false && relay[3].getOverrideSetFlag() == false) {
-					relay[3].flipManualOverrideFlag();
-					clearRelayUpdate();
-					dispEightRelays(1);
-				}
-			}
-			if (buttonByte == NUM_PAD_7) {
-				if (relay[6].getManualPoweredStatus() == false && relay[6].getSchedSetFlag() == false && relay[6].getOverrideSetFlag() == false) {
-					relay[6].flipManualOverrideFlag();
-					clearRelayUpdate();
-					dispEightRelays(1);
-				}
-			}
-			if (buttonByte == NUM_PAD_STAR)
-				break;
-		}
-		if ((buttonByte & COL_BITS) == COL_2) {
-			if (buttonByte == NUM_PAD_2) {
-				if (relay[1].getManualPoweredStatus() == false && relay[1].getSchedSetFlag() == false && relay[1].getOverrideSetFlag() == false) {
-					relay[1].flipManualOverrideFlag();
-					clearRelayUpdate();
-					dispEightRelays(1);
-				}
-			}
-			if (buttonByte == NUM_PAD_5) {
-				if (relay[4].getManualPoweredStatus() == false && relay[4].getSchedSetFlag() == false && relay[4].getOverrideSetFlag() == false) {
-					relay[4].flipManualOverrideFlag();
-					clearRelayUpdate();
-					dispEightRelays(1);
-				}
-			}
-			if (buttonByte == NUM_PAD_8) {
-				if (relay[7].getManualPoweredStatus() == false && relay[7].getSchedSetFlag() == false && relay[7].getOverrideSetFlag() == false) {
-					relay[7].flipManualOverrideFlag();
-					clearRelayUpdate();
-					dispEightRelays(1);
-				}
-			}
-		}
-		if ((buttonByte & COL_BITS) == COL_3) {
-			if (buttonByte == NUM_PAD_3) {
-				if (relay[2].getManualPoweredStatus() == false && relay[2].getSchedSetFlag() == false && relay[2].getOverrideSetFlag() == false) {
-					relay[2].flipManualOverrideFlag();
-					clearRelayUpdate();
-					dispEightRelays(1);
-				}
-			}
-			if (buttonByte == NUM_PAD_6) {
-				if (relay[5].getManualPoweredStatus() == false && relay[5].getSchedSetFlag() == false && relay[5].getOverrideSetFlag() == false) {
-					relay[5].flipManualOverrideFlag();
-					clearRelayUpdate();
-					dispEightRelays(1);
-				}
-			}
-		}
-	}
-	return;
-}
 
 void manualOnOffLoop() {
 	while (1) {
 		byte buttonByte = buttonPoll();
 		if ((buttonByte & COL_BITS) == COL_1) {
 			if (buttonByte == NUM_PAD_1) {
-				if (relay[0].getManualOverrideEnabled() == true || (relay[0].getOverrideSetFlag() == false && relay[0].getSchedSetFlag() == false)) {
+				if (relay[0].getSchedSetFlag() == false) {
 					relay[0].flipManualPoweredStatus();
 					clearRelayUpdate();
 					dispEightRelays(2);
 				}
 			}
 			if (buttonByte == NUM_PAD_4) {
-				if (relay[3].getManualOverrideEnabled() == true || (relay[3].getOverrideSetFlag() == false && relay[3].getSchedSetFlag() == false)) {
+				if (relay[3].getSchedSetFlag() == false) {
 					relay[3].flipManualPoweredStatus();
 					clearRelayUpdate();
 					dispEightRelays(2);
 				}
 			}
 			if (buttonByte == NUM_PAD_7) {
-				if (relay[6].getManualOverrideEnabled() == true || (relay[6].getOverrideSetFlag() == false && relay[6].getSchedSetFlag() == false)) {
+				if (relay[6].getSchedSetFlag() == false) {
 					relay[6].flipManualPoweredStatus();
 					clearRelayUpdate();
 					dispEightRelays(2);
@@ -128,7 +57,7 @@ void manualOnOffLoop() {
 		}
 		if ((buttonByte & COL_BITS) == COL_2) {
 			if (buttonByte == NUM_PAD_2) {
-				if (relay[1].getManualOverrideEnabled() == true || (relay[1].getOverrideSetFlag() == false && relay[1].getSchedSetFlag() == false)) {
+				if (relay[1].getSchedSetFlag() == false) {
 					relay[1].flipManualPoweredStatus();
 					clearRelayUpdate();
 					dispEightRelays(2);
@@ -136,14 +65,14 @@ void manualOnOffLoop() {
 			}
 			if (buttonByte == NUM_PAD_5) {
 				//Number 5 on the numpad
-				if (relay[4].getManualOverrideEnabled() == true || (relay[4].getOverrideSetFlag() == false && relay[4].getSchedSetFlag() == false)) {
+				if (relay[4].getSchedSetFlag() == false) {
 					relay[4].flipManualPoweredStatus();
 					clearRelayUpdate();
 					dispEightRelays(2);
 				}
 			}
 			if (buttonByte == NUM_PAD_8) {
-				if (relay[7].getManualOverrideEnabled() == true || (relay[7].getOverrideSetFlag() == false && relay[7].getSchedSetFlag() == false)) {
+				if (relay[7].getSchedSetFlag() == false) {
 					relay[7].flipManualPoweredStatus();
 					clearRelayUpdate();
 					dispEightRelays(2);
@@ -152,14 +81,14 @@ void manualOnOffLoop() {
 		}
 		if ((buttonByte & COL_BITS) == COL_3) {
 			if (buttonByte == NUM_PAD_3) {
-				if (relay[2].getManualOverrideEnabled() == true || (relay[2].getOverrideSetFlag() == false && relay[2].getSchedSetFlag() == false)) {
+				if (relay[2].getSchedSetFlag() == false) {
 					relay[2].flipManualPoweredStatus();
 					clearRelayUpdate();
 					dispEightRelays(2);
 				}
 			}
 			if (buttonByte == NUM_PAD_6) {
-				if (relay[5].getManualOverrideEnabled() == true || (relay[5].getOverrideSetFlag() == false && relay[5].getSchedSetFlag() == false)) {
+				if (relay[5].getSchedSetFlag() == false) {
 					relay[5].flipManualPoweredStatus();
 					clearRelayUpdate();
 					dispEightRelays(2);
@@ -169,7 +98,7 @@ void manualOnOffLoop() {
 	}
 	return;
 }
-
+//Shows the status of the schedule for the selected relay
 void scheduleSetStatusLoop() {
 	while (1) {
 		byte buttonByte = buttonPoll();
@@ -306,188 +235,143 @@ void overrideStatusLoop() {
 	return;
 }
 int inputTime() {
-	int NumberOfInputs = 2;
+	int NumberOfInputs = 10;
 	int timeInput = 0;
 	while (NumberOfInputs > 0) {
 		while (1) {
 			byte buttonByte = buttonPoll();
 			if (buttonByte == NUM_PAD_1) {
-				--NumberOfInputs;
-				timeInput += (1 * (pow(10, NumberOfInputs)));
+				timeInput += (1 * NumberOfInputs);
+				NumberOfInputs -= 9;
 				break;
 			}
 			if (buttonByte == NUM_PAD_2) {
-				--NumberOfInputs;
-				timeInput += (2 * (pow(10, NumberOfInputs)));
+				timeInput += (2 * NumberOfInputs);
+				NumberOfInputs -= 9;
 				break;
 			}
 			if (buttonByte == NUM_PAD_3) {
-				--NumberOfInputs;
-				timeInput += (3 * (pow(10, NumberOfInputs)));
+				timeInput += (3 * NumberOfInputs);
+				NumberOfInputs -= 9;
 				break;
 			}
 			if (buttonByte == NUM_PAD_4) {
-				--NumberOfInputs;
-				timeInput += (4 * (pow(10, NumberOfInputs)));
+				timeInput += (4 * NumberOfInputs);
+				NumberOfInputs -= 9;
 				break;
 			}
 			if (buttonByte == NUM_PAD_5) {
-				--NumberOfInputs;
-				timeInput += (5 * (pow(10, NumberOfInputs)));
+				timeInput += (5 * NumberOfInputs);
+				NumberOfInputs -= 9;
 				break;
 			}
 			if (buttonByte == NUM_PAD_6) {
-				--NumberOfInputs;
-				timeInput += (6 * (pow(10, NumberOfInputs)));
+				timeInput += (6 * NumberOfInputs);
+				NumberOfInputs -= 9;
 				break;
 			}
 			if (buttonByte == NUM_PAD_7) {
-				--NumberOfInputs;
-				timeInput += (7 * (pow(10, NumberOfInputs)));
+				timeInput += (7 * NumberOfInputs);
+				NumberOfInputs -= 9;
 				break;
 			}
 			if (buttonByte == NUM_PAD_8) {
-				--NumberOfInputs;
-				timeInput += (8 * (pow(10, NumberOfInputs)));
+				timeInput += (8 * NumberOfInputs);
+				NumberOfInputs -= 9;
 				break;
 			}
 			if (buttonByte == NUM_PAD_9) {
-				--NumberOfInputs;
-				timeInput += (9 * (pow(10, NumberOfInputs)));
+				timeInput += (9 * NumberOfInputs);
+				NumberOfInputs -= 9;
 				break;
 			}
 			if (buttonByte == NUM_PAD_0) {
-				--NumberOfInputs;
 				timeInput += 0;
+				NumberOfInputs -= 9;
 				break;
 			}
 			if (buttonByte == NUM_PAD_D) {
+				//This can only be chosen on the first loop; must divide by 10
 				timeInput /= 10;
-				printTime(timeInput, NumberOfInputs);
+				printTime(timeInput, 10);
+				delayWithoutDelay(225);
 				return timeInput;
 			}
 			if (buttonByte == NUM_PAD_STAR)
 				return -1;
 		}
-		printTime(timeInput, NumberOfInputs);
-		delayWithoutDelay(175);
+		printTime(timeInput, NumberOfInputs *10);
 	}
 	return timeInput;
 }
 
 int inputDuration() {
 	int durationInput = 0;
-	int loopCount = 0;
+	int loopCount = 10000;
 	while (1) {
-		while (1) {
+		//When loopCount = 1000 to start, the condiiton was (loopCount >= 1) and relied on integer math to set it to zero, which I didn't like
+		while (loopCount >= 10) {
 			byte buttonByte = buttonPoll();
 			if (buttonByte == NUM_PAD_1) {
-				if (loopCount == 0) {
-					durationInput = 1;
-					loopCount = 1;
-					break;
-				}
-				durationInput *= 10;
-				durationInput += 1;
+				durationInput += 1 * loopCount / 10;
+				loopCount /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_2) {
-				if (loopCount == 0) {
-					durationInput = 2;
-					loopCount = 1;
-					break;
-				}
-				durationInput *= 10;
-				durationInput += 2;
+				durationInput += 2 * loopCount / 10;
+				loopCount /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_3) {
-				if (loopCount == 0) {
-					durationInput = 3;
-					loopCount = 1;
-					break;
-				}
-				durationInput *= 10;
-				durationInput += 3;
+				durationInput += 3 * loopCount / 10;
+				loopCount /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_4) {
-				if (loopCount == 0) {
-					durationInput = 4;
-					loopCount = 1;
-					break;
-				}
-				durationInput *= 10;
-				durationInput += 4;
+				durationInput += 4 * loopCount / 10;
+				loopCount /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_5) {
-				if (loopCount == 0) {
-					durationInput = 5;
-					loopCount = 1;
-					break;
-				}
-				durationInput *= 10;
-				durationInput += 5;
+				durationInput += 5 * loopCount / 10;
+				loopCount /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_6) {
-				if (loopCount == 0) {
-					durationInput = 6;
-					loopCount = 1;
-					break;
-				}
-				durationInput *= 10;
-				durationInput += 6;
+				durationInput += 6 * loopCount / 10;
+				loopCount /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_7) {
-				if (loopCount == 0) {
-					durationInput = 7;
-					loopCount = 1;
-					break;
-				}
-				durationInput *= 10;
-				durationInput += 7;
+				durationInput += 7 * loopCount / 10;
+				loopCount /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_8) {
-				if (loopCount == 0) {
-					durationInput = 8;
-					loopCount = 1;
-					break;
-				}
-				durationInput *= 10;
-				durationInput += 8;
+				durationInput += 8 * loopCount / 10;
+				loopCount /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_9) {
-				if (loopCount == 0) {
-					durationInput = 9;
-					loopCount = 1;
-					break;
-				}
-				durationInput *= 10;
-				durationInput += 9;
+				durationInput += 9 * loopCount / 10;
+				loopCount /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_0) {
-				if (loopCount == 0) {
-					continue;
-				}
-				durationInput *= 10;
-				durationInput += 0;
+				durationInput += 0 * loopCount / 10;
+				loopCount /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_D)
-				return durationInput;
+				//Be careful, integer math is all around us...
+				return ((durationInput * 10) / loopCount);
 			if (buttonByte == NUM_PAD_STAR)
 				return -1;
 		}
-		printTime(durationInput);
+		printTime(durationInput, loopCount);
 		delayWithoutDelay(175);
 	}
-	return;
+	return -1;
 }
 
 byte inputPowerState() {
