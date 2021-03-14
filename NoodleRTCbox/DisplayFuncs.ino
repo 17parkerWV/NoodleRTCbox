@@ -102,15 +102,16 @@ void printTime(int time, int loopCount = 0) {
 		x = 42;
 		break;
 	case 100:
-		x = 52;
+		x = 53;
 		break;
 	case 10:
-		x = 62;
+		x = 65;
 		break;
 	case 1:
-		x = 72;
+		x = 77;
+		break;
 	default:
-		x = 42;
+		x = 52;
 		break;
 	}
 	disp.setCursor(32, 35);

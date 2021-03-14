@@ -235,39 +235,33 @@ void overrideStatusLoop() {
 	return;
 }
 int inputTime() {
-	int NumberOfInputs = 10;
+	int NumberOfInputs = 100;
 	int timeInput = 0;
 	while (NumberOfInputs > 0) {
 		while (1) {
 			byte buttonByte = buttonPoll();
 			if (buttonByte == NUM_PAD_1) {
 				timeInput += (1 * NumberOfInputs);
-				NumberOfInputs -= 9;
 				break;
 			}
 			if (buttonByte == NUM_PAD_2) {
 				timeInput += (2 * NumberOfInputs);
-				NumberOfInputs -= 9;
 				break;
 			}
 			if (buttonByte == NUM_PAD_3) {
 				timeInput += (3 * NumberOfInputs);
-				NumberOfInputs -= 9;
 				break;
 			}
 			if (buttonByte == NUM_PAD_4) {
 				timeInput += (4 * NumberOfInputs);
-				NumberOfInputs -= 9;
 				break;
 			}
 			if (buttonByte == NUM_PAD_5) {
 				timeInput += (5 * NumberOfInputs);
-				NumberOfInputs -= 9;
 				break;
 			}
 			if (buttonByte == NUM_PAD_6) {
 				timeInput += (6 * NumberOfInputs);
-				NumberOfInputs -= 9;
 				break;
 			}
 			if (buttonByte == NUM_PAD_7) {
@@ -277,30 +271,30 @@ int inputTime() {
 			}
 			if (buttonByte == NUM_PAD_8) {
 				timeInput += (8 * NumberOfInputs);
-				NumberOfInputs -= 9;
 				break;
 			}
 			if (buttonByte == NUM_PAD_9) {
 				timeInput += (9 * NumberOfInputs);
-				NumberOfInputs -= 9;
 				break;
 			}
 			if (buttonByte == NUM_PAD_0) {
 				timeInput += 0;
-				NumberOfInputs -= 9;
+				printTime(timeInput, NumberOfInputs);
+				NumberOfInputs /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_D) {
 				//This can only be chosen on the first loop; must divide by 10
 				timeInput /= 10;
-				printTime(timeInput, 10);
 				delayWithoutDelay(225);
 				return timeInput;
 			}
 			if (buttonByte == NUM_PAD_STAR)
 				return -1;
 		}
-		printTime(timeInput, NumberOfInputs *10);
+		printTime(timeInput, NumberOfInputs);
+		NumberOfInputs /= 10;
+		delayWithoutDelay(225);
 	}
 	return timeInput;
 }
@@ -314,52 +308,42 @@ int inputDuration() {
 			byte buttonByte = buttonPoll();
 			if (buttonByte == NUM_PAD_1) {
 				durationInput += 1 * loopCount / 10;
-				loopCount /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_2) {
 				durationInput += 2 * loopCount / 10;
-				loopCount /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_3) {
 				durationInput += 3 * loopCount / 10;
-				loopCount /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_4) {
 				durationInput += 4 * loopCount / 10;
-				loopCount /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_5) {
 				durationInput += 5 * loopCount / 10;
-				loopCount /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_6) {
 				durationInput += 6 * loopCount / 10;
-				loopCount /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_7) {
 				durationInput += 7 * loopCount / 10;
-				loopCount /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_8) {
 				durationInput += 8 * loopCount / 10;
-				loopCount /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_9) {
 				durationInput += 9 * loopCount / 10;
-				loopCount /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_0) {
 				durationInput += 0 * loopCount / 10;
-				loopCount /= 10;
 				break;
 			}
 			if (buttonByte == NUM_PAD_D)
@@ -368,6 +352,7 @@ int inputDuration() {
 			if (buttonByte == NUM_PAD_STAR)
 				return -1;
 		}
+		loopCount /= 10;
 		printTime(durationInput, loopCount);
 		delayWithoutDelay(175);
 	}
