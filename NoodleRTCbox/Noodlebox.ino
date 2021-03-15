@@ -31,7 +31,7 @@
 #define NUM_PAD_D 0b01110111
 #define NUM_PAD_STAR 0b11100111
 #define NUM_PAD_SHARP 0b10110111
-//THIS IS FOR CHECKING BUTTON PRESSES
+//BUTTON PRESSES IN BINARY
 #define ROW_BITS 0b00001111
 #define COL_BITS 0b11110000
 #define COL_1 0b11100000
@@ -46,6 +46,7 @@
 #define ROW_LOW_COL_PULLUP COL_BITS
 #define ROW_IN_COL_OUT COL_BITS
 #define COL_IN_ROW_OUT ROW_BITS
+//BITSHIFT AMOUNTS for port manipulation - used with number pad
 #define DIGITAL_PIN_42 (1<<7)	//Pin 42, PL7
 #define DIGITAL_PIN_43 (1<<0)	//Pin 43, PD0
 #define DIGITAL_PIN_44 (1<<5)	//Pin 44, PL5
@@ -55,8 +56,13 @@
 #define DIGITAL_PIN_48 (1<<1)	//Pin 48, PL1
 #define DIGITAL_PIN_49 (1<<0)	//Pin 49, PL0
 
+//Arrays for setting and checking the set date & time
 const uint8_t daysInMonth[] PROGMEM = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30 };
 const String daysOfWeek[] = { "Sun","Mon","Tue","Wed","Thurs","Fri","Sat" };
+//Arrays used when printing menus
+const String abcd[] = { "A: ","B: ","C: ","D: " };
+const String num[] = { "1: ","2: ","3: ","4: " };
+String messArr[4];
 
 /*
 PIN LAYOUT FOR THE 4x4 NUMBER PAD:
@@ -76,62 +82,42 @@ PC7 (pin 30) - Pin 8 on number pad
 
 class outlets {
 public:
-	//Whether or not a schedule is set
+	int relayPin;
+	//Whether or not a schedule or an override is set
+	volatile bool overrideSetFlag = false;
 	volatile bool schedSetFlag = false;
-	//On and off times for a schedule
+	//On and off times for schedules and overrides, and duration of override
 	int hourOn = 0;
 	int minuteOn = 0;
 	int hourOff = 0;
 	int minuteOff = 0;
-	//Whether or not the relay is currently powered on manually
-	volatile bool manualPoweredStatus = false;
-	//Hours and minutes that the override turns on and off, converted from (start time + duration)
 	int overrideHour = 0;
 	int overrideMinute = 0;
 	int overrideOffHour = 0;
 	int overrideOffMinute = 0;
-	//how long the temp override should last, this is converted into hours on/off
 	int overrideDuration = 0;
-	//Whether there is an override scheduled
-	volatile bool overrideSetFlag = false;
-	//Whether or not the relay is currently being overridden (within range of set override)
+	//TRUE if relay is within range of override, FALSE otherwise
 	volatile bool overrideStatus = false;
-	//The state is the powered status of the relay if it is within the range of an override or schedule
-	//Example: schedule is set from 1pm to 7pm, override is at 2pm for 30 min, set to OFF (1 - active LOW)
-	//Example 2: sched is set from 1pm to 7pm, override is set at 8pm ON (0 - active LOW)
-	//NOTE: OverrideState is ON when 0 (LOW) and OFF when 1 (HIGH)
-	//SchedState is initialized ON (0), flip to 1 to make overnight schedules easier
+	//1 if override forces relay ON, 0 if override forces relay OFF
 	volatile bool overrideState = 1;
+	//If FALSE, schedule is not set to be on overnight. If TRUE, schedule was set to be on overnight
 	volatile bool schedState = false;
-	//number of the physical pin the corresponding relay is connected to
-	int relayPin;
+	//TRUE if relay is ON manually, FALSE otherwise
+	volatile bool manualPoweredStatus = false;
 
-	//For the manual override stuff
+	//GET functions
 	bool getManualPoweredStatus() { return manualPoweredStatus; }
-	void setManualPoweredStatus() { manualPoweredStatus = true; }
-	void clearManualPoweredStatus() { manualPoweredStatus = false, digitalWrite(relayPin, HIGH); }
-	void flipManualPoweredStatus() {
-		manualPoweredStatus = !manualPoweredStatus;		//Flip the status of the flag
-		digitalWrite(relayPin, !manualPoweredStatus);   //status of flag is opposite of actual powered status
-	}
-	//For the schedule stuff
-	//bool withinSchedRange();  <--returns true if current time is within sched range
 	bool getSchedSetFlag() { return schedSetFlag; }
 	bool getSchedState() { return schedState; }
-	void setSchedFlag() { schedSetFlag = true; } //PRECONDITION: relay is not powered on manually
-	void clearSchedSetFlag() { schedSetFlag = false, digitalWrite(relayPin, HIGH); }
-	void clearSchedState() { schedState = false; }
-	//for the override stuff
 	bool getOverrideSetFlag() { return overrideSetFlag; }
 	bool getOverrideStatus() { return overrideStatus; }
+
+	//SET functions
+	void setSchedFlag() { schedSetFlag = true; }
 	void setOverrideStatus() { overrideStatus = true; }
 	void setOverrideSetFlag() { overrideSetFlag = true; }
-	void clearOverrideStatus() { overrideStatus = false; }
-	void clearOverrideSetFlag() {
-		overrideSetFlag = false;
-		overrideStatus = false;
-		digitalWrite(relayPin, HIGH);
-	}
+	void setManualPoweredStatus() { manualPoweredStatus = true; }
+	void clearManualPoweredStatus() { manualPoweredStatus = false, digitalWrite(relayPin, HIGH); }
 	void setSchedOn(int hr, int min) {
 		hourOn = hr;
 		minuteOn = min;
@@ -140,87 +126,117 @@ public:
 		hourOff = hr;
 		minuteOff = min;
 	}
-	void off();
-};
 
-//These are for the interrupt
+	//CLEAR functions
+	void off();
+	void clearSchedSetFlag() { schedSetFlag = false, digitalWrite(relayPin, HIGH); }
+	void clearSchedState() { schedState = false; }
+	void clearOverrideStatus() { overrideStatus = false; }
+	void clearOverrideSetFlag() {
+		overrideSetFlag = false;
+		overrideStatus = false;
+		digitalWrite(relayPin, HIGH);
+	}
+
+	//FLIP functions
+	void flipManualPoweredStatus() {
+		manualPoweredStatus = !manualPoweredStatus;				//Flip the status of the flag
+		digitalWrite(relayPin, !manualPoweredStatus);			//status of flag is opposite of actual powered status
+	}
+}; //END class
+
+//Interrupt setup
 #define BUILT_IN_LED (1<<7)		//digital pin 13, PB7
 #define DIGITAL_PIN_2 (1<<4)	//(OC3B/INT4) Port E bit 4
 volatile byte counter = 0;
-const int relayArrayPins[8] = { 42,43,44,45,46,47,48,49 };
+
+//Object setup
 outlets relay[8];
+const int relayArrayPins[8] = { 42,43,44,45,46,47,48,49 };
 Adafruit_SSD1306 disp(128, 64);
 RTC_DS3231 clockObj;
 DateTime clockSecondObj;
 
 //*****FUNCTION PROTOTYPES*****//
-//***OLED Display Prototypes
-void dispEnterDuration();
-void printTime(int time, int loopCount = 0);
-void dispEnterTime(String top, String bottom);
-void dispEnterPowerState();
-void dispConfirmClearFlag();
-void dispError(String error);
-void dispOverrideMenu();
-void dispSchedulesMenu();
-void dispMainMenu();
-void dispCurrentTime(int hour, int min);
-void clearCurrentTime();
+//General functions
+void initializeObjs();
+void POWERLOSS();
+void allOff();
+void delayWithoutDelay(unsigned int time);
+byte buttonPoll();
+void waitForAnyLetterPress();
+
+//START OLED Functions
+//Shared functions
+void printMenu(int argc, const String label[], String m1, String m2 = "", String m3 = "", String m4 = "", bool header = false, String headerm = "", bool footer = false, String footerm = "", int fontSize = 2);
 void dispEightRelays(int mode, String message = "", bool header = false);
 void printHeader(String message, int fontSize = 1, bool clear = false);
-void clearRelayUpdate();
-bool dispConfirmation();
-void dispSingleSchedStatus(int relayNum);
-void dispSingleOverrideStatus(int relayNum);
 void prepDisp(int fontSize = 1, int x = 0, int y = 0, bool clear = true);
+void printTime(int time, int loopCount = 0);
+void dispEnterTime(String top, String bottom = "");
+void dispError(String error);
+void clearRelayUpdate();
+//Main menu
+void dispMainMenu() {
+	printMenu(4, abcd, F("Adjust Schedule"), F("Temporary Override"), F("Manual Override\n   Menu"), F("Set date and time"), true, F("Main Menu"));
+}
+//Schedule display functions
+void dispSchedulesMenu() {
+	printMenu(3, num, F("Set/Clear Schedule"), F("View Schedule"), F("Complete disable"), F(""), false, F(""), true, F("Press # to go back"));
+}
+void dispSingleSchedStatus(int relayNum);
+void dispCurrentTime();
+//Override display functions
+void dispOverrideMenu() {
+	printMenu(2, num, F("Set/Clear\n   temp. override"), F("Show single status"), F(""), F(""), true, F("Overrides"), true, F("Press # to go back"));
+}
+void dispSingleOverrideStatus(int relayNum);
+void dispEnterDuration();
+//Clock display functions
+void dispClockMenu() {
+	printMenu(2, num, F("Set Date/Time"), F("Show current time"), F(""), F(""), true, F("Clock Menu"), true, F("Press # to go back"), 1);
+}
 void dispTime();
-void dispClockMenu();
+//END OLED  functions
 
-//***Relay Function Prototypes
-void allOff();
-void initializeObjs();
-int chooseRelay(int func);
-void confirmClear(outlets& obj, void (outlets::* clearFunc)());
-void completeOffSubMenu();
-byte confirmationMenu();
-void completeOffLoop();
+//***Relay Functions
 void promptSchedTime(outlets& obj);
 void promptOverrideTime(outlets& obj);
+void confirmClear(outlets& obj, void (outlets::* clearFunc)());
+int chooseRelay(int func);
 
 //***Clock Object functions
 void timeControl();
 void updateClock();
-void updateCurrentTime();
-void dispCurrentTime(int hour, int min);
 void setTime();
 bool validateDay(uint8_t month, uint8_t day);
-void POWERLOSS();
+
 
 //***Sub Menu functions
-void delayWithoutDelay(unsigned int time);
-byte buttonPoll();
-void waitForAnyLetterPress();
 int inputTime();
+bool confirmationMenu();
 int inputDuration();
-byte inputPowerState();
 int verifyHour(int& hour);
 int verifyMinute(int& min);
 int verifyDuration(int& dur);
-
-void schedulesMenu();
-void setScheduleSubMenu();
-void scheduleSetStatusSubMenu();
+byte inputPowerState();
+//A -> Schedules
+void schedulesMenu();				//A
+void setScheduleSubMenu();			//A -> 1
+void scheduleSetStatusSubMenu();	//A -> 2
 void scheduleSetStatusLoop();
-void completeOffSubMenu();
-
-void overrideMenu();
-void overrideSubMenu();
-void overrideStatusSubMenu();
+void completeOffSubMenu();			//A -> 3
+void completeOffLoop();
+void completeOffSubMenu();			//A -> 4
+//B -> Overrides
+void overrideMenu();				//B
+void overrideSubMenu();				//B -> 1
+void overrideStatusSubMenu();		//B -> 2
 void overrideStatusLoop();
-
-void manualOnOffMenu();
+//C -> Manual control
+void manualOnOffMenu();				//C
 void manualOnOffLoop();
-
+//D -> Clock menu
 void clockMenu();
 void setTimeMenu();
 
@@ -235,6 +251,11 @@ void outlets::off() {
 void allOff() {
 	for (int i = 0; i <= 7; ++i)
 		relay[i].off();
+	return;
+}
+void POWERLOSS() {
+	printHeader(F("POWER HAS BEEN LOST\n\nSchedules have been\nreset\n\n\nPress A-D to continue"), 1, true);
+	waitForAnyLetterPress();
 	return;
 }
 
@@ -273,7 +294,7 @@ void setup() {
 	EIMSK |= DIGITAL_PIN_2;		//Bit 4 (INT4) interrupt mask bit to 1, enable the interrupt
 	dispMainMenu();
 }
-//MAIN MENU***
+//***MAIN MENU
 void loop() {
 	byte buttonData = buttonPoll();
 	if ((buttonData & COL_BITS) == (COL_4)) {
@@ -302,14 +323,34 @@ void loop() {
 	}
 	delayWithoutDelay(80);
 }
-
-void POWERLOSS() {
-	printHeader(F("POWER HAS BEEN LOST\n\nSchedules have been\nreset\n\n\nPress A-D to continue"), 1, true);
-	waitForAnyLetterPress();
+//***START MENUS
+//Main Menu -> A
+void schedulesMenu() {
+	dispCurrentTime();
+	int currentMin = clockSecondObj.minute();
+	unsigned long currentMillis = millis();
+	while (1) {
+		currentMillis = millis();
+		while ((millis() - currentMillis) <= 5000) {
+			byte buttonPress = buttonPoll();
+			if (buttonPress == NUM_PAD_1) 		//Set new schedule
+				setScheduleSubMenu();
+			if (buttonPress == NUM_PAD_2) 		//View schedules
+				scheduleSetStatusSubMenu();
+			if (buttonPress == NUM_PAD_3) 		//Disable everything
+				completeOffSubMenu();
+			if (buttonPress == NUM_PAD_SHARP)	//Quit back
+				return;
+		}
+		updateClock();
+		if (currentMin != clockSecondObj.minute()) {
+			dispCurrentTime();
+			currentMin = clockSecondObj.minute();
+		}
+	}
 	return;
 }
-
-//Main Manu --> B. Set/clear/view temporary override configs
+//Main Manu -> B
 void overrideMenu() {
 	while (1) {
 		byte buttonPress = buttonPoll();
@@ -322,35 +363,13 @@ void overrideMenu() {
 	}
 	return;
 }
-//Main Menu --> A. Set/clear/view schedule configs
-void schedulesMenu() {
-	updateCurrentTime();
-	int currentMin = clockSecondObj.minute();
-	unsigned long currentMillis = millis();
-	while (1) {
-		currentMillis = millis();
-		while ((millis() - currentMillis) <= 5000) {
-			byte buttonPress = buttonPoll();
-			if (buttonPress == NUM_PAD_1) 		//Set new schedule
-				setScheduleSubMenu();
-			if (buttonPress == NUM_PAD_2) 		//View schedules
-				scheduleSetStatusSubMenu();
-			//if (buttonPress == NUM_PAD_3) 	//Nothing here....	
-			if (buttonPress == NUM_PAD_4) 		//Disable everything
-				completeOffSubMenu();
-			if (buttonPress == NUM_PAD_SHARP)	//Quit back
-				return;
-		}
-		updateClock();
-		if (currentMin != clockSecondObj.minute()) {
-			clearCurrentTime();
-			updateCurrentTime();
-			currentMin = clockSecondObj.minute();
-		}
-	}
+//MainMenu -> C - Displays the 8 relays and if they are powered manually
+void manualOnOffMenu() {
+	dispEightRelays(2, F("ON means ON OFF meansOFF, easy   * - back"), true);
+	manualOnOffLoop();
 	return;
 }
-
+//Main Menu -> D
 void clockMenu() {
 	while (1) {
 		byte buttonPress = buttonPoll();
@@ -367,14 +386,35 @@ void clockMenu() {
 	}
 	return;
 }
-
-//MainMenu -> C -> 2. Menu where power state of relay is flipped, if manualOverrideFlag == false
-void manualOnOffMenu() {
-	dispEightRelays(2, F("ON means ON OFF meansOFF, easy   * - back"), true);
-	manualOnOffLoop();
+//END MENUS
+//***START SUB-MENUS
+//Main Manu -> A -> 1
+void setScheduleSubMenu() {
+	dispEightRelays(4, F("Pick one to set \nschedule     * - back"), true);
+	if (chooseRelay(2) == -1)
+		dispError(F("failed to select relay"));
+	dispSchedulesMenu();
+	dispCurrentTime();
 	return;
 }
-//Main Menu -> B -> 1. Menu where tempOverrideFlag is flipped
+//Main Menu -> A -> 2
+void scheduleSetStatusSubMenu() {
+	dispEightRelays(4, F("Choose one to show\nstatus * -back"), true);
+	scheduleSetStatusLoop();
+	dispSchedulesMenu();
+	dispCurrentTime();
+	return;
+}
+//Main Menu -> A -> 3
+void completeOffSubMenu() {
+	dispEightRelays(9, F("Select an outlet to  be reset    * - back"), true);
+	completeOffLoop();
+	delayWithoutDelay(400);
+	dispSchedulesMenu();
+	dispCurrentTime();
+	return;
+}
+//Main Menu -> B -> 1
 void overrideSubMenu() {
 	dispEightRelays(3, F("Select an outlet\n* - back"), true);
 	if (chooseRelay(1) == -1)
@@ -382,44 +422,19 @@ void overrideSubMenu() {
 	dispOverrideMenu();
 	return;
 }
-//Main Menu -> B -> 2. Menu where a relay is selected and its tempOverride status is shown
+//Main Menu -> B -> 2
 void overrideStatusSubMenu() {
 	dispEightRelays(3, F("Choose one to show\nstatus   * - back"), true);
 	overrideStatusLoop();
 	dispOverrideMenu();
 	return;
 }
-//Main Manu -> A -> 1. Menu where schedule is set (or cleared if one exists)
-void setScheduleSubMenu() {
-	dispEightRelays(4, F("Pick one to set \nschedule     * - back"), true);
-	if (chooseRelay(2) == -1)
-		dispError(F("failed to select relay"));
-	dispSchedulesMenu();
-	updateCurrentTime();
-	return;
-}
-//Main Menu -> A -> 2. Menu where set schedule is viewed
-void scheduleSetStatusSubMenu() {
-	dispEightRelays(4, F("Choose one to show\nstatus * -back"), true);
-	scheduleSetStatusLoop();
-	dispSchedulesMenu();
-	updateCurrentTime();
-	return;
-}
-//Main Menu -> A -> 4.
-void completeOffSubMenu() {
-	dispEightRelays(9, F("Select an outlet to  be reset    * - back"), true);
-	completeOffLoop();
-	delayWithoutDelay(1200);
-	dispSchedulesMenu();
-	updateCurrentTime();
-	return;
-}
-
+//Main Menu -> D -> 1
 void setTimeMenu() {
-	printHeader(F("Do you want to set\nthe time?"), 1, true);
-	if (dispConfirmation())
+	printHeader(F("Do you want to set\nthe time?\n\nA: Yes        B : No"), 1, true);
+	if (confirmationMenu())
 		setTime();
 	dispClockMenu();
 	return;
 }
+//END SUB-MENUS

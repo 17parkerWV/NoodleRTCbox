@@ -1,3 +1,4 @@
+//Begins I2C for RTC and OLED, initializes clock objects and relay objects and clears display
 void initializeObjs() {
 	if (!disp.begin(SSD1306_SWITCHCAPVCC, 0x3C))
 		while (1);
@@ -16,9 +17,9 @@ void initializeObjs() {
 	}
 	return;
 }
-
+//Confirms if schedule/override should be cleared, and clears if true
 void confirmClear(outlets& obj, void (outlets::* clearFunc)()) {
-	dispConfirmClearFlag();
+	printHeader(F("Something is already set, would you like  to clear it?\nPress A to clear\nPress B to cancel "));
 	while (1) {
 		byte buttonByte = buttonPoll();
 		if ((buttonByte & COL_BITS) == COL_4) {
@@ -33,6 +34,7 @@ void confirmClear(outlets& obj, void (outlets::* clearFunc)()) {
 	}
 	return;
 }
+//Choose a relay to set schedule/override (or clear if one already exists)
 int chooseRelay(int func) {
 	bool (outlets:: * statusFunc)();
 	void (outlets:: * clearFunc)();
@@ -171,11 +173,12 @@ int chooseRelay(int func) {
 	}
 	return 0;
 }
-
+//A -> 3 - Choose a relay to completely kill it
 void completeOffLoop() {
 	while (1) {
 		byte buttonPress = buttonPoll();
 		if (buttonPress == NUM_PAD_1) {
+			printHeader(F("Are you sure?\n\nA: Yes        B : No"), 1, true);
 			bool confirmed = confirmationMenu();
 			if (confirmed == false)
 				return;
@@ -186,6 +189,7 @@ void completeOffLoop() {
 			}
 		}
 		if (buttonPress == NUM_PAD_2) {
+			printHeader(F("Are you sure?\n\nA: Yes        B : No"), 1, true);
 			bool confirmed = confirmationMenu();
 			if (confirmed == false)
 				return;
@@ -196,6 +200,7 @@ void completeOffLoop() {
 			}
 		}
 		if (buttonPress == NUM_PAD_3) {
+			printHeader(F("Are you sure?\n\nA: Yes        B : No"), 1, true);
 			bool confirmed = confirmationMenu();
 			if (confirmed == false)
 				return;
@@ -206,6 +211,7 @@ void completeOffLoop() {
 			}
 		}
 		if (buttonPress == NUM_PAD_4) {
+			printHeader(F("Are you sure?\n\nA: Yes        B : No"), 1, true);
 			bool confirmed = confirmationMenu();
 			if (confirmed == false)
 				return;
@@ -216,6 +222,7 @@ void completeOffLoop() {
 			}
 		}
 		if (buttonPress == NUM_PAD_5) {
+			printHeader(F("Are you sure?\n\nA: Yes        B : No"), 1, true);
 			bool confirmed = confirmationMenu();
 			if (confirmed == false)
 				return;
@@ -226,6 +233,7 @@ void completeOffLoop() {
 			}
 		}
 		if (buttonPress == NUM_PAD_6) {
+			printHeader(F("Are you sure?\n\nA: Yes        B : No"), 1, true);
 			bool confirmed = confirmationMenu();
 			if (confirmed == false)
 				return;
@@ -236,6 +244,7 @@ void completeOffLoop() {
 			}
 		}
 		if (buttonPress == NUM_PAD_7) {
+			printHeader(F("Are you sure?\n\nA: Yes        B : No"), 1, true);
 			bool confirmed = confirmationMenu();
 			if (confirmed == false)
 				return;
@@ -246,6 +255,7 @@ void completeOffLoop() {
 			}
 		}
 		if (buttonPress == NUM_PAD_8) {
+			printHeader(F("Are you sure?\n\nA: Yes        B : No"), 1, true);
 			bool confirmed = confirmationMenu();
 			if (confirmed == false)
 				return;
@@ -261,8 +271,8 @@ void completeOffLoop() {
 	}
 	return;
 }
-
-byte confirmationMenu() {
+//Waits for A (yes) or B (no) - does not print anything
+bool confirmationMenu() {
 	while (1) {
 		byte buttonPress = buttonPoll();
 		if ((buttonPress & COL_BITS) == COL_4) {
@@ -272,8 +282,9 @@ byte confirmationMenu() {
 				return false;
 		}
 	}
-	return;
+	return false;
 }
+//A -> 1 (if no schedule is set). Takes inputs to set the schedule
 void promptSchedTime(outlets& obj) {
 	//RESET THE TIME
 	obj.hourOn = 0;
@@ -290,7 +301,7 @@ void promptSchedTime(outlets& obj) {
 		dispError(F("Invalid\nhour"));
 		return;
 	}
-	dispEnterTime((F("Enter minute to TURN ON   * - back\nPress D when done")), F(""));
+	dispEnterTime(F("Enter minute to TURN ON   * - back\nPress D when done"));
 	int startMinute = inputTime();
 	if (startMinute == -1) {
 		dispError(F("Canceled"));
@@ -310,7 +321,7 @@ void promptSchedTime(outlets& obj) {
 		dispError(F("Invalid\nhour"));
 		return;
 	}
-	dispEnterTime((F("Enter minute to TURN OFF   * - back\nPress D when done")), F(""));
+	dispEnterTime(F("Enter minute to TURN OFF   * - back\nPress D when done"));
 	int stopMinute = inputTime();
 	if (stopMinute == -1) {
 		dispError(F("Canceled"));
@@ -346,13 +357,13 @@ void promptSchedTime(outlets& obj) {
 	obj.setSchedFlag();
 	return;
 }
-
+//B -> 1 (if no override is set) - Takes inputs to set override
 void promptOverrideTime(outlets& obj) {
 	//Get the starting HOUR//
 	obj.overrideHour = 0;
 	obj.overrideMinute = 0;
 	obj.overrideDuration = 0;
-	dispEnterTime((F("Enter starting hour  using 24 hour format Press STAR to cancel Press D when done")), (F("24 HOUR FORMAT ONLY")));
+	dispEnterTime(F("Enter starting hour  using 24 hour format Press STAR to cancel Press D when done")), (F("24 HOUR FORMAT ONLY"));
 	int hour = inputTime();
 	if (hour == -1) {
 		dispError(F("Canceled"));
@@ -365,7 +376,7 @@ void promptOverrideTime(outlets& obj) {
 		return;
 	}
 	//Get the starting MINUTE//
-	dispEnterTime((F("Enter starting\nminutes   * - back\nPress D when done")), F(""));
+	dispEnterTime(F("Enter starting\nminutes   * - back\nPress D when done"));
 	int minute = inputTime();
 	if (minute == -1) {
 		dispError(F("Canceled"));
@@ -392,7 +403,7 @@ void promptOverrideTime(outlets& obj) {
 		++tempHourVar;		//Add one hour if the minutes overflow
 	int hourOff = (hour + tempHourVar) % 24;
 	//Get the POWER STATE//
-	dispEnterPowerState();
+	printHeader(F("Should it be forced\nON or OFF ? \n1 means ON\n0 means OFF"));
 	byte powerState = inputPowerState();
 	if (powerState == -1) {
 		dispError(F("Canceled"));

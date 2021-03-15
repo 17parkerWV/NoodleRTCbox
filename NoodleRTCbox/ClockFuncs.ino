@@ -1,8 +1,9 @@
+//Updates clockSecondObj
 void updateClock() {
 	clockSecondObj = clockObj.now();
 	return;
 }
-
+//Gets user input to set the RTC's date and time
 void setTime() {
 	prepDisp(1, 0, 0);
 	uint8_t  month, day, hour, minute, second;
@@ -49,7 +50,7 @@ void setTime() {
 	dispError(F("Set"));
 	return;
 }
-
+//Verify day is legal
 bool validateDay(uint8_t month, uint8_t day) {
 	if (day > 0) {
 		switch (month) {
@@ -142,24 +143,21 @@ bool validateDay(uint8_t month, uint8_t day) {
 	}
 	return false;
 }
-
-void updateCurrentTime() {
+//Update clockSecondObj and print the time in the top left corner
+void dispCurrentTime() {
 	updateClock();
-	dispCurrentTime(clockSecondObj.hour(), clockSecondObj.minute());
-	return;
-}
-
-void dispCurrentTime(int hour, int min) {
+	disp.fillRect(0, 0, 79, 16, BLACK);
+	disp.display();
 	prepDisp(2, 0, 0, false);
-	disp.print(hour);
+	disp.print(clockSecondObj.hour());
 	disp.print(":");
-	if (min < 10)
+	if (clockSecondObj.minute() < 10)
 		disp.print(0);
-	disp.print(min);
+	disp.print(clockSecondObj.minute());
 	disp.display();
 	return;
 }
-
+//Checks the current time and controls the relays depending on configuration
 void timeControl() {
 	int currentDay = clockSecondObj.day();
 	int currentHour = clockSecondObj.hour();

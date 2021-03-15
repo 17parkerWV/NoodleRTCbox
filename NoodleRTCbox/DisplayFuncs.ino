@@ -1,4 +1,4 @@
-// //Main Menu --> A. Goes into options regarding set schedules
+//Moves the curor, sets font size (and clears if flag is true)
 void prepDisp(int fontSize = 1, int x = 0, int y = 0, bool clear = true) {
 	if (clear) {
 		disp.clearDisplay();
@@ -8,7 +8,30 @@ void prepDisp(int fontSize = 1, int x = 0, int y = 0, bool clear = true) {
 	disp.setCursor(x, y);
 	return;
 }
-
+//Prints menu options (and/or header/footer) - only enough space for one option to take up more than one line
+void printMenu(int argc, const String label[], String m1, String m2 = "", String m3 = "", String m4 = "", bool header = false, String headerm = "", bool footer = false, String footerm = "", int fontSize = 2) {
+	disp.clearDisplay();
+	disp.display();
+	messArr[0] = m1;
+	messArr[1] = m2;
+	messArr[2] = m3;
+	messArr[3] = m4;
+	if (header == true) {
+		prepDisp(fontSize, 0, 0);
+		disp.print(headerm);
+	}
+	if (footer == true) {
+		prepDisp(1, 0, 56, false);
+		disp.print(footerm);
+	}
+	prepDisp(1, 0, 16, false);
+	for (int i = 0; i < argc; ++i) {
+		disp.print(label[i]);
+		disp.println(messArr[i]);
+	}
+	disp.display();
+}
+//Displays the RTC's date and time
 void dispTime() {
 	prepDisp(1, 0, 0);
 	disp.print(F("day:\nmonth:\nyear:\nDotW:\nTime:"));
@@ -29,17 +52,7 @@ void dispTime() {
 	disp.display();
 	return;
 }
-
-void dispClockMenu() {
-	printHeader(F("Press # to go back"), 1, true);
-	disp.setCursor(0, 24);
-	disp.print(F("1: Set Date/Time"));
-	disp.setCursor(0, 42);
-	disp.print(F("2: Show current time"));
-	disp.display();
-	return;
-}
-
+//displays the 8 relays and the status of any of their settings
 void dispEightRelays(int mode, String message = "", bool header = false) {
 	if (header == true) {
 		prepDisp(1, 0, 16);
@@ -101,26 +114,14 @@ void dispEightRelays(int mode, String message = "", bool header = false) {
 	disp.display();
 	return;
 }
-bool dispConfirmation() {
-	prepDisp(1, 0, 42, false);
-	disp.print(F("A: Yes        B: No"));
-	disp.display();
-	byte button;
-	while (1) {
-		button = buttonPoll();
-		if (button == NUM_PAD_A)
-			return true;
-		if (button == NUM_PAD_B)
-			return false;
-	}
-	return false;
-}
+//displays a message starting at 0,0 - can change font size and can clear display before printing
 void printHeader(String message, int fontSize = 1, bool clear = false) {
 	prepDisp(fontSize, 0, 0, clear);
 	disp.print(message);
 	disp.display();
 	return;
 }
+//Specialized display - display for entering duration of override
 void dispEnterDuration() {
 	prepDisp(1, 0, 0);
 	disp.print(F("Enter duration of\noverride in minutes\npress * to cancel\nPress 'D' when done"));
@@ -128,7 +129,7 @@ void dispEnterDuration() {
 	disp.display();
 	return;
 }
-
+//Displays digits on the screen as they are being pressed. Used with inputTime and inputDuration
 void printTime(int time, int loopCount = 0) {
 	disp.setTextSize(2);
 	int xRect;
@@ -160,7 +161,8 @@ void printTime(int time, int loopCount = 0) {
 	disp.display();
 	return;
 }
-void dispEnterTime(String top, String bottom) {
+//inaccurate function name. prints message on the top and/or the bottom, and draws a black box in the middle
+void dispEnterTime(String top, String bottom = "") {
 	prepDisp(1, 0, 0);
 	disp.print(top);
 	disp.fillRect(0, 32, 128, 48, BLACK);
@@ -169,18 +171,7 @@ void dispEnterTime(String top, String bottom) {
 	disp.display();
 	return;
 }
-void dispEnterPowerState() {
-	prepDisp(1, 0, 0);
-	disp.print(F("Should it be forced\nON or OFF?\n1 means ON\n0 means OFF"));
-	disp.display();
-	return;
-}
-void dispConfirmClearFlag() {
-	prepDisp(1, 0, 0);
-	disp.print(F("Something is already set, would you like  to clear it?\nPress A to clear\nPress B to cancel "));
-	disp.display();
-	return;
-}
+//Displays a message with "returning"
 void dispError(String error) {
 	prepDisp(2, 0, 0);
 	disp.print(error);
@@ -190,65 +181,14 @@ void dispError(String error) {
 	delayWithoutDelay(1200);
 	return;
 }
-
-void dispOverrideMenu() {
-	printHeader(F("Temporarily override any set schedule!"), 1, true);
-	disp.print(F("Press # to go back"));
-	disp.setCursor(0, 32);
-	disp.print(F("1: Set/Clear\n   temp. override"));
-	disp.setCursor(0, 50);
-	disp.print(F("2: Show single status"));
-	disp.display();
-	return;
-}
-void dispSchedulesMenu() {
-	prepDisp(1, 80, 8);
-	disp.print(F("# - Back"));
-	disp.setCursor(0, 16);
-	disp.print(F("1: Set/Clear Schedule"));
-	disp.setCursor(0, 25);
-	disp.print(F("2: View schedule"));
-	disp.setCursor(0, 34);
-	disp.print(F("3: Nothing here..."));
-	disp.setCursor(0, 52);
-	disp.print(F("4: Complete disable"));
-	disp.display();
-	return;
-}
-void dispMainMenu() {
-	prepDisp(2, 10, 0);
-	disp.print(F("Main Menu"));
-	prepDisp(1, 0, 16, false);
-	disp.print("A: Adjust Schedule");
-	disp.setCursor(0, 27);
-	disp.print(F("B: Temporary Override"));
-	disp.setCursor(0, 38);
-	disp.print(F("C: Manual Override\n   Menu"));
-	disp.setCursor(0, 56);
-	disp.print(F("D: Set date and time"));
-	disp.display();
-	return;
-}
-//Main Menu --> A. Time is displayed in the upper left. When it comes time to update it, this erases just the time, so the whole screen does not flash
-void clearCurrentTime() {
-	disp.fillRect(0, 0, 79, 16, BLACK);
-	disp.display();
-	return;
-}
-
+//When 8 relays are displayed, this clears ONLY the ON/SET/OFF or whatever the status is
 void clearRelayUpdate() {
-	int x = 22;
-	int y = 16;
-	for (int rect = 0; rect <= 3; ++rect)
-		disp.fillRect(x, y + (rect * 12), 24, 16, BLACK);
-	x = 86;
-	y = 16;
-	for (int rect = 0; rect <= 3; ++rect)
-		disp.fillRect(x, y + (rect * 12), 24, 16, BLACK);
+	disp.fillRect(22, 16, 24, 48, BLACK);
+	disp.fillRect(86, 16, 24, 48, BLACK);
 	disp.display();
 	return;
 }
-
+//Displays chosen relay's override specs
 void dispSingleOverrideStatus(int relayNum) {
 	prepDisp(1, 0, 0);
 	disp.print(F("Current Override"));
@@ -277,7 +217,7 @@ void dispSingleOverrideStatus(int relayNum) {
 	disp.display();
 	return;
 }
-
+//Displays chosen relay's schedule specs
 void dispSingleSchedStatus(int relayNum) {
 	prepDisp(1, 0, 0);
 	disp.print(F("Selected outlet: "));

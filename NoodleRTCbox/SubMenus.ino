@@ -1,8 +1,10 @@
-﻿void delayWithoutDelay(unsigned int time) {
+﻿//delay without using the arduino interrupts
+void delayWithoutDelay(unsigned int time) {
 	unsigned long delayTime = millis();
 	while ((millis() - time) < delayTime) {}
 	return;
 }
+//waits for button press and returns it - does not display anything
 byte buttonPoll() {
 	byte buttonPress = 0b00000000;
 	byte rowBits = (PINC & ROW_BITS);
@@ -16,6 +18,7 @@ byte buttonPoll() {
 	delayWithoutDelay(50);
 	return buttonPress;
 }
+//Pauses until A, B, C or D is pressed
 void waitForAnyLetterPress() {
 	delayWithoutDelay(175);
 	while (1) {
@@ -26,7 +29,7 @@ void waitForAnyLetterPress() {
 	delayWithoutDelay(175);
 	return;
 }
-
+//Choose a relay to toggle on/off, if a schedule does not exist for the relay
 void manualOnOffLoop() {
 	while (1) {
 		byte buttonByte = buttonPoll();
@@ -98,7 +101,7 @@ void manualOnOffLoop() {
 	}
 	return;
 }
-//Shows the status of the schedule for the selected relay
+//Choose relay - displays schedule status (if set)
 void scheduleSetStatusLoop() {
 	while (1) {
 		byte buttonByte = buttonPoll();
@@ -169,7 +172,7 @@ void scheduleSetStatusLoop() {
 	}
 	return;
 }
-
+//Choose relay - displays override status (if set)
 void overrideStatusLoop() {
 	while (1) {
 		byte buttonByte = buttonPoll();
@@ -234,6 +237,7 @@ void overrideStatusLoop() {
 	}
 	return;
 }
+//Takes input for time (and other 2 digit inputs) - displays the numbers pressed as they are pressed
 int inputTime() {
 	int NumberOfInputs = 100;
 	int timeInput = 0;
@@ -298,7 +302,7 @@ int inputTime() {
 	}
 	return timeInput;
 }
-
+//Takes input for duration - prints number as numbers are pressed
 int inputDuration() {
 	int durationInput = 0;
 	int loopCount = 1000;
@@ -358,7 +362,7 @@ int inputDuration() {
 	}
 	return durationInput;
 }
-
+//Waits for 1 (on), 0 (off), or # (cancel)
 byte inputPowerState() {
 	while (1) {
 		byte buttonPress = buttonPoll();
@@ -371,7 +375,7 @@ byte inputPowerState() {
 	}
 	return -1;
 }
-
+//Verify hour is legal
 int verifyHour(int& hour) {
 	if (hour == 24)
 		hour = 0;
@@ -379,15 +383,15 @@ int verifyHour(int& hour) {
 		return -1;
 	return hour;
 }
-
+//Verify minute is legal
 int verifyMinute(int& min) {
 	if (min > 59 || min < 0)
 		return -1;
 	return min;
 }
-
+//Verify duration is legal
 int verifyDuration(int& dur) {
-	if (dur <= 0 || dur > 1440)
+	if (dur <= 0 || dur > 1000)
 		return -1;
 	return dur;
 }
