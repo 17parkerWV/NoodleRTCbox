@@ -1,3 +1,4 @@
+//LOOK AT COMMIT NOTES
 //Moves the curor, sets font size (and clears if flag is true)
 void prepDisp(int fontSize = 1, int x = 0, int y = 0, bool clear = true) {
 	if (clear) {

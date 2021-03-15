@@ -1,4 +1,5 @@
-﻿//delay without using the arduino interrupts
+﻿//LOOK AT COMMIT NOTES
+//delay without using the arduino interrupts
 void delayWithoutDelay(unsigned int time) {
 	unsigned long delayTime = millis();
 	while ((millis() - time) < delayTime) {}

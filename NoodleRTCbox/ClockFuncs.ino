@@ -1,3 +1,4 @@
+//LOOK AT COMMIT NOTES
 //Updates clockSecondObj
 void updateClock() {
 	clockSecondObj = clockObj.now();

@@ -1,3 +1,4 @@
+//LOOK AT COMMIT NOTES
 //Begins I2C for RTC and OLED, initializes clock objects and relay objects and clears display
 void initializeObjs() {
 	if (!disp.begin(SSD1306_SWITCHCAPVCC, 0x3C))
