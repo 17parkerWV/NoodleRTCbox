@@ -302,7 +302,7 @@ void promptSchedTime(outlets& obj) {
 		dispError(F("Invalid\nhour"));
 		return;
 	}
-	dispEnterTime(F("Enter minute to TURN ON   * - back\nPress D when done"));
+	dispEnterTime(F("Enter minute to TURN ON        * - back\nPress D when done"));
 	int startMinute = inputTime();
 	if (startMinute == -1) {
 		dispError(F("Canceled"));
@@ -312,7 +312,7 @@ void promptSchedTime(outlets& obj) {
 		dispError(F("Invalid\nminute"));
 		return;
 	}
-	dispEnterTime((F("What hour should it  turn off? Press STAR to cancel Press D    when done")), (F("24 HOUR FORMAT ONLY")));	//I think this is too long but we'll see
+	dispEnterTime((F("What hour should it  turn off?   * - back Press D when done")), (F("24 HOUR FORMAT ONLY")));	//I think this is too long but we'll see
 	int stopHour = inputTime();
 	if (stopHour == -1) {
 		dispError(F("Canceled"));
@@ -322,7 +322,7 @@ void promptSchedTime(outlets& obj) {
 		dispError(F("Invalid\nhour"));
 		return;
 	}
-	dispEnterTime(F("Enter minute to TURN OFF   * - back\nPress D when done"));
+	dispEnterTime(F("Enter minute to TURN OFF        * - back\nPress D when done"));
 	int stopMinute = inputTime();
 	if (stopMinute == -1) {
 		dispError(F("Canceled"));

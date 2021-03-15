@@ -227,7 +227,6 @@ void scheduleSetStatusSubMenu();	//A -> 2
 void scheduleSetStatusLoop();
 void completeOffSubMenu();			//A -> 3
 void completeOffLoop();
-void completeOffSubMenu();			//A -> 4
 //B -> Overrides
 void overrideMenu();				//B
 void overrideSubMenu();				//B -> 1
