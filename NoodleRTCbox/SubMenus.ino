@@ -295,7 +295,7 @@ int inputTime() {
 			if (buttonByte == NUM_PAD_STAR)
 				return -1;
 		}
-		printTime(timeInput, leadingZero == 2 ? 0 : NumberOfInputs * 10);
+		printTime(timeInput, (leadingZero == 2 && NumberOfInputs == 100) ? 0 : NumberOfInputs * 10);
 		NumberOfInputs -= 90;
 		++leadingZero;
 		delayWithoutDelay(225);

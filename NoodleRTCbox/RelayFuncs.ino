@@ -2,7 +2,7 @@
 void initializeObjs() {
 	if (!disp.begin(SSD1306_SWITCHCAPVCC, 0x3C))
 		while (1);
-	if (!clockObj.begin() || clockObj.lostPower()) 
+	if (!clockObj.begin() || clockObj.lostPower())
 		while (1);
 	clockSecondObj = clockObj.now();
 	clockObj.writeSqwPinMode(DS3231_SquareWave1Hz);	//Enable the 1Hz squarewave clock
@@ -75,7 +75,7 @@ int chooseRelay(int func) {
 				confirmClear(relay[1], clearFunc);
 				return 0;
 			}
-			if (func == 1){
+			if (func == 1) {
 				promptFunc(relay[1]);
 				return;
 			}
@@ -89,7 +89,7 @@ int chooseRelay(int func) {
 				confirmClear(relay[2], clearFunc);
 				return 0;
 			}
-			if (func == 1){
+			if (func == 1) {
 				promptFunc(relay[2]);
 				return;
 			}
@@ -103,7 +103,7 @@ int chooseRelay(int func) {
 				confirmClear(relay[3], clearFunc);
 				return 0;
 			}
-			if (func == 1){
+			if (func == 1) {
 				promptFunc(relay[3]);
 				return;
 			}
@@ -117,7 +117,7 @@ int chooseRelay(int func) {
 				confirmClear(relay[4], clearFunc);
 				return 0;
 			}
-			if (func == 1){
+			if (func == 1) {
 				promptFunc(relay[4]);
 				return;
 			}
@@ -145,7 +145,7 @@ int chooseRelay(int func) {
 				confirmClear(relay[6], clearFunc);
 				return 0;
 			}
-			if (func == 1){
+			if (func == 1) {
 				promptFunc(relay[6]);
 				return;
 			}
@@ -159,7 +159,7 @@ int chooseRelay(int func) {
 				confirmClear(relay[7], clearFunc);
 				return 0;
 			}
-			if (func == 1){
+			if (func == 1) {
 				promptFunc(relay[7]);
 				return;
 			}
@@ -286,6 +286,7 @@ bool confirmationMenu() {
 }
 //A -> 1 (if no schedule is set). Takes inputs to set the schedule
 void promptSchedTime(outlets& obj) {
+	delayWithoutDelay(225);
 	//RESET THE TIME
 	obj.hourOn = 0;
 	obj.minuteOn = 0;
@@ -359,6 +360,7 @@ void promptSchedTime(outlets& obj) {
 }
 //B -> 1 (if no override is set) - Takes inputs to set override
 void promptOverrideTime(outlets& obj) {
+	delayWithoutDelay(225);
 	//Get the starting HOUR//
 	obj.overrideHour = 0;
 	obj.overrideMinute = 0;
@@ -403,7 +405,7 @@ void promptOverrideTime(outlets& obj) {
 		++tempHourVar;		//Add one hour if the minutes overflow
 	int hourOff = (hour + tempHourVar) % 24;
 	//Get the POWER STATE//
-	printHeader(F("Should it be forced\nON or OFF ? \n1 means ON\n0 means OFF"));
+	printHeader(F("Should it be forced\nON or OFF ? \n1 means ON\n0 means OFF"), 1, true);
 	byte powerState = inputPowerState();
 	if (powerState == -1) {
 		dispError(F("Canceled"));
