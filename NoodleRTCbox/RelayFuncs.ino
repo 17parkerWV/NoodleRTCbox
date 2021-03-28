@@ -20,7 +20,7 @@ void initializeObjs() {
 }
 //Confirms if schedule/override should be cleared, and clears if true
 void confirmClear(outlets& obj, void (outlets::* clearFunc)()) {
-	printHeader(F("Something is already set, would you like  to clear it?\nPress A to clear\nPress B to cancel "));
+	printHeader(F("Something is already set, would you like  to clear it?\nPress A to clear\nPress B to cancel "),1,true);
 	while (1) {
 		byte buttonByte = buttonPoll();
 		if ((buttonByte & COL_BITS) == COL_4) {

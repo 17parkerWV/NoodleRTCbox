@@ -125,7 +125,7 @@ void printHeader(String message, int fontSize = 1, bool clear = false) {
 //Specialized display - display for entering duration of override
 void dispEnterDuration() {
 	prepDisp(1, 0, 0);
-	disp.print(F("Enter duration of\noverride in minutes\npress * to cancel\nPress 'D' when done"));
+	disp.print(F("Enter duration\n0 - 999 minutes\npress * to cancel\nPress 'D' when done"));
 	disp.fillRect(0, 40, 128, 48, BLACK);
 	disp.display();
 	return;
@@ -149,7 +149,6 @@ void printTime(int time, int loopCount = 0) {
 		xRect = 80;
 		break;
 	case 0:
-		xPrint = 43;
 		xRect = 53;
 		break;
 	default:

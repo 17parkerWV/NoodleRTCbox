@@ -242,7 +242,6 @@ void overrideStatusLoop() {
 int inputTime() {
 	int NumberOfInputs = 100;
 	int timeInput = 0;
-	byte leadingZero = 0;
 	while (NumberOfInputs > 0) {
 		while (1) {
 			byte buttonByte = buttonPoll();
@@ -284,7 +283,15 @@ int inputTime() {
 				break;
 			}
 			if (buttonByte == NUM_PAD_0) {
-				++leadingZero;
+				switch (NumberOfInputs) {
+				case 100:
+
+					break;
+				case 10:
+
+					break;
+
+				}
 				break;
 			}
 			if (buttonByte == NUM_PAD_D) {
@@ -296,9 +303,8 @@ int inputTime() {
 			if (buttonByte == NUM_PAD_STAR)
 				return -1;
 		}
-		printTime(timeInput, (leadingZero == 2 && NumberOfInputs == 100) ? 0 : NumberOfInputs * 10);
+		printTime(timeInput,NumberOfInputs * 10);
 		NumberOfInputs -= 90;
-		++leadingZero;
 		delayWithoutDelay(225);
 	}
 	return timeInput;
@@ -308,7 +314,6 @@ int inputDuration() {
 	int durationInput = 0;
 	int loopCount = 1000;
 	while (loopCount >= 10) {
-		//When loopCount = 1000 to start, the condiiton was (loopCount >= 1) and relied on integer math to set it to zero, which I didn't like
 		while (1) {
 			byte buttonByte = buttonPoll();
 			if (buttonByte == NUM_PAD_1) {
@@ -348,6 +353,8 @@ int inputDuration() {
 				break;
 			}
 			if (buttonByte == NUM_PAD_0) {
+				if (durationInput == 0)
+					continue;
 				durationInput += 0 * loopCount / 10;
 				break;
 			}
@@ -357,8 +364,8 @@ int inputDuration() {
 			if (buttonByte == NUM_PAD_STAR)
 				return -1;
 		}
+		printTime(durationInput, loopCount);
 		loopCount /= 10;
-		printTime(durationInput, loopCount*10);
 		delayWithoutDelay(175);
 	}
 	return durationInput;
