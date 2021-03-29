@@ -293,7 +293,7 @@ void promptSchedTime(outlets& obj) {
 	obj.minuteOn = 0;
 	obj.hourOff = 0;
 	obj.minuteOff = 0;
-	dispEnterTime((F("Enter hour to TURN ONusing 24 hour format Press STAR to cancel Press D when done")), (F("24 HOUR FORMAT ONLY")));
+	dispEnterTime((F("Enter the hour it\nshould TURN ON using\n24 hour format\nPress STAR to cancel")), (F("24 HOUR FORMAT ONLY")));
 	int startHour = inputTime();
 	if (startHour == -1) {
 		dispError(F("Canceled"));
@@ -303,7 +303,7 @@ void promptSchedTime(outlets& obj) {
 		dispError(F("Invalid\nhour"));
 		return;
 	}
-	dispEnterTime(F("Enter minute to TURN ON        * - back\nPress D when done"));
+	dispEnterTime(F("Enter the minute it\nshould TURN ON\nPress STAR to cancel"));
 	int startMinute = inputTime();
 	if (startMinute == -1) {
 		dispError(F("Canceled"));
@@ -313,7 +313,7 @@ void promptSchedTime(outlets& obj) {
 		dispError(F("Invalid\nminute"));
 		return;
 	}
-	dispEnterTime((F("What hour should it  turn off?   * - back Press D when done")), (F("24 HOUR FORMAT ONLY")));	//I think this is too long but we'll see
+	dispEnterTime((F("Enter the hour it\nshould TURN OFF using\n24 hour format\nPress STAR to cancel")), (F("24 HOUR FORMAT ONLY")));	//I think this is too long but we'll see
 	int stopHour = inputTime();
 	if (stopHour == -1) {
 		dispError(F("Canceled"));
@@ -323,7 +323,7 @@ void promptSchedTime(outlets& obj) {
 		dispError(F("Invalid\nhour"));
 		return;
 	}
-	dispEnterTime(F("Enter minute to TURN OFF        * - back\nPress D when done"));
+	dispEnterTime(F("Enter the minute it\nshould TURN OFF\nPress STAR to cancel"));
 	int stopMinute = inputTime();
 	if (stopMinute == -1) {
 		dispError(F("Canceled"));
@@ -366,7 +366,7 @@ void promptOverrideTime(outlets& obj) {
 	obj.overrideHour = 0;
 	obj.overrideMinute = 0;
 	obj.overrideDuration = 0;
-	dispEnterTime(F("Enter starting hour  using 24 hour format Press STAR to cancel Press D when done")), (F("24 HOUR FORMAT ONLY"));
+	dispEnterTime(F("Enter the hour it\nshould TURN ON\nusing 24 hour format\nPress STAR to cancel")), (F("24 HOUR FORMAT ONLY"));
 	int hour = inputTime();
 	if (hour == -1) {
 		dispError(F("Canceled"));
@@ -379,7 +379,7 @@ void promptOverrideTime(outlets& obj) {
 		return;
 	}
 	//Get the starting MINUTE//
-	dispEnterTime(F("Enter starting\nminutes   * - back\nPress D when done"));
+	dispEnterTime(F("Enter the minute it\nshould TURN ON\nPress STAR to cancel"));
 	int minute = inputTime();
 	if (minute == -1) {
 		dispError(F("Canceled"));

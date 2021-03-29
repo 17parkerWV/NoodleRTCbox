@@ -116,14 +116,14 @@ void scheduleSetStatusLoop() {
 			}
 			if (buttonByte == NUM_PAD_4) {
 				if (relay[3].getSchedSetFlag() == true) {
-					dispSingleSchedStatus(1);
+					dispSingleSchedStatus(3);
 					waitForAnyLetterPress();
 					return;
 				}
 			}
 			if (buttonByte == NUM_PAD_7) {
 				if (relay[6].getSchedSetFlag() == true) {
-					dispSingleSchedStatus(2);
+					dispSingleSchedStatus(6);
 					waitForAnyLetterPress();
 					return;
 				}
@@ -134,7 +134,7 @@ void scheduleSetStatusLoop() {
 		if ((buttonByte & COL_BITS) == COL_2) {
 			if (buttonByte == NUM_PAD_2) {
 				if (relay[1].getSchedSetFlag() == true) {
-					dispSingleSchedStatus(3);
+					dispSingleSchedStatus(1);
 					waitForAnyLetterPress();
 					return;
 				}
@@ -148,7 +148,7 @@ void scheduleSetStatusLoop() {
 			}
 			if (buttonByte == NUM_PAD_8) {
 				if (relay[7].getSchedSetFlag() == true) {
-					dispSingleSchedStatus(5);
+					dispSingleSchedStatus(7);
 					waitForAnyLetterPress();
 					return;
 				}
@@ -157,14 +157,14 @@ void scheduleSetStatusLoop() {
 		if ((buttonByte & COL_BITS) == COL_3) {
 			if (buttonByte == NUM_PAD_3) {
 				if (relay[2].getSchedSetFlag() == true) {
-					dispSingleSchedStatus(6);
+					dispSingleSchedStatus(2);
 					waitForAnyLetterPress();
 					return;
 				}
 			}
 			if (buttonByte == NUM_PAD_6) {
 				if (relay[5].getSchedSetFlag() == true) {
-					dispSingleSchedStatus(7);
+					dispSingleSchedStatus(5);
 					waitForAnyLetterPress();
 					return;
 				}
@@ -242,19 +242,19 @@ void overrideStatusLoop() {
 int inputTime() {
 	int NumberOfInputs = 100;
 	int timeInput = 0;
-	while (NumberOfInputs > 0) {
+	while (NumberOfInputs >= 10) {
 		while (1) {
 			byte buttonByte = buttonPoll();
 			if (buttonByte == NUM_PAD_1) {
-				timeInput += (1 * NumberOfInputs/10);
+				timeInput += (1 * NumberOfInputs / 10);
 				break;
 			}
 			if (buttonByte == NUM_PAD_2) {
-				timeInput += (2 * NumberOfInputs/10);
+				timeInput += (2 * NumberOfInputs / 10);
 				break;
 			}
 			if (buttonByte == NUM_PAD_3) {
-				timeInput += (3 * NumberOfInputs/10);
+				timeInput += (3 * NumberOfInputs / 10);
 				break;
 			}
 			if (buttonByte == NUM_PAD_4) {
@@ -283,28 +283,20 @@ int inputTime() {
 				break;
 			}
 			if (buttonByte == NUM_PAD_0) {
-				switch (NumberOfInputs) {
-				case 100:
-
-					break;
-				case 10:
-
-					break;
-
+				if (NumberOfInputs == 100) {
+					printTime(0);
+					NumberOfInputs /= 10;
+					delayWithoutDelay(225);
+					continue;
 				}
-				break;
-			}
-			if (buttonByte == NUM_PAD_D) {
-				//This can only be chosen on the first loop; must divide by 10
-				timeInput /= 10;
-				delayWithoutDelay(225);
-				return timeInput;
+				else
+					break;
 			}
 			if (buttonByte == NUM_PAD_STAR)
 				return -1;
 		}
-		printTime(timeInput,NumberOfInputs * 10);
-		NumberOfInputs -= 90;
+		printTime(timeInput, NumberOfInputs*10);
+		NumberOfInputs /= 10;
 		delayWithoutDelay(225);
 	}
 	return timeInput;
@@ -358,9 +350,8 @@ int inputDuration() {
 				durationInput += 0 * loopCount / 10;
 				break;
 			}
-			if (buttonByte == NUM_PAD_D)
-				//Be careful, integer math is all around us...
-				return ((durationInput * 10) / loopCount);
+			if (buttonByte == NUM_PAD_D && durationInput >0)
+				return (durationInput / loopCount);
 			if (buttonByte == NUM_PAD_STAR)
 				return -1;
 		}

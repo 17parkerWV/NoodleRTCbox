@@ -150,6 +150,7 @@ void printTime(int time, int loopCount = 0) {
 		break;
 	case 0:
 		xRect = 53;
+		xPrint = 20;
 		break;
 	default:
 		xRect = 54;
@@ -157,7 +158,7 @@ void printTime(int time, int loopCount = 0) {
 	}
 	disp.setCursor(xPrint, 35);
 	disp.print(time);
-	disp.fillRect(xRect, 32, 108 - xRect + xPrint, 20, BLACK);
+	disp.fillRect(xRect, 32, 108 - xRect, 20, BLACK);
 	disp.display();
 	return;
 }
@@ -191,7 +192,8 @@ void clearRelayUpdate() {
 //Displays chosen relay's override specs
 void dispSingleOverrideStatus(int relayNum) {
 	prepDisp(1, 0, 0);
-	disp.print(F("Current Override"));
+	disp.print(F("Current Override\nSelected Outlet: "));
+	disp.print(relayNum + 1);
 	prepDisp(2, 0, 16, false);
 	if (relay[relayNum].overrideHour > 12)
 		disp.print(relay[relayNum].overrideHour - 12);
@@ -211,7 +213,7 @@ void dispSingleOverrideStatus(int relayNum) {
 	disp.println((relay[relayNum].overrideState == 0) ? "ON" : "OFF");
 	disp.print(F("for "));
 	disp.print(relay[relayNum].overrideDuration);
-	disp.print(F(" minutes"));
+	disp.print(F(" minute(s)"));
 	disp.setCursor(0, 56);
 	disp.print(F("press A-D to go back"));
 	disp.display();

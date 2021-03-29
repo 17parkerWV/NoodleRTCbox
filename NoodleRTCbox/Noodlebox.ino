@@ -179,7 +179,7 @@ void dispError(String error);
 void clearRelayUpdate();
 //Main menu
 void dispMainMenu() {
-	printMenu(4, abcd, F("Adjust Schedule"), F("Temporary Override"), F("Manual Override\n   Menu"), F("Set date and time"), true, F("Main Menu"));
+	printMenu(4, abcd, F("Adjust Schedule"), F("Temporary Override"), F("Manual Override\n   Menu"), F("Date & Time menu"), true, F("Main Menu"));
 }
 //Schedule display functions
 void dispSchedulesMenu() {
