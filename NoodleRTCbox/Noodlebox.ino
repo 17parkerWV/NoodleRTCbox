@@ -1,6 +1,8 @@
 //LOOK AT COMMIT NOTES
 //I HAD TO MODIFY THE RTC LIBRARY FOR THIS PROGRAM
 //BE CAREFUL USING IT SOMEWHERE ELSE
+//TO DO LIST:
+//-add sleep for screen so it is not always on
 #include <Adafruit_SPIDevice.h>
 #include <Adafruit_I2CRegister.h>
 #include <Adafruit_I2CDevice.h>
@@ -179,11 +181,11 @@ void dispError(String error);
 void clearRelayUpdate();
 //Main menu
 void dispMainMenu() {
-	printMenu(4, abcd, F("Adjust Schedule"), F("Temporary Override"), F("Manual Override\n   Menu"), F("Date & Time menu"), true, F("Main Menu"));
+	printMenu(4, abcd, F("Adjust Schedule"), F("Temporary Override"), F("Outlet Control\n   Menu"), F("Date & Time menu"), true, F("Main Menu"));
 }
 //Schedule display functions
 void dispSchedulesMenu() {
-	printMenu(3, num, F("Set/Clear Schedule"), F("View Schedule"), F("Complete disable"), F(""), false, F(""), true, F("Press # to go back"));
+	printMenu(3, num, F("Set/Clear Schedule"), F("View Schedule"), F("Clear schedule\n   and override"), F(""), false, F(""), true, F("Press # to go back"));
 }
 void dispSingleSchedStatus(int relayNum);
 void dispCurrentTime();
@@ -365,7 +367,7 @@ void overrideMenu() {
 }
 //MainMenu -> C - Displays the 8 relays and if they are powered manually
 void manualOnOffMenu() {
-	dispEightRelays(2, F("ON means ON OFF meansOFF, easy   * - back"), true);
+	dispEightRelays(2, F("Outlet control\nPress STAR to go back"), true);
 	manualOnOffLoop();
 	return;
 }
