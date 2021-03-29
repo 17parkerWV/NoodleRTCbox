@@ -168,12 +168,12 @@ void timeControl() {
 			continue;
 		if (relay[index].getOverrideStatus() == true) {
 			//If inside range of override
-			if ((relay[index].overrideHour <= currentHour) && (relay[index].overrideMinute <= currentMinute) && (relay[index].overrideOffHour >= currentHour) && (relay[index].overrideOffMinute > currentMinute)) {
+			if ((relay[index].overrideHour <= currentHour) && (relay[index].overrideMinute <= currentMinute) && (relay[index].overrideOffHour >= currentHour) && (relay[index].overrideOffMinute >= currentMinute)) {
 				relay[index].setOverrideStatus();
 				digitalWrite(relay[index].relayPin, relay[index].overrideState);
 			}
 			//If inside before but now outside, set powered status to what it was before
-			if ((relay[index].overrideOffHour <= currentHour) && (relay[index].overrideOffMinute <= currentMinute)) {
+			if (relay[index].overrideOffHour < currentHour || (relay[index].overrideOffHour <= currentHour) && (relay[index].overrideOffMinute < currentMinute)) {
 				relay[index].clearOverrideSetFlag();
 				if (relay[index].getSchedSetFlag() == false)
 					digitalWrite(relay[index].relayPin, !relay[index].getManualPoweredStatus());
@@ -183,9 +183,9 @@ void timeControl() {
 		//If a schedule is set, turn on/off
 		//If sched is set overnight, time ON and time OFF were swapped, and the sched state is inverted (happened when sched was set)
 		if (relay[index].getSchedSetFlag() == true) {
-			if ((relay[index].hourOn <= currentHour) && (relay[index].minuteOn <= currentMinute) && (relay[index].hourOff >= currentHour) && (relay[index].minuteOff > currentMinute))
+			if ((relay[index].hourOn <= currentHour) && (relay[index].minuteOn <= currentMinute) && (relay[index].hourOff >= currentHour) && (relay[index].minuteOff >= currentMinute))
 				digitalWrite(relay[index].relayPin, relay[index].schedState);
-			if ((relay[index].hourOff <= currentHour) && (relay[index].minuteOff <= currentMinute))
+			if (relay[index].hourOff < currentHour || (relay[index].hourOff <= currentHour) && (relay[index].minuteOff < currentMinute))
 				digitalWrite(relay[index].relayPin, !relay[index].schedState);
 		}
 	}

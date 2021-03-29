@@ -64,7 +64,7 @@ int chooseRelay(int func) {
 			}
 			if (func == 1) {
 				promptFunc(relay[0]);
-				return;
+				return 0;
 			}
 			if (func == 2 && !relay[0].getManualPoweredStatus()) {
 				promptFunc(relay[0]);
@@ -78,7 +78,7 @@ int chooseRelay(int func) {
 			}
 			if (func == 1) {
 				promptFunc(relay[1]);
-				return;
+				return 0;
 			}
 			if (func == 2 && !relay[1].getManualPoweredStatus()) {
 				promptFunc(relay[1]);
@@ -92,7 +92,7 @@ int chooseRelay(int func) {
 			}
 			if (func == 1) {
 				promptFunc(relay[2]);
-				return;
+				return 0;
 			}
 			if (func == 2 && !relay[2].getManualPoweredStatus()) {
 				promptFunc(relay[2]);
@@ -106,7 +106,7 @@ int chooseRelay(int func) {
 			}
 			if (func == 1) {
 				promptFunc(relay[3]);
-				return;
+				return 0;
 			}
 			if (func == 2 && !relay[3].getManualPoweredStatus()) {
 				promptFunc(relay[3]);
@@ -120,7 +120,7 @@ int chooseRelay(int func) {
 			}
 			if (func == 1) {
 				promptFunc(relay[4]);
-				return;
+				return 0;
 			}
 			if (func == 2 && !relay[4].getManualPoweredStatus()) {
 				promptFunc(relay[4]);
@@ -134,7 +134,7 @@ int chooseRelay(int func) {
 			}
 			if (func == 1) {
 				promptFunc(relay[5]);
-				return;
+				return 0;
 			}
 			if (func == 2 && !relay[5].getManualPoweredStatus()) {
 				promptFunc(relay[5]);
@@ -148,7 +148,7 @@ int chooseRelay(int func) {
 			}
 			if (func == 1) {
 				promptFunc(relay[6]);
-				return;
+				return 0;
 			}
 			if (func == 2 && !relay[6].getManualPoweredStatus()) {
 				promptFunc(relay[6]);
@@ -162,7 +162,7 @@ int chooseRelay(int func) {
 			}
 			if (func == 1) {
 				promptFunc(relay[7]);
-				return;
+				return 0;
 			}
 			if (func == 2 && !relay[7].getManualPoweredStatus()) {
 				promptFunc(relay[7]);
@@ -172,7 +172,7 @@ int chooseRelay(int func) {
 		if (buttonByte == NUM_PAD_STAR)
 			return 0;
 	}
-	return 0;
+	return -1;
 }
 //A -> 3 - Choose a relay to completely kill it
 void completeOffLoop() {
