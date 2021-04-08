@@ -9,32 +9,32 @@ void setTime() {
 	prepDisp(1, 0, 0);
 	uint8_t  month, day, hour, minute, second;
 	uint16_t year, dayOfWeek;
-	printHeader(F("Enter the month\nPress D to submit"), 1, true);
+	printHeader(F("Enter the month MM\nPress D to submit\nPress STAR to cancel"), 1, true);
 	month = (uint8_t)inputTime();
 	if (month < 1 || month >12) {
 		dispError(F("invalid\nmonth"));
 		return;
 	}
-	printHeader(F("Enter the day"), 1, true);
+	printHeader(F("Enter the day DD\nPress STAR to cancel"), 1, true);
 	day = (uint8_t)inputTime();
 	if (!validateDay(month, day)) {
 		//dispError(F("Invalid\nday"));
 		dispError((String)day);
 		return;
 	}
-	printHeader(F("Enter the last 2\ndigits of the year\nEx: for 2021 enter 21"), 1, true);
+	printHeader(F("Enter the last 2\ndigits of the year\nEx: for 2021 enter 21\nPress STAR to cancel"), 1, true);
 	year = (uint16_t)inputTime();
 	if (year < 20) {
 		dispError(F("Invalid\nyear"));
 		return;
 	}
-	printHeader(F("Enter the hour\nUse 24hr notation\nPress D to submit"), 1, true);
+	printHeader(F("Enter the hour HH\nUse 24hr notation\nPress D to submit\nPress STAR to cancel"), 1, true);
 	hour = (uint8_t)inputTime();
 	if (hour > 24 || hour < 0) {
 		dispError(F("Invalid hour"));
 		return;
 	}
-	printHeader(F("Enter the minute\nPress D to submit"), 1, true);
+	printHeader(F("Enter the minute MM\nPress D to submit\nPress STAR to cancel"), 1, true);
 	minute = (uint8_t)inputTime();
 	if (minute < 0 || minute > 59) {
 		dispError(F("Invalid\nminute"));
@@ -168,24 +168,28 @@ void timeControl() {
 			continue;
 		if (relay[index].getOverrideStatus() == true) {
 			//If inside range of override
-			if ((relay[index].overrideHour <= currentHour) && (relay[index].overrideMinute <= currentMinute) && (relay[index].overrideOffHour >= currentHour) && (relay[index].overrideOffMinute >= currentMinute)) {
+			if ((relay[index].overrideHour < currentHour || (relay[index].overrideHour == currentHour && relay[index].overrideMinute <= currentMinute)) && (relay[index].overrideOffHour > currentHour || (relay[index].overrideOffHour == currentHour && relay[index].overrideOffMinute > currentMinute))) {
 				relay[index].setOverrideStatus();
 				digitalWrite(relay[index].relayPin, relay[index].overrideState);
+				continue;
 			}
-			//If inside before but now outside, set powered status to what it was before
-			if (relay[index].overrideOffHour < currentHour || (relay[index].overrideOffHour <= currentHour) && (relay[index].overrideOffMinute < currentMinute)) {
+			else {
+				//If there isn't a schedule, change the power state to what the manual state was and continue
+				//continue prevents it from checking schedule (there isn't a schedule anyway)
+				//Also because I don't want extra functions to do similar things, the power will flicker off briefly when the override ends (if it should be on after it)
 				relay[index].clearOverrideSetFlag();
-				if (relay[index].getSchedSetFlag() == false)
+				if (relay[index].getSchedSetFlag() == false) {
 					digitalWrite(relay[index].relayPin, !relay[index].getManualPoweredStatus());
+					continue;
+				}
 			}
-			continue;
 		}
 		//If a schedule is set, turn on/off
 		//If sched is set overnight, time ON and time OFF were swapped, and the sched state is inverted (happened when sched was set)
 		if (relay[index].getSchedSetFlag() == true) {
-			if ((relay[index].hourOn <= currentHour) && (relay[index].minuteOn <= currentMinute) && (relay[index].hourOff >= currentHour) && (relay[index].minuteOff >= currentMinute))
+			if ((relay[index].hourOn < currentHour || (relay[index].hourOn == currentHour && relay[index].minuteOn <= currentMinute)) && (relay[index].hourOff > currentHour || (relay[index].hourOff == currentHour && relay[index].minuteOff > currentMinute)))
 				digitalWrite(relay[index].relayPin, relay[index].schedState);
-			if (relay[index].hourOff < currentHour || (relay[index].hourOff <= currentHour) && (relay[index].minuteOff < currentMinute))
+			else
 				digitalWrite(relay[index].relayPin, !relay[index].schedState);
 		}
 	}

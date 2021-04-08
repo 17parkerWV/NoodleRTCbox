@@ -3,7 +3,7 @@
 void initializeObjs() {
 	if (!disp.begin(SSD1306_SWITCHCAPVCC, 0x3C))
 		while (1);
-	if (!clockObj.begin() || clockObj.lostPower())
+	if (!clockObj.begin())
 		while (1);
 	clockSecondObj = clockObj.now();
 	clockObj.writeSqwPinMode(DS3231_SquareWave1Hz);	//Enable the 1Hz squarewave clock

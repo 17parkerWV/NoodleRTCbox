@@ -134,7 +134,6 @@ public:
 	void off();
 	void clearSchedSetFlag() { schedSetFlag = false, digitalWrite(relayPin, HIGH); }
 	void clearSchedState() { schedState = false; }
-	void clearOverrideStatus() { overrideStatus = false; }
 	void clearOverrideSetFlag() {
 		overrideSetFlag = false;
 		overrideStatus = false;
@@ -246,7 +245,6 @@ void outlets::off() {
 	clearSchedSetFlag();
 	clearSchedState();
 	clearOverrideSetFlag();
-	clearOverrideStatus();
 	digitalWrite(relayPin, HIGH);
 	return;
 }
@@ -277,6 +275,7 @@ ISR(INT4_vect) {
 }
 
 void setup() {
+	delay(500);
 	initializeObjs();
 	POWERLOSS();
 	delayWithoutDelay(500);
